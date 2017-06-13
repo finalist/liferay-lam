@@ -10,8 +10,8 @@ public class CustomFields {
     @Reference
     private ExpandoValueLocalService evls;
 
-	// TODO: proper method name, proper arguments, javadoc, etc....
-	public void createCustomField() {
+    // TODO: proper method name, proper arguments, javadoc, etc....
+    public void createCustomField() {
         evls.addExpandoValue(null);
-	}
+    }
 }
