@@ -5,7 +5,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 @Component(immediate = true)
-public class Lam {
+public class CustomFields {
 
     @Reference
     private ExpandoValueLocalService evls;
@@ -13,6 +13,5 @@ public class Lam {
 	// TODO: proper method name, proper arguments, javadoc, etc....
 	public void createCustomField() {
         evls.addExpandoValue(null);
-		throw new RuntimeException("Not implemented yet");
 	}
 }

@@ -10,23 +10,23 @@ import org.mockito.Mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class LamTest {
+public class CustomFieldsTest {
 
     @Mock
     private ExpandoValueLocalService evls;
 
     @InjectMocks
-    private Lam lam;
+    private CustomFields customFields;
 
     @Before
     public void setUp() {
-        lam = new Lam();
+        customFields = new CustomFields();
         initMocks(this);
     }
 
     @Test
     public void test() {
-        lam.createCustomField();
+        customFields.createCustomField();
         verify(evls).addExpandoValue(null);
     }
 }
