@@ -63,11 +63,27 @@ public class CustomFieldsTest {
     }
     
     @Test
-    public void testDeleteCustomTextField() throws PortalException {
+    public void testAddCustomIntegerField() throws PortalException {
+        when(tableService.getDefaultTable(COMPANY_ID, ENTITY_NAME)).thenThrow(new NoSuchTableException());
+        when(tableService.addTable(COMPANY_ID, ENTITY_NAME, ExpandoTableConstants.DEFAULT_TABLE_NAME)).thenReturn(mockTable);
+        when(mockTable.getTableId()).thenReturn(1L);
+        when(columnService.getColumn(COMPANY_ID, ENTITY_NAME, ExpandoTableConstants.DEFAULT_TABLE_NAME, FIELD_NAME)).thenReturn(null);
+        when(columnService.addColumn(1L, FIELD_NAME, ExpandoColumnConstants.INTEGER, StringPool.BLANK)).thenReturn(mockColumn);
+    	
+        customFields.addCustomIntegerField(COMPANY_ID, ENTITY_NAME, FIELD_NAME, "default");
+        
+        verify(tableService).getDefaultTable(COMPANY_ID, ENTITY_NAME);
+        verify(tableService).addTable(COMPANY_ID, ENTITY_NAME, ExpandoTableConstants.DEFAULT_TABLE_NAME);
+        verify(columnService).getColumn(COMPANY_ID, ENTITY_NAME, ExpandoTableConstants.DEFAULT_TABLE_NAME, FIELD_NAME);
+        verify(columnService).addColumn(1L, FIELD_NAME, ExpandoColumnConstants.INTEGER, StringPool.BLANK);
+    }
+    
+    @Test
+    public void testDeleteCustomField() throws PortalException {
     	when(tableService.getDefaultTable(COMPANY_ID, ENTITY_NAME)).thenReturn(mockTable);
     	when(columnService.getColumn(COMPANY_ID, ENTITY_NAME, ExpandoTableConstants.DEFAULT_TABLE_NAME, FIELD_NAME)).thenReturn(mockColumn);
     	
-        customFields.deleteCustomTextField(COMPANY_ID, ENTITY_NAME, FIELD_NAME);
+        customFields.deleteCustomField(COMPANY_ID, ENTITY_NAME, FIELD_NAME);
         
         verify(tableService).getDefaultTable(COMPANY_ID, ENTITY_NAME);
         verify(columnService).getColumn(COMPANY_ID, ENTITY_NAME, ExpandoTableConstants.DEFAULT_TABLE_NAME, FIELD_NAME);
