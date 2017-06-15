@@ -1,8 +1,12 @@
 ## Getting started
 
-1. Clone this repo
-2. Run 'gradle build'
-3. Start Developer Studio 3+
-4. Import existing Gradle project, pooint to base directory of cloned Git repo
-5. Run unit tests
+1.) Clone this repo
+2.) download eclipse neon with liferay plugin. 
+
+		“https://sourceforge.net/projects/lportal/files/Liferay%20IDE/3.1.0%20B1/”
+		
+3.) Import existing Gradle project, point to base directory of cloned Git repo
+4.) Run 'gradle build'
+5.) Run unit tests
+
 
