@@ -14,10 +14,16 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.RoleConstants;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalServiceUtil;
+import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.util.StringPool;
 
-@Component(immediate = true)
-public class CustomFields {
+@Component(immediate = true, service=CustomFieldsInterface.class)
+public class CustomFields implements CustomFieldsInterface {
 
     @Reference
     private ExpandoTableLocalService tableService;
@@ -43,13 +49,13 @@ public class CustomFields {
         LOG.info("Expando Table ID : " + expandoTable.getTableId());
      
         ExpandoColumn expandoColumn = getOrAddExpandoTextColumn(companyId, entityName, ExpandoTableConstants.DEFAULT_TABLE_NAME, fieldName, expandoTable);
-        expandoColumn.setDefaultData(value);
+        saveDefaultValueForColumn(value, expandoColumn);
         LOG.info("Expando Column ID : " + expandoColumn.getColumnId());
      
-        LOG.info("Done adding custom field");
+        LOG.info("Done adding text custom field");
     }
-    
-    /**
+
+	/**
      * Add a custom field of type integer
      * 
      * @param companyId company ID that the field is valid for
@@ -64,10 +70,10 @@ public class CustomFields {
         LOG.info("Expando Table ID : " + expandoTable.getTableId());
      
         ExpandoColumn expandoColumn = getOrAddExpandoIntegerColumn(companyId, entityName, ExpandoTableConstants.DEFAULT_TABLE_NAME, fieldName, expandoTable);
-        expandoColumn.setDefaultData(value);
+        saveDefaultValueForColumn(value, expandoColumn);
         LOG.info("Expando Column ID : " + expandoColumn.getColumnId());
      
-        LOG.info("Done adding custom field");
+        LOG.info("Done adding integer custom field");
     }
      
     /**
@@ -118,7 +124,11 @@ public class CustomFields {
         return expandoTable;
     }
     
-     
+    private void saveDefaultValueForColumn(String value, ExpandoColumn expandoColumn) {
+		expandoColumn.setDefaultData(value);
+        columnService.updateExpandoColumn(expandoColumn);
+	}
+    
     private ExpandoColumn getOrAddExpandoTextColumn(long companyId, String className, String tableName, String columnName,
             ExpandoTable expandoTable) {
         return getOrAddExpandoColumn(companyId, className, tableName, columnName, expandoTable, ExpandoColumnConstants.STRING);
@@ -143,5 +153,21 @@ public class CustomFields {
         }       
      
         return exandoColumn;
+    }
+    
+    private static void setExpandoPermissions(long companyId, ExpandoColumn column) {
+        try {
+            Role guestUserRole = RoleLocalServiceUtil.getRole(companyId, RoleConstants.GUEST);
+
+            if (guestUserRole != null) {
+                  // define actions 
+                  String[] actionIds = new String[] { ActionKeys.VIEW, ActionKeys.UPDATE };
+                  // set the permission
+                  ResourcePermissionLocalServiceUtil.setResourcePermissions(companyId, 
+                    ExpandoColumn.class.getName(), ResourceConstants.SCOPE_INDIVIDUAL, 
+                    String.valueOf(column.getColumnId()), guestUserRole.getRoleId(), actionIds);
+              }
+        } catch (PortalException pe) {
+        }
     }
 }
