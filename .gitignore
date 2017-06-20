@@ -10,3 +10,4 @@ TestStartupHook/gradlew.bat
 TestStartupHook/bin/
 TestStartupHook/gradle/cee23bd9932aef87838381b4c587c440bdbf3423
 nl.finalist.liferay.lam.api/src/main/java/nl/finalist/liferay/lam/api/MainPortalValuesChecking.java
+TestStartupHook/gradle/

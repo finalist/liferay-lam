@@ -18,7 +18,13 @@ import com.liferay.expando.kernel.model.ExpandoTableConstants;
 import com.liferay.expando.kernel.service.ExpandoColumnLocalService;
 import com.liferay.expando.kernel.service.ExpandoTableLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.RoleConstants;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.util.StringPool;
 
 public class CustomFieldsTest {
@@ -30,11 +36,17 @@ public class CustomFieldsTest {
     private ExpandoTableLocalService tableService;
     @Mock
     private ExpandoColumnLocalService columnService;
+    @Mock
+    private RoleLocalService roleService;
+    @Mock
+    private ResourcePermissionLocalService resourcePermissionService;
 
     @Mock
     private ExpandoTable mockTable;
     @Mock
     private ExpandoColumn mockColumn;
+    @Mock
+    private Role mockGuestRole;
     
     @InjectMocks
     private CustomFields customFields;
@@ -53,6 +65,7 @@ public class CustomFieldsTest {
         when(mockTable.getTableId()).thenReturn(1L);
         when(columnService.getColumn(COMPANY_ID, ENTITY_NAME, ExpandoTableConstants.DEFAULT_TABLE_NAME, FIELD_NAME)).thenReturn(null);
         when(columnService.addColumn(1L, FIELD_NAME, ExpandoColumnConstants.STRING, StringPool.BLANK)).thenReturn(mockColumn);
+        when(roleService.getRole(COMPANY_ID, RoleConstants.GUEST)).thenReturn(mockGuestRole);
     	
         customFields.addCustomTextField(COMPANY_ID, ENTITY_NAME, FIELD_NAME, "default");
         
@@ -60,6 +73,12 @@ public class CustomFieldsTest {
         verify(tableService).addTable(COMPANY_ID, ENTITY_NAME, ExpandoTableConstants.DEFAULT_TABLE_NAME);
         verify(columnService).getColumn(COMPANY_ID, ENTITY_NAME, ExpandoTableConstants.DEFAULT_TABLE_NAME, FIELD_NAME);
         verify(columnService).addColumn(1L, FIELD_NAME, ExpandoColumnConstants.STRING, StringPool.BLANK);
+        verify(columnService).updateExpandoColumn(mockColumn);
+        verify(roleService).getRole(COMPANY_ID, RoleConstants.GUEST);
+        verify(resourcePermissionService).setResourcePermissions(COMPANY_ID, 
+            ExpandoColumn.class.getName(), ResourceConstants.SCOPE_INDIVIDUAL, 
+            String.valueOf(mockColumn.getColumnId()), mockGuestRole.getRoleId(), 
+            new String[]{ ActionKeys.VIEW, ActionKeys.UPDATE });
     }
     
     @Test
@@ -69,13 +88,20 @@ public class CustomFieldsTest {
         when(mockTable.getTableId()).thenReturn(1L);
         when(columnService.getColumn(COMPANY_ID, ENTITY_NAME, ExpandoTableConstants.DEFAULT_TABLE_NAME, FIELD_NAME)).thenReturn(null);
         when(columnService.addColumn(1L, FIELD_NAME, ExpandoColumnConstants.INTEGER, StringPool.BLANK)).thenReturn(mockColumn);
-    	
+        when(roleService.getRole(COMPANY_ID, RoleConstants.GUEST)).thenReturn(mockGuestRole);
+
         customFields.addCustomIntegerField(COMPANY_ID, ENTITY_NAME, FIELD_NAME, "default");
         
         verify(tableService).getDefaultTable(COMPANY_ID, ENTITY_NAME);
         verify(tableService).addTable(COMPANY_ID, ENTITY_NAME, ExpandoTableConstants.DEFAULT_TABLE_NAME);
         verify(columnService).getColumn(COMPANY_ID, ENTITY_NAME, ExpandoTableConstants.DEFAULT_TABLE_NAME, FIELD_NAME);
         verify(columnService).addColumn(1L, FIELD_NAME, ExpandoColumnConstants.INTEGER, StringPool.BLANK);
+        verify(columnService).updateExpandoColumn(mockColumn);
+        verify(roleService).getRole(COMPANY_ID, RoleConstants.GUEST);
+        verify(resourcePermissionService).setResourcePermissions(COMPANY_ID, 
+            ExpandoColumn.class.getName(), ResourceConstants.SCOPE_INDIVIDUAL, 
+            String.valueOf(mockColumn.getColumnId()), mockGuestRole.getRoleId(), 
+            new String[]{ ActionKeys.VIEW, ActionKeys.UPDATE });
     }
     
     @Test

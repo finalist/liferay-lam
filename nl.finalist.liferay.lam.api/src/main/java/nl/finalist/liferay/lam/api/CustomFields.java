@@ -18,8 +18,8 @@ import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.RoleConstants;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
-import com.liferay.portal.kernel.service.ResourcePermissionLocalServiceUtil;
-import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.util.StringPool;
 
 @Component(immediate = true, service=CustomFieldsInterface.class)
@@ -30,6 +30,12 @@ public class CustomFields implements CustomFieldsInterface {
 
     @Reference
     private ExpandoColumnLocalService columnService;
+    
+    @Reference
+    private RoleLocalService roleService;
+    
+    @Reference
+    private ResourcePermissionLocalService resourcePermissionService;
 
     private static final Log LOG = LogFactoryUtil.getLog(CustomFields.class);
      
@@ -50,6 +56,7 @@ public class CustomFields implements CustomFieldsInterface {
      
         ExpandoColumn expandoColumn = getOrAddExpandoTextColumn(companyId, entityName, ExpandoTableConstants.DEFAULT_TABLE_NAME, fieldName, expandoTable);
         saveDefaultValueForColumn(value, expandoColumn);
+        addExpandoGuestPermissions(companyId, expandoColumn);
         LOG.info("Expando Column ID : " + expandoColumn.getColumnId());
      
         LOG.info("Done adding text custom field");
@@ -71,6 +78,7 @@ public class CustomFields implements CustomFieldsInterface {
      
         ExpandoColumn expandoColumn = getOrAddExpandoIntegerColumn(companyId, entityName, ExpandoTableConstants.DEFAULT_TABLE_NAME, fieldName, expandoTable);
         saveDefaultValueForColumn(value, expandoColumn);
+        addExpandoGuestPermissions(companyId, expandoColumn);
         LOG.info("Expando Column ID : " + expandoColumn.getColumnId());
      
         LOG.info("Done adding integer custom field");
@@ -155,17 +163,18 @@ public class CustomFields implements CustomFieldsInterface {
         return exandoColumn;
     }
     
-    private static void setExpandoPermissions(long companyId, ExpandoColumn column) {
+    private void addExpandoGuestPermissions(long companyId, ExpandoColumn column) {
         try {
-            Role guestUserRole = RoleLocalServiceUtil.getRole(companyId, RoleConstants.GUEST);
-
+            Role guestUserRole = roleService.getRole(companyId, RoleConstants.GUEST);
+            LOG.info("Guest role fetched");
             if (guestUserRole != null) {
                   // define actions 
                   String[] actionIds = new String[] { ActionKeys.VIEW, ActionKeys.UPDATE };
                   // set the permission
-                  ResourcePermissionLocalServiceUtil.setResourcePermissions(companyId, 
+                  resourcePermissionService.setResourcePermissions(companyId, 
                     ExpandoColumn.class.getName(), ResourceConstants.SCOPE_INDIVIDUAL, 
                     String.valueOf(column.getColumnId()), guestUserRole.getRoleId(), actionIds);
+                  LOG.info("permissions set");
               }
         } catch (PortalException pe) {
         }
