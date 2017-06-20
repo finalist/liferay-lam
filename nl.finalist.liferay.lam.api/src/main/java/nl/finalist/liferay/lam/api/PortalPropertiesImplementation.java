@@ -10,9 +10,16 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
 import com.liferay.portal.kernel.util.PropsUtil;
 
+
+/**
+ * This class Accepts a Map of PropertyValues and validates it against 
+ * the portal-ext property values and returns a true or false.  
+ *  
+ */
+
 @Component(immediate = true, service=PortalValuesInterface.class)
-public class PortalValuesChecking implements PortalValuesInterface {
-	private static final Log LOG = LogFactoryUtil.getLog(PortalValuesChecking.class);
+public class PortalPropertiesImplementation implements PortalValuesInterface {
+	private static final Log LOG = LogFactoryUtil.getLog(PortalPropertiesImplementation.class);
 
 	public boolean checkingPortalProperties(Map<String, String> propertyValues) throws IOException {
 		LOG.info(String.format("Start the comparing the portal property values"));
