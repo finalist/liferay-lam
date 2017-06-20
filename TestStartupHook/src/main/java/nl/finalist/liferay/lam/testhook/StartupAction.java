@@ -10,11 +10,17 @@ import org.osgi.service.component.annotations.Reference;
 import com.liferay.portal.kernel.events.ActionException;
 import com.liferay.portal.kernel.events.LifecycleAction;
 import com.liferay.portal.kernel.events.LifecycleEvent;
+import com.liferay.portal.kernel.model.RoleConstants;
 import com.liferay.portal.kernel.model.User;
 
 import nl.finalist.liferay.lam.api.CustomFieldsInterface;
 import nl.finalist.liferay.lam.api.PortalValuesInterface;
 
+/**
+ * At the moment this class is triggered every time the user logs in to test our code.
+ * In the future this will either change to kick off running our DSL logic at startup of the server, 
+ * or this class will have to be removed. 
+ */
 @Component(
 		immediate = true, 
 		property = { "key=login.events.pre" }, 
@@ -29,7 +35,7 @@ public class StartupAction implements LifecycleAction {
 	@Override
 	public void processLifecycleEvent(LifecycleEvent lifecycleEvent) throws ActionException {
 		System.out.println("Adding custom field");
-		customFields.addCustomTextField(20116L, User.class.getName(), "test2", "default");
+		customFields.addCustomTextField(20116L, User.class.getName(), "test2", "default", new String[]{RoleConstants.GUEST});
 		
 		System.out.println("Checking portal-ext.properties");
 		Map<String, String> expectedValues = new HashMap<>();

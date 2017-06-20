@@ -41,14 +41,14 @@ public class CustomFields implements CustomFieldsInterface {
      
     
     /**
-     * Add a custom field of type text
+     * Add a custom field of type text. 
      * 
      * @param companyId company ID that the field is valid for
      * @param entityName entity that the field is added to
      * @param fieldName name of the field
      * @param value default value of the field
      */
-    public void addCustomTextField(long companyId, String entityName, String fieldName, String value) {
+    public void addCustomTextField(long companyId, String entityName, String fieldName, String value, String [] roles) {
         LOG.info(String.format("Start adding custom text field %s for company %d to entity %s with default value %s", fieldName, companyId, entityName, value));
      
         ExpandoTable expandoTable = getOrAddExpandoTable(companyId, entityName, ExpandoTableConstants.DEFAULT_TABLE_NAME);
@@ -56,7 +56,9 @@ public class CustomFields implements CustomFieldsInterface {
      
         ExpandoColumn expandoColumn = getOrAddExpandoTextColumn(companyId, entityName, ExpandoTableConstants.DEFAULT_TABLE_NAME, fieldName, expandoTable);
         saveDefaultValueForColumn(value, expandoColumn);
-        addExpandoGuestPermissions(companyId, expandoColumn);
+        for (String role : roles) {
+        	addExpandoPermissions(companyId, expandoColumn, role);
+		}
         LOG.info("Expando Column ID : " + expandoColumn.getColumnId());
      
         LOG.info("Done adding text custom field");
@@ -70,7 +72,7 @@ public class CustomFields implements CustomFieldsInterface {
      * @param fieldName name of the field
      * @param value default value of the field
      */
-    public void addCustomIntegerField(long companyId, String entityName, String fieldName, String value) {
+    public void addCustomIntegerField(long companyId, String entityName, String fieldName, String value, String [] roles) {
         LOG.info(String.format("Start adding custom integer field %s for company %d to entity %s with default value %s", fieldName, companyId, entityName, value));
      
         ExpandoTable expandoTable = getOrAddExpandoTable(companyId, entityName, ExpandoTableConstants.DEFAULT_TABLE_NAME);
@@ -78,7 +80,9 @@ public class CustomFields implements CustomFieldsInterface {
      
         ExpandoColumn expandoColumn = getOrAddExpandoIntegerColumn(companyId, entityName, ExpandoTableConstants.DEFAULT_TABLE_NAME, fieldName, expandoTable);
         saveDefaultValueForColumn(value, expandoColumn);
-        addExpandoGuestPermissions(companyId, expandoColumn);
+        for (String role : roles) {
+        	addExpandoPermissions(companyId, expandoColumn, role);
+		}
         LOG.info("Expando Column ID : " + expandoColumn.getColumnId());
      
         LOG.info("Done adding integer custom field");
@@ -163,9 +167,9 @@ public class CustomFields implements CustomFieldsInterface {
         return exandoColumn;
     }
     
-    private void addExpandoGuestPermissions(long companyId, ExpandoColumn column) {
+    private void addExpandoPermissions(long companyId, ExpandoColumn column, String role) {
         try {
-            Role guestUserRole = roleService.getRole(companyId, RoleConstants.GUEST);
+            Role guestUserRole = roleService.getRole(companyId, role);
             LOG.info("Guest role fetched");
             if (guestUserRole != null) {
                   // define actions 

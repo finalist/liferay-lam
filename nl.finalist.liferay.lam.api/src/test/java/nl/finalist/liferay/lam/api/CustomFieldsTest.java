@@ -67,7 +67,7 @@ public class CustomFieldsTest {
         when(columnService.addColumn(1L, FIELD_NAME, ExpandoColumnConstants.STRING, StringPool.BLANK)).thenReturn(mockColumn);
         when(roleService.getRole(COMPANY_ID, RoleConstants.GUEST)).thenReturn(mockGuestRole);
     	
-        customFields.addCustomTextField(COMPANY_ID, ENTITY_NAME, FIELD_NAME, "default");
+        customFields.addCustomTextField(COMPANY_ID, ENTITY_NAME, FIELD_NAME, "default", new String[]{RoleConstants.GUEST});
         
         verify(tableService).getDefaultTable(COMPANY_ID, ENTITY_NAME);
         verify(tableService).addTable(COMPANY_ID, ENTITY_NAME, ExpandoTableConstants.DEFAULT_TABLE_NAME);
@@ -90,7 +90,7 @@ public class CustomFieldsTest {
         when(columnService.addColumn(1L, FIELD_NAME, ExpandoColumnConstants.INTEGER, StringPool.BLANK)).thenReturn(mockColumn);
         when(roleService.getRole(COMPANY_ID, RoleConstants.GUEST)).thenReturn(mockGuestRole);
 
-        customFields.addCustomIntegerField(COMPANY_ID, ENTITY_NAME, FIELD_NAME, "default");
+        customFields.addCustomIntegerField(COMPANY_ID, ENTITY_NAME, FIELD_NAME, "default", new String[]{RoleConstants.GUEST});
         
         verify(tableService).getDefaultTable(COMPANY_ID, ENTITY_NAME);
         verify(tableService).addTable(COMPANY_ID, ENTITY_NAME, ExpandoTableConstants.DEFAULT_TABLE_NAME);
