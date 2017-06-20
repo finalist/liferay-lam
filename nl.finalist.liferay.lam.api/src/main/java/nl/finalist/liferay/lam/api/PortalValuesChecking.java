@@ -3,14 +3,15 @@ package nl.finalist.liferay.lam.api;
 import java.io.IOException;
 import java.util.Map;
 
+import org.osgi.service.component.annotations.Component;
+
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
-import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 
-
-public class PortalValuesChecking {
+@Component(immediate = true, service=PortalValuesInterface.class)
+public class PortalValuesChecking implements PortalValuesInterface {
 	private static final Log LOG = LogFactoryUtil.getLog(PortalValuesChecking.class);
 
 	public boolean checkingPortalProperties(Map<String, String> propertyValues) throws IOException {

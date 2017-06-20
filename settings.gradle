@@ -1,1 +1,2 @@
 include 'nl.finalist.liferay.lam.api'
+include 'TestStartupHook'

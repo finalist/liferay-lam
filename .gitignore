@@ -5,3 +5,8 @@
 *.iml
 .gradle
 nl.finalist.liferay.lam.api/src/main/resources/WEB-INF/portal.properties
+TestStartupHook/gradlew
+TestStartupHook/gradlew.bat
+TestStartupHook/bin/
+TestStartupHook/gradle/cee23bd9932aef87838381b4c587c440bdbf3423
+nl.finalist.liferay.lam.api/src/main/java/nl/finalist/liferay/lam/api/MainPortalValuesChecking.java
