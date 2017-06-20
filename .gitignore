@@ -4,3 +4,4 @@
 .idea
 *.iml
 .gradle
+nl.finalist.liferay.lam.api/src/main/resources/WEB-INF/portal.properties

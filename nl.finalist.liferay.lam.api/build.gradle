@@ -24,7 +24,19 @@ dependencies {
     // https://discuss.gradle.org/t/compileonly-dependencies-are-not-available-in-tests/15366/4
     compileOnly "com.liferay.portal:com.liferay.portal.kernel:2.15.0"
     testCompile "com.liferay.portal:com.liferay.portal.kernel:2.15.0"
+// https://mvnrepository.com/artifact/com.liferay.portal/util-java
+// https://mvnrepository.com/artifact/com.liferay.portal/portal-impl
+compileOnly group: 'com.liferay.portal', name: 'portal-impl', version: '6.2.5'
+
+
 
 	testCompile 'junit:junit:4.12'
-    testCompile group: 'org.mockito', name: 'mockito-core', version: '1.9.+'
+    testCompile 'org.powermock:powermock-core:1.6.1'
+    testCompile 'org.powermock:powermock-module-junit4:1.6.1'
+    testCompile 'org.powermock:powermock-api-mockito:1.6.1'
+// https://mvnrepository.com/artifact/org.javassist/javassist
+compile group: 'org.javassist', name: 'javassist', version: '3.19.0-GA'
+
+	
+    
 }
