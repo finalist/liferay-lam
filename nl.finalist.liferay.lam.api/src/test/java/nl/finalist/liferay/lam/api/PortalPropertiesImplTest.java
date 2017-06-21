@@ -18,14 +18,14 @@ import com.liferay.portal.kernel.util.PropsUtil;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ PropsUtil.class })
-public class PortalPropertiesImplementationTest {
+public class PortalPropertiesImplTest {
 
 	@InjectMocks
-	private PortalPropertiesImplementation portalPropertiesImplementation;
+	private PortalPropertiesImpl portalPropertiesImplementation;
 
 	@Before
 	public void setUp() {
-		portalPropertiesImplementation = new PortalPropertiesImplementation();
+		portalPropertiesImplementation = new PortalPropertiesImpl();
 	}
 
 	@Test

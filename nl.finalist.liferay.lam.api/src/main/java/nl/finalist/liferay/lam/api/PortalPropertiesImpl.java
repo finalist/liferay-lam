@@ -17,9 +17,9 @@ import com.liferay.portal.kernel.util.PropsUtil;
  *  
  */
 
-@Component(immediate = true, service=PortalValuesInterface.class)
-public class PortalPropertiesImplementation implements PortalValuesInterface {
-	private static final Log LOG = LogFactoryUtil.getLog(PortalPropertiesImplementation.class);
+@Component(immediate = true, service=PortalPropertiesInterface.class)
+public class PortalPropertiesImpl implements PortalPropertiesInterface {
+	private static final Log LOG = LogFactoryUtil.getLog(PortalPropertiesImpl.class);
 
 	public boolean checkingPortalProperties(Map<String, String> propertyValues) throws IOException {
 		LOG.info(String.format("Start the comparing the portal property values"));

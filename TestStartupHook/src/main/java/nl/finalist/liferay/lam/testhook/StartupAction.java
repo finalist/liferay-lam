@@ -14,7 +14,7 @@ import com.liferay.portal.kernel.model.RoleConstants;
 import com.liferay.portal.kernel.model.User;
 
 import nl.finalist.liferay.lam.api.CustomFields;
-import nl.finalist.liferay.lam.api.PortalValuesInterface;
+import nl.finalist.liferay.lam.api.PortalPropertiesInterface;
 
 /**
  * At the moment this class is triggered every time the user logs in to test our code.
@@ -30,7 +30,7 @@ public class StartupAction implements LifecycleAction {
 	private CustomFields customFields;
 	
 	@Reference
-	private PortalValuesInterface portalValues;
+	private PortalPropertiesInterface portalValues;
 	
 	@Override
 	public void processLifecycleEvent(LifecycleEvent lifecycleEvent) throws ActionException {
