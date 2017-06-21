@@ -51,18 +51,12 @@ public class StartupAction implements LifecycleAction {
 	
 	public static Map<String , String> newProperties() {
 		Map<String, String> propertyValues = new HashMap<String,String>();
-		propertyValues.put("include-and-override", "portal-ext.properties");
 		propertyValues.put(	"admin.email.from.address","test@liferay.com");
-		propertyValues.put(	"admin.email.from.name","Ashwini Sidhanti");
-		//propertyValues.put(	"company.default.name","shlUpgrade");
-		propertyValues.put(	"default.admin.first.name","Ashwini");
-		propertyValues.put(	"default.admin.last.name","Sidhanti");
+		propertyValues.put(	"admin.email.from.name","Test Test");
+		propertyValues.put(	"company.default.name","shlUpgrade");
+		propertyValues.put(	"default.admin.first.name","Test");
+		propertyValues.put(	"default.admin.last.name","Test");
 		propertyValues.put(	"jdbc.default.driverClassName","com.mysql.jdbc.Driver");
-		propertyValues.put(	"jdbc.default.password","test");
-		propertyValues.put(	"jdbc.default.url","jdbc:mysql://localhost:3307/locatievinderdxp?characterEncoding=UTF-8&dontTrackOpenResources=true&holdResultsOpenOverStatementClose=true&useFastDateParsing=false&useUnicode=true&useSSL=false");
-		propertyValues.put(	"jdbc.default.username","root");
-		propertyValues.put(	"liferay.home","C:/liferay-dxp-digital-enterprise-7.0-ga1");
-		propertyValues.put(	"setup.wizard.enabled","false");
 		return  propertyValues;
 	}
 
