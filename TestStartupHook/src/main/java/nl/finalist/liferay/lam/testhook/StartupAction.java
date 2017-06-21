@@ -13,7 +13,7 @@ import com.liferay.portal.kernel.events.LifecycleEvent;
 import com.liferay.portal.kernel.model.RoleConstants;
 import com.liferay.portal.kernel.model.User;
 
-import nl.finalist.liferay.lam.api.CustomFieldsInterface;
+import nl.finalist.liferay.lam.api.CustomFields;
 import nl.finalist.liferay.lam.api.PortalValuesInterface;
 
 /**
@@ -27,7 +27,7 @@ import nl.finalist.liferay.lam.api.PortalValuesInterface;
 		service = LifecycleAction.class)
 public class StartupAction implements LifecycleAction {
 	@Reference
-	private CustomFieldsInterface customFields;
+	private CustomFields customFields;
 	
 	@Reference
 	private PortalValuesInterface portalValues;

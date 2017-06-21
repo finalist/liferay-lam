@@ -49,12 +49,12 @@ public class CustomFieldsTest {
     private Role mockGuestRole;
     
     @InjectMocks
-    private CustomFields customFields;
+    private CustomFieldsImpl customFields;
     
 
     @Before
     public void setUp() throws PortalException {
-        customFields = new CustomFields();
+        customFields = new CustomFieldsImpl();
         initMocks(this);
     }
 
