@@ -4,35 +4,27 @@ import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 
-import com.liferay.portal.kernel.configuration.Configuration;
-import com.liferay.portal.kernel.configuration.ConfigurationFactoryUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.PortalClassLoaderUtil;
 import com.liferay.portal.kernel.util.PropsUtil;
 
 
 /**
- * This class Accepts a Map of PropertyValues and validates it against 
- * the portal-ext property values and returns a true or false.  
- *  
+ * Validate portal properties  
  */
-
-
-@Component(immediate = true, service=PortalPropertiesInterface.class)
-public class PortalPropertiesImpl implements PortalPropertiesInterface {
+@Component(immediate = true, service=PortalProperties.class)
+public class PortalPropertiesImpl implements PortalProperties {
 	private static final Log LOG = LogFactoryUtil.getLog(PortalPropertiesImpl.class);
 	
 	/**
-     * Validating the User PropertyValues
+     * Validate properties in configuration against portal properties
      * 
-     * @param propertyValues map that the validation takes with portal-ext.property values
-     * @return boolean that satisfying the validation between user map and portal-ext.property values.
+     * @param propertyValues map with expected portal-ext.properties values
+     * @return boolean indicates whether all configured properties were as expected
      * 
      */
 	public boolean checkingPortalProperties(Map<String, String> propertyValues) {
-		LOG.info(String.format("Start the comparing the portal property values"));
-		
+		LOG.info(String.format("Start comparing the portal property values"));
 		
 		int count = 0;
 		String[] keys = propertyValues.keySet().stream().toArray(String[]::new);
@@ -40,36 +32,30 @@ public class PortalPropertiesImpl implements PortalPropertiesInterface {
 		
 		
 		for (String key : keys) {
-			LOG.info(String.format("Property in the User config is %s", key));
 			if ( PropsUtil.get(key) != null  && propertyValues.get(key) != null
 					&& PropsUtil.get(key).equals(propertyValues.get(key))) {
-				LOG.info("Property in the User config Map and the Portal-ext.properties are the same");
+				LOG.info(String.format("Property %s has expected value", key));
 			} else {
 				if (PropsUtil.get(key) == null) {
-					LOG.info("The property of the User config file doesn't exist in the portal-ext.properties");
+					LOG.info(String.format("Property %s doesn't exist in portal-ext.properties", key));
 					count++;
 				} else if (propertyValues.get(key) == null) {
-					LOG.info("The property of portal-ext.properties doesn't exist in the User config file");
+					LOG.info(String.format("Property %s was expected not to have a value? Check your configuration", key));
 					count++;
 				} else {
-					LOG.info(String.format("%s is this value for %s but should be %s", propertyValues.get(key), key,
+					LOG.info(String.format("Property %s should have value %s but value is %s instead", key, propertyValues.get(key),
 							PropsUtil.get(key)));
 					count++;
 				}
 			}
 		}
+		
 		if(count >0) {
-			LOG.info(String.format("Count of mismatch properties is %d",count));
-			LOG.info("Comparing the portal property values between User config file and portal-ext.property has successfully completed");
+			LOG.info(String.format("Validating the portal properties has completed with %d mismatches", count));
 			return false;
 		} else {
-			LOG.info("No Mismatch recorded");
-			LOG.info("Comparing the portal property values between User config file and portal-ext.property has successfully completed");
+			LOG.info("Validating the portal properties has completed successfuly, there were no mismatches");
 			return true;
 		}
-		
-		
-		
 	}
-
 }
