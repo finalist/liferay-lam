@@ -1,6 +1,7 @@
 package nl.finalist.liferay.lam.api;
 
 import java.util.Map;
+import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -23,27 +24,25 @@ public class PortalPropertiesImpl implements PortalProperties {
      * @return boolean indicates whether all configured properties were as expected
      * 
      */
-	public boolean checkingPortalProperties(Map<String, String> propertyValues) {
-		LOG.info(String.format("Start comparing the portal property values"));
+	public boolean validatePortalProperties(Map<String, String> propertyValues) {
+		LOG.debug(String.format("Start comparing the portal property values"));
 		
 		int count = 0;
-		String[] keys = propertyValues.keySet().stream().toArray(String[]::new);
-		LOG.info(String.format("Number of Properties in the User Config file is %d", keys.length));
-		
+		Set<String> keys = propertyValues.keySet();		
 		
 		for (String key : keys) {
-			if ( PropsUtil.get(key) != null  && propertyValues.get(key) != null
+			if (PropsUtil.get(key) != null && propertyValues.get(key) != null
 					&& PropsUtil.get(key).equals(propertyValues.get(key))) {
-				LOG.info(String.format("Property %s has expected value", key));
+				LOG.debug(String.format("Property %s has expected value", key));
 			} else {
 				if (PropsUtil.get(key) == null) {
-					LOG.info(String.format("Property %s doesn't exist in portal-ext.properties", key));
+					LOG.warn(String.format("Property %s doesn't exist in portal-ext.properties", key));
 					count++;
 				} else if (propertyValues.get(key) == null) {
-					LOG.info(String.format("Property %s was expected not to have a value? Check your configuration", key));
+					LOG.warn(String.format("Property %s was expected not to have a value? Check your configuration", key));
 					count++;
 				} else {
-					LOG.info(String.format("Property %s should have value %s but value is %s instead", key, propertyValues.get(key),
+					LOG.warn(String.format("Property %s should have value %s but value is %s instead", key, propertyValues.get(key),
 							PropsUtil.get(key)));
 					count++;
 				}
@@ -51,10 +50,10 @@ public class PortalPropertiesImpl implements PortalProperties {
 		}
 		
 		if(count >0) {
-			LOG.info(String.format("Validating the portal properties has completed with %d mismatches", count));
+			LOG.warn(String.format("Validating the portal properties has completed with %d mismatches", count));
 			return false;
 		} else {
-			LOG.info("Validating the portal properties has completed successfuly, there were no mismatches");
+			LOG.debug("Validating the portal properties has completed successfuly, there were no mismatches");
 			return true;
 		}
 	}

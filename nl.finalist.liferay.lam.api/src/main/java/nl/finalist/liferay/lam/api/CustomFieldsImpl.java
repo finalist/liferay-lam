@@ -48,19 +48,19 @@ public class CustomFieldsImpl implements CustomFields {
      * @param value default value of the field
      */
     public void addCustomTextField(long companyId, String entityName, String fieldName, String value, String [] roles) {
-        LOG.info(String.format("Start adding custom text field %s for company %d to entity %s with default value %s", fieldName, companyId, entityName, value));
+        LOG.debug(String.format("Start adding custom text field %s for company %d to entity %s with default value %s", fieldName, companyId, entityName, value));
      
         ExpandoTable expandoTable = getOrAddExpandoTable(companyId, entityName, ExpandoTableConstants.DEFAULT_TABLE_NAME);
-        LOG.info("Expando Table ID : " + expandoTable.getTableId());
+        LOG.debug("Expando Table ID : " + expandoTable.getTableId());
      
         ExpandoColumn expandoColumn = getOrAddExpandoTextColumn(companyId, entityName, ExpandoTableConstants.DEFAULT_TABLE_NAME, fieldName, expandoTable);
         saveDefaultValueForColumn(value, expandoColumn);
         for (String role : roles) {
         	addExpandoPermissions(companyId, expandoColumn, role);
 		}
-        LOG.info("Expando Column ID : " + expandoColumn.getColumnId());
+        LOG.debug("Expando Column ID : " + expandoColumn.getColumnId());
      
-        LOG.info("Done adding text custom field");
+        LOG.debug("Done adding text custom field");
     }
 
 	/**
@@ -72,19 +72,19 @@ public class CustomFieldsImpl implements CustomFields {
      * @param value default value of the field
      */
     public void addCustomIntegerField(long companyId, String entityName, String fieldName, String value, String [] roles) {
-        LOG.info(String.format("Start adding custom integer field %s for company %d to entity %s with default value %s", fieldName, companyId, entityName, value));
+        LOG.debug(String.format("Start adding custom integer field %s for company %d to entity %s with default value %s", fieldName, companyId, entityName, value));
      
         ExpandoTable expandoTable = getOrAddExpandoTable(companyId, entityName, ExpandoTableConstants.DEFAULT_TABLE_NAME);
-        LOG.info("Expando Table ID : " + expandoTable.getTableId());
+        LOG.debug("Expando Table ID : " + expandoTable.getTableId());
      
         ExpandoColumn expandoColumn = getOrAddExpandoIntegerColumn(companyId, entityName, ExpandoTableConstants.DEFAULT_TABLE_NAME, fieldName, expandoTable);
         saveDefaultValueForColumn(value, expandoColumn);
         for (String role : roles) {
         	addExpandoPermissions(companyId, expandoColumn, role);
 		}
-        LOG.info("Expando Column ID : " + expandoColumn.getColumnId());
+        LOG.debug("Expando Column ID : " + expandoColumn.getColumnId());
      
-        LOG.info("Done adding integer custom field");
+        LOG.debug("Done adding integer custom field");
     }
      
     /**
@@ -95,7 +95,7 @@ public class CustomFieldsImpl implements CustomFields {
      * @param fieldName name of the field
      */
     public void deleteCustomField(long companyId, String entityName, String fieldName) {
-        LOG.info(String.format("Start deleting custom field %s for company %d of entity %s ", fieldName, companyId, entityName));
+        LOG.debug(String.format("Start deleting custom field %s for company %d of entity %s ", fieldName, companyId, entityName));
      
         try {
     		ExpandoTable expandoTable = tableService.getDefaultTable(companyId, entityName);
@@ -104,17 +104,17 @@ public class CustomFieldsImpl implements CustomFields {
             if (exandoColumn != null) {
                 columnService.deleteExpandoColumn(exandoColumn);
             } else {
-            	LOG.info("No column to delete");
+            	LOG.warn("No column to delete");
             }
             
     		tableService.deleteExpandoTable(expandoTable);
     	} catch (NoSuchTableException e) {
-    		LOG.info("No table to delete");
+    		LOG.warn("No table to delete");
     	} catch (PortalException e) {
 			LOG.error(e);
 		} 
      
-        LOG.info("Done deleting custom field");
+        LOG.debug("Done deleting custom field");
     }
      
     
@@ -123,7 +123,7 @@ public class CustomFieldsImpl implements CustomFields {
         try {
             expandoTable = tableService.getDefaultTable(companyId, className);
         } catch (NoSuchTableException e) {
-        	LOG.info("The table did not yet exist");
+        	LOG.warn("The table did not yet exist");
             try {
                 expandoTable = tableService.addTable(companyId, className, tableName);
             } catch (Exception e1) {
@@ -169,7 +169,7 @@ public class CustomFieldsImpl implements CustomFields {
     private void addExpandoPermissions(long companyId, ExpandoColumn column, String role) {
         try {
             Role guestUserRole = roleService.getRole(companyId, role);
-            LOG.info("Guest role fetched");
+            LOG.debug("Guest role fetched");
             if (guestUserRole != null) {
                   // define actions 
                   String[] actionIds = new String[] { ActionKeys.VIEW, ActionKeys.UPDATE };
@@ -177,9 +177,10 @@ public class CustomFieldsImpl implements CustomFields {
                   resourcePermissionService.setResourcePermissions(companyId, 
                     ExpandoColumn.class.getName(), ResourceConstants.SCOPE_INDIVIDUAL, 
                     String.valueOf(column.getColumnId()), guestUserRole.getRoleId(), actionIds);
-                  LOG.info("permissions set");
+                  LOG.debug("permissions set");
               }
         } catch (PortalException pe) {
+        	LOG.error(pe);
         }
     }
 }

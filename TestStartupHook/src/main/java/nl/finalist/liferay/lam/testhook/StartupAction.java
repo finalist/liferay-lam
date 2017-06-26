@@ -40,7 +40,7 @@ public class StartupAction implements LifecycleAction {
 		System.out.println("Checking portal-ext.properties");
 		
 		try {
-			portalValues.checkingPortalProperties(newProperties());
+			portalValues.validatePortalProperties(newProperties());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -48,12 +48,12 @@ public class StartupAction implements LifecycleAction {
 	
 	private Map<String, String> newProperties() {
 		Map<String, String> propertyValues = new HashMap<String,String>();
-		propertyValues.put(	"admin.email.from.address","test@liferay.com");
-		propertyValues.put(	"admin.email.from.name","Test Test");
-		propertyValues.put(	"company.default.name","shlUpgrade");
-		propertyValues.put(	"default.admin.first.name","Test");
-		propertyValues.put(	"default.admin.last.name","Test");
-		propertyValues.put(	"jdbc.default.driverClassName","com.mysql.jdbc.Driver");
+		propertyValues.put("admin.email.from.address","test@liferay.com");
+		propertyValues.put("admin.email.from.name","Test Test");
+		propertyValues.put("company.default.name","shlUpgrade");
+		propertyValues.put("default.admin.first.name","Test");
+		propertyValues.put("default.admin.last.name","Test");
+		propertyValues.put("jdbc.default.driverClassName","com.mysql.jdbc.Driver");
 		return propertyValues;
 	}
 }

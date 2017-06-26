@@ -47,10 +47,10 @@ public class CustomFieldsTest {
     private ExpandoColumn mockColumn;
     @Mock
     private Role mockGuestRole;
-    
+
     @InjectMocks
     private CustomFieldsImpl customFields;
-    
+
 
     @Before
     public void setUp() throws PortalException {
@@ -66,21 +66,21 @@ public class CustomFieldsTest {
         when(columnService.getColumn(COMPANY_ID, ENTITY_NAME, ExpandoTableConstants.DEFAULT_TABLE_NAME, FIELD_NAME)).thenReturn(null);
         when(columnService.addColumn(1L, FIELD_NAME, ExpandoColumnConstants.STRING, StringPool.BLANK)).thenReturn(mockColumn);
         when(roleService.getRole(COMPANY_ID, RoleConstants.GUEST)).thenReturn(mockGuestRole);
-    	
+
         customFields.addCustomTextField(COMPANY_ID, ENTITY_NAME, FIELD_NAME, "default", new String[]{RoleConstants.GUEST});
-        
+
         verify(tableService).getDefaultTable(COMPANY_ID, ENTITY_NAME);
         verify(tableService).addTable(COMPANY_ID, ENTITY_NAME, ExpandoTableConstants.DEFAULT_TABLE_NAME);
         verify(columnService).getColumn(COMPANY_ID, ENTITY_NAME, ExpandoTableConstants.DEFAULT_TABLE_NAME, FIELD_NAME);
         verify(columnService).addColumn(1L, FIELD_NAME, ExpandoColumnConstants.STRING, StringPool.BLANK);
         verify(columnService).updateExpandoColumn(mockColumn);
         verify(roleService).getRole(COMPANY_ID, RoleConstants.GUEST);
-        verify(resourcePermissionService).setResourcePermissions(COMPANY_ID, 
-            ExpandoColumn.class.getName(), ResourceConstants.SCOPE_INDIVIDUAL, 
-            String.valueOf(mockColumn.getColumnId()), mockGuestRole.getRoleId(), 
+        verify(resourcePermissionService).setResourcePermissions(COMPANY_ID,
+            ExpandoColumn.class.getName(), ResourceConstants.SCOPE_INDIVIDUAL,
+            String.valueOf(mockColumn.getColumnId()), mockGuestRole.getRoleId(),
             new String[]{ ActionKeys.VIEW, ActionKeys.UPDATE });
     }
-    
+
     @Test
     public void testAddCustomIntegerField() throws PortalException {
         when(tableService.getDefaultTable(COMPANY_ID, ENTITY_NAME)).thenThrow(new NoSuchTableException());
@@ -91,26 +91,26 @@ public class CustomFieldsTest {
         when(roleService.getRole(COMPANY_ID, RoleConstants.GUEST)).thenReturn(mockGuestRole);
 
         customFields.addCustomIntegerField(COMPANY_ID, ENTITY_NAME, FIELD_NAME, "default", new String[]{RoleConstants.GUEST});
-        
+
         verify(tableService).getDefaultTable(COMPANY_ID, ENTITY_NAME);
         verify(tableService).addTable(COMPANY_ID, ENTITY_NAME, ExpandoTableConstants.DEFAULT_TABLE_NAME);
         verify(columnService).getColumn(COMPANY_ID, ENTITY_NAME, ExpandoTableConstants.DEFAULT_TABLE_NAME, FIELD_NAME);
         verify(columnService).addColumn(1L, FIELD_NAME, ExpandoColumnConstants.INTEGER, StringPool.BLANK);
         verify(columnService).updateExpandoColumn(mockColumn);
         verify(roleService).getRole(COMPANY_ID, RoleConstants.GUEST);
-        verify(resourcePermissionService).setResourcePermissions(COMPANY_ID, 
-            ExpandoColumn.class.getName(), ResourceConstants.SCOPE_INDIVIDUAL, 
-            String.valueOf(mockColumn.getColumnId()), mockGuestRole.getRoleId(), 
+        verify(resourcePermissionService).setResourcePermissions(COMPANY_ID,
+            ExpandoColumn.class.getName(), ResourceConstants.SCOPE_INDIVIDUAL,
+            String.valueOf(mockColumn.getColumnId()), mockGuestRole.getRoleId(),
             new String[]{ ActionKeys.VIEW, ActionKeys.UPDATE });
     }
-    
+
     @Test
     public void testDeleteCustomField() throws PortalException {
     	when(tableService.getDefaultTable(COMPANY_ID, ENTITY_NAME)).thenReturn(mockTable);
     	when(columnService.getColumn(COMPANY_ID, ENTITY_NAME, ExpandoTableConstants.DEFAULT_TABLE_NAME, FIELD_NAME)).thenReturn(mockColumn);
-    	
+
         customFields.deleteCustomField(COMPANY_ID, ENTITY_NAME, FIELD_NAME);
-        
+
         verify(tableService).getDefaultTable(COMPANY_ID, ENTITY_NAME);
         verify(columnService).getColumn(COMPANY_ID, ENTITY_NAME, ExpandoTableConstants.DEFAULT_TABLE_NAME, FIELD_NAME);
         verify(columnService).deleteExpandoColumn(mockColumn);
