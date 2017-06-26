@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -37,7 +36,7 @@ public class PortalPropertiesImplTest {
 		
 		PowerMockito.when(PropsUtil.get("admin.email.from.address")).thenReturn("test@liferay.com");
 		PowerMockito.when(PropsUtil.get("admin.email.from.name")).thenReturn("Test Test");
-		boolean c = portalPropertiesImplementation.checkingPortalProperties(configProperties());
+		boolean c = portalPropertiesImplementation.validatePortalProperties(configProperties());
 		Assert.assertTrue(c);
 	}
 	
@@ -55,7 +54,7 @@ public class PortalPropertiesImplTest {
 		PowerMockito.when(PropsUtil.get("default.admin.first.name")).thenReturn("Test");
 		PowerMockito.when(PropsUtil.get("default.admin.last.name")).thenReturn("Test");
 		PowerMockito.when(PropsUtil.get("jdbc.default.password")).thenReturn("test");
-		boolean c = portalPropertiesImplementation.checkingPortalProperties(configProperties());
+		boolean c = portalPropertiesImplementation.validatePortalProperties(configProperties());
 		Assert.assertTrue(c);
 	}
 
@@ -67,7 +66,7 @@ public class PortalPropertiesImplTest {
 		PowerMockito.mockStatic(PropsUtil.class);
 		PowerMockito.when(PropsUtil.get("admin.email.from.address")).thenReturn("test@liferay.nl");
 		PowerMockito.when(PropsUtil.get("admin.email.from.name")).thenReturn("Test Test");
-		boolean c = portalPropertiesImplementation.checkingPortalProperties(configProperties());
+		boolean c = portalPropertiesImplementation.validatePortalProperties(configProperties());
 		Assert.assertFalse(c);
 	}
 	
@@ -78,7 +77,7 @@ public class PortalPropertiesImplTest {
 	public void testPortalExtPropertiesDoesNotExist() throws IOException {
 		PowerMockito.mockStatic(PropsUtil.class);
 		PowerMockito.when(PropsUtil.get("admin.email.from.address")).thenReturn("test@liferay.com");
-		boolean c = portalPropertiesImplementation.checkingPortalProperties(configProperties());
+		boolean c = portalPropertiesImplementation.validatePortalProperties(configProperties());
 		Assert.assertFalse(c);
 	}
 	
@@ -90,7 +89,7 @@ public class PortalPropertiesImplTest {
 	public void testPortalExtPropertiesDoesnotExistInUserConfig() throws IOException {
 		PowerMockito.mockStatic(PropsUtil.class);
 		PowerMockito.when(PropsUtil.get("include-and-override")).thenReturn("xxxxx");
-		boolean c = portalPropertiesImplementation.checkingPortalProperties(configPropertiesFalse());
+		boolean c = portalPropertiesImplementation.validatePortalProperties(configPropertiesFalse());
 		Assert.assertFalse(c);
 	}
 
