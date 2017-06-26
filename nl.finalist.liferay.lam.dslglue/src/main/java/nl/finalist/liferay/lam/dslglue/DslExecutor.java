@@ -8,18 +8,18 @@ import org.osgi.service.component.annotations.Reference;
 
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
-import nl.finalist.liferay.lam.api.TheCustom;
+import nl.finalist.liferay.lam.api.CustomFields;
 
 /**
  * Executor that evaluates configured scripts using a context containing all available APIs.
  */
-@Component(immediate = true)
+@Component(immediate = true, service=Executor.class)
 public class DslExecutor implements Executor {
 
 	private static final Log LOG = LogFactoryUtil.getLog(DslExecutor.class);
 
 	@Reference
-	private TheCustom customFields;
+	private CustomFields customFields;
 
 	@Activate
 	public void activate() {
@@ -45,11 +45,5 @@ public class DslExecutor implements Executor {
 
 		// Access CustomFields class instance from within script:  (PoC, to be removed)
 		shell.evaluate("println 'customFields is: ' + customFields");
-
-		// Actually create a custom field (PoC, to be removed)
-		shell.evaluate("customFields.createCustomField()");
-
-		//  (PoC, to be removed)
-		customFields.createCustomField();
 	}
 }
