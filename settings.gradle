@@ -1,2 +1,4 @@
 include 'nl.finalist.liferay.lam.api'
 include 'TestStartupHook'
+include 'nl.finalist.liferay.lam.dslglue'
+include 'nl.finalist.liferay.lam.sampleproject-config'
