@@ -1,0 +1,18 @@
+Bundle-Name: nl.finalist.liferay.lam.dslglue
+Bundle-SymbolicName: nl.finalist.liferay.lam.dslglue
+Bundle-Version: 1.0.0
+Export-Package: nl.finalist.liferay.lam.dslglue
+Include-Resource: \
+ @groovy-*.jar,\
+ @jansi-*.jar
+Import-Package: \
+ !com.thoughtworks.qdox.*,\
+ !groovyjarjarasm.asm.tree.analysis.*,\
+ !jline.*,\
+ !junit.*,\
+ !org.junit.*,\
+ !org.apache.bsf.*,\
+ !org.apache.commons.cli.*,\
+ !org.apache.ivy.*,\
+ *
+ 
