@@ -34,6 +34,7 @@ public class DslExecutor implements Executor {
 		
 		// Add all available API classes to the context of the scripts 
 		sharedData.setVariable("customFields", customFields);
+		sharedData.setVariable("LOG", LOG);
 		GroovyShell shell = new GroovyShell(sharedData);
 
 
@@ -42,6 +43,7 @@ public class DslExecutor implements Executor {
 
 		// Evaluate an actual Groovy script (PoC, to be removed)
 		shell.evaluate("int foo=123; println 'from within groovy script: foo has value: ' + foo");
+		shell.evaluate("LOG.debug 'debug message from within groovy script'");
 
 		// Access CustomFields class instance from within script:  (PoC, to be removed)
 		shell.evaluate("println 'customFields is: ' + customFields");
