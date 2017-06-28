@@ -8,5 +8,5 @@ public interface Executor {
     /**
      * Run the scripts
      */
-	void runScripts();
+	void runScripts(String... scripts);
 }
