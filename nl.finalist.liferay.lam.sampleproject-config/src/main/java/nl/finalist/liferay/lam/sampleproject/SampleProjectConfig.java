@@ -19,6 +19,6 @@ public class SampleProjectConfig  {
 	@Activate
 	public void activate() {
 		LOG.info("Running project-specific configuration with @Activate");
-		executor.runScripts("script1.groovyx");
+		executor.runScripts("script1.groovy");
 	}
 }

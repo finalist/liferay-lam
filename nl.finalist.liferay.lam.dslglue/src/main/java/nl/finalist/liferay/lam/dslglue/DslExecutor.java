@@ -46,8 +46,7 @@ public class DslExecutor implements Executor {
         ImportCustomizer imports = new ImportCustomizer();
 
         // Make these imports available to the scripts
-        // Work in progres...
-//        imports.addStaticImport("nl.finalist.liferay.lam.dslglue.Entrypoint", "with");
+        imports.addStaticImport("nl.finalist.liferay.lam.dslglue.Entrypoint", "with");
 
         conf.addCompilationCustomizers(imports);
 
@@ -64,8 +63,4 @@ public class DslExecutor implements Executor {
             }
         }
 	}
-
-    public void setCustomFields(CustomFields customFields) {
-        this.customFields = customFields;
-    }
 }
