@@ -8,5 +8,6 @@ TestStartupHook/gradlew
 TestStartupHook/gradlew.bat
 TestStartupHook/bin/
 TestStartupHook/gradle/
+build
 
 .metadata
