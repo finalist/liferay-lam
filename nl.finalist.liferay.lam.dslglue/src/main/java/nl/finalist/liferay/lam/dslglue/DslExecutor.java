@@ -1,14 +1,19 @@
 package nl.finalist.liferay.lam.dslglue;
 
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import java.io.FileReader;
+import java.io.File;
 import java.io.IOException;
+import java.io.Reader;
+
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.RoleConstants;
+import com.liferay.portal.kernel.model.User;
 
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
@@ -31,7 +36,7 @@ public class DslExecutor implements Executor {
 	}
 
 	@Override
-	public void runScripts(String... scripts) {
+	public void runScripts(Reader... scripts) {
 		LOG.debug("DSL Executor running the available scripts");
 
 		Binding sharedData = new Binding();
@@ -40,6 +45,9 @@ public class DslExecutor implements Executor {
 		// Add all available API classes to the context of the scripts 
 		sharedData.setVariable("customFields", customFields);
 		sharedData.setVariable("LOG", LOG);
+		sharedData.setVariable("userClassName", User.class.getName());
+		sharedData.setVariable("guestRole", RoleConstants.GUEST);
+		
 
 
         CompilerConfiguration conf = new CompilerConfiguration();
@@ -55,12 +63,8 @@ public class DslExecutor implements Executor {
 
         GroovyShell shell = new GroovyShell(classLoader, sharedData, conf);
 
-        for (String scriptFilename : scripts) {
-            try {
-                shell.evaluate(new FileReader(classLoader.getResource(scriptFilename).getFile()));
-            } catch (IOException e) {
-                LOG.warn("While trying to run script: " + scriptFilename, e);
-            }
+        for (Reader script : scripts) {
+            shell.evaluate(script);
         }
 	}
 }

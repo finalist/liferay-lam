@@ -10,6 +10,10 @@ import nl.finalist.liferay.lam.api.CustomFields;
 
 import static org.mockito.Mockito.verify;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+
 public class DslExecutorTest {
 
     @Mock
@@ -26,8 +30,11 @@ public class DslExecutorTest {
     }
 
     @Test
-    public void testRun() {
-        dslExecutor.runScripts("test.groovy");
-        verify(customFields).deleteCustomField(0, "", "");
+    public void testRun() throws FileNotFoundException {
+        ClassLoader classLoader = this.getClass().getClassLoader();
+        FileReader file = new FileReader(classLoader.getResource("test.groovy").getFile());
+
+        dslExecutor.runScripts(file);
+//        verify(customFields).deleteCustomField(0, "", "");
     }
 }

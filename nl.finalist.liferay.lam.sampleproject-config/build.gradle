@@ -25,6 +25,7 @@ dependencies {
     testCompile "com.liferay.portal:com.liferay.portal.kernel:2.15.0"
     
 	compile project(":nl.finalist.liferay.lam.dslglue")
+	compile project(":nl.finalist.liferay.lam.api")
 }
 
 repositories {
