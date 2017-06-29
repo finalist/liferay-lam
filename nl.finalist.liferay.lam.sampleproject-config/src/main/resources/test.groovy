@@ -1,10 +1,5 @@
-import nl.finalist.liferay.lam.api.CustomFields;
+CustomField customField = new CustomField(customFields: customFields)
 
-CustomFields.metaClass.addCustomTextField << { Map args ->
-	customFields.addCustomTextField(args.companyId, args.entity, args.fieldName, args.defaultValue, args.roles)
-}
+customField.add(type: "text", companyId: 20116L, entity:(Entities.user), fieldName: "test3", defaultValue: "default", roles: [(Roles.guest)] as String[]);
 
-customFields.addCustomTextField(20116L, (userClassName), "test3", "default", [(guestRole)] as String[]);
-customFields.addCustomTextField(companyId:20116L, entity: (userClassName), fieldName: "testMeta", defaultValue: "default", roles: [(guestRole)] as String[])
-
-println('we got there')
+println('all done')

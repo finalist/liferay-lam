@@ -1,7 +1,5 @@
 package nl.finalist.liferay.lam.dslglue;
 
-import java.io.File;
-import java.io.IOException;
 import java.io.Reader;
 
 import org.codehaus.groovy.control.CompilerConfiguration;
@@ -12,8 +10,6 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.RoleConstants;
-import com.liferay.portal.kernel.model.User;
 
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
@@ -45,16 +41,15 @@ public class DslExecutor implements Executor {
 		// Add all available API classes to the context of the scripts 
 		sharedData.setVariable("customFields", customFields);
 		sharedData.setVariable("LOG", LOG);
-		sharedData.setVariable("userClassName", User.class.getName());
-		sharedData.setVariable("guestRole", RoleConstants.GUEST);
-		
-
 
         CompilerConfiguration conf = new CompilerConfiguration();
         ImportCustomizer imports = new ImportCustomizer();
 
         // Make these imports available to the scripts
         imports.addStaticImport("nl.finalist.liferay.lam.dslglue.Entrypoint", "with");
+        imports.addImport("Roles", "nl.finalist.liferay.lam.dslglue.Roles");
+        imports.addImport("Entities", "nl.finalist.liferay.lam.dslglue.Entities");
+        imports.addImport("CustomField", "nl.finalist.liferay.lam.dslglue.CustomField");
 
         conf.addCompilationCustomizers(imports);
 

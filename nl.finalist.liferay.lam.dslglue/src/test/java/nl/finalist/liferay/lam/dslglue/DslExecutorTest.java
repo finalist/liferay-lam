@@ -1,5 +1,8 @@
 package nl.finalist.liferay.lam.dslglue;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -7,12 +10,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import nl.finalist.liferay.lam.api.CustomFields;
-
-import static org.mockito.Mockito.verify;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 
 public class DslExecutorTest {
 
@@ -32,9 +29,9 @@ public class DslExecutorTest {
     @Test
     public void testRun() throws FileNotFoundException {
         ClassLoader classLoader = this.getClass().getClassLoader();
-        FileReader file = new FileReader(classLoader.getResource("test.groovy").getFile());
+        FileReader fileReader = new FileReader(classLoader.getResource("test.groovy").getFile());
 
-        dslExecutor.runScripts(file);
+        dslExecutor.runScripts(fileReader);
 //        verify(customFields).deleteCustomField(0, "", "");
     }
 }
