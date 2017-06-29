@@ -13,7 +13,7 @@ public interface PortalSettings {
 
 	public void setDefaultLogoutPage(String defaultLogoutPage);
 
-	public void setTermsOfUseRequired(boolean termsOfUserequired);
+	public void setTermsOfUseRequired(boolean termsOfUseRequired);
 
 	public void setEmailNotificationName(String emailNotificationName);
 

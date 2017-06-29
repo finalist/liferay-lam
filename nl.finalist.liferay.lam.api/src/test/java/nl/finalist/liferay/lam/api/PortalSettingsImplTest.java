@@ -171,14 +171,14 @@ public class PortalSettingsImplTest {
 
 	@Test
 	public void testSetAvailableLanguages() throws Exception {
-		String[] testAvailableLanguages = { "TST_tst", "AB_ab" };
+		String[] testAvailableLanguages = { "tst_TST", "abc_ABC" };
 		when(companyService.getCompanyByWebId("liferay.com")).thenReturn(mockCompany);
 		when(mockCompany.getCompanyId()).thenReturn(1L);
 		whenNew(UnicodeProperties.class).withNoArguments().thenReturn(mockProperties);
 
 		portalSettingsImplementation.setAvailableLanguages(testAvailableLanguages);
 
-		verify(mockProperties).setProperty("locales", "TST_tst,AB_ab");
+		verify(mockProperties).setProperty("locales", "tst_TST,abc_ABC");
 		verify(companyService).updatePreferences(1L, mockProperties);
 	}
 
@@ -187,17 +187,17 @@ public class PortalSettingsImplTest {
 		String testTimezoneId = "TST";
 		when(mockCompany.getCompanyId()).thenReturn(1L);
 		when(companyService.getCompanyByWebId("liferay.com")).thenReturn(mockCompany);
-		when(mockDefaultUser.getLanguageId()).thenReturn("TST_tst");
+		when(mockDefaultUser.getLanguageId()).thenReturn("tst_TST");
 		when(userService.getDefaultUser(1L)).thenReturn(mockDefaultUser);
 
 		portalSettingsImplementation.setTimeZone(testTimezoneId);
 
-		verify(companyService).updateDisplay(1L, "TST_tst", testTimezoneId);
+		verify(companyService).updateDisplay(1L, "tst_TST", testTimezoneId);
 	}
 
 	@Test
 	public void testSetDefaultLanguage() throws PortalException {
-		String testLanguageId = "TST_tst";
+		String testLanguageId = "tst_TST";
 		when(mockCompany.getCompanyId()).thenReturn(1L);
 		when(mockCompany.getTimeZone()).thenReturn(mockTimezone);
 		when(mockTimezone.getID()).thenReturn("TST");
