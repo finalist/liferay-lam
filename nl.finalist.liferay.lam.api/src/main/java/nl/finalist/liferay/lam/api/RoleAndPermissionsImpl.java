@@ -4,13 +4,15 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
-import com.liferay.portal.kernel.service.ResourcePermissionLocalServiceUtil;
-import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 
 /**
  * Add the Role and the respective Permissions to the role.
@@ -18,6 +20,10 @@ import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 @Component(immediate = true, service = RoleAndPermissions.class)
 public class RoleAndPermissionsImpl implements RoleAndPermissions {
 	private static final Log LOG = LogFactoryUtil.getLog(RoleAndPermissionsImpl.class);
+	@Reference
+	private RoleLocalService roleLocalService;
+	@Reference
+	private ResourcePermissionLocalService resourcePermissionLocalService;
 
 	/**
 	 * Add a custom Role.
@@ -45,7 +51,7 @@ public class RoleAndPermissionsImpl implements RoleAndPermissions {
 			String entityName) {
 		LOG.info(String.format("Adding the Role with %s with userId= %d", roleName, userId));
 		try {
-			Role role = RoleLocalServiceUtil.addRole(userId, null, 0L, roleName, titles, descriptions,
+			Role role = roleLocalService.addRole(userId, null, 0L, roleName, titles, descriptions,
 					typeOfRole.getValue(), null, null);
 			LOG.info(String.format("Added the role", role.getCreateDate()));
 			LOG.info("Strting to set the permission");
@@ -73,20 +79,17 @@ public class RoleAndPermissionsImpl implements RoleAndPermissions {
 	 *            permission which should be added to the role.
 	 * @param entityName
 	 *            entity for which permissions should be added.
+	 * @throws PortalException
 	 */
-	private boolean addPermissions(Long roleId, Long companyId, String actionId, String entityName) {
-		try {
-			LOG.info(String.format("Starting to add the permision %s to entity %s", actionId, entityName));
+	private void addPermissions(Long roleId, Long companyId, String actionId, String entityName)
+			throws PortalException {
 
-			ResourcePermissionLocalServiceUtil.addResourcePermission(companyId, entityName,
-					ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId), roleId, actionId);
+		LOG.info(String.format("Starting to add the permision %s to entity %s", actionId, entityName));
 
-			LOG.info(String.format("Added the permision %s to entity %s", actionId, entityName));
-			return true;
-		} catch (PortalException e) {
-			LOG.info(String.format("Adding permission %s to entity %s was not successful", actionId, entityName));
-			return false;
-		}
+		resourcePermissionLocalService.addResourcePermission(companyId, entityName, ResourceConstants.SCOPE_COMPANY,
+				String.valueOf(companyId), roleId, actionId);
+
+		LOG.info(String.format("Added the permision %s to entity %s", actionId, entityName));
 	}
 
 }
