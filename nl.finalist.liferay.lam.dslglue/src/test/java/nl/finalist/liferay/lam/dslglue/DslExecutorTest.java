@@ -8,8 +8,6 @@ import org.mockito.MockitoAnnotations;
 
 import nl.finalist.liferay.lam.api.CustomFields;
 
-import static org.mockito.Mockito.verify;
-
 public class DslExecutorTest {
 
     @Mock
@@ -26,8 +24,7 @@ public class DslExecutorTest {
     }
 
     @Test
-    public void testRun() {
-        dslExecutor.runScripts("test.groovy");
-        verify(customFields).deleteCustomField(0, "", "");
+    public void testCustomFields() {
+        dslExecutor.runScripts("customFields.groovy");
     }
 }

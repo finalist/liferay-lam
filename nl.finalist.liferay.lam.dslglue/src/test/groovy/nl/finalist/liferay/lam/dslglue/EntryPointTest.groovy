@@ -32,8 +32,6 @@ class EntryPointTest {
         ImportCustomizer imports = new ImportCustomizer();
         conf.addCompilationCustomizers(imports);
 
-        // Use the classloader of this class
-
         imports.addStaticImport("nl.finalist.liferay.lam.dslglue.Entrypoint", "with");
         GroovyShell shell = new GroovyShell(sharedData, conf);
         shell.evaluate("""

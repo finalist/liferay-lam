@@ -38,8 +38,7 @@ public class DslExecutor implements Executor {
 
 
 		// Add all available API classes to the context of the scripts 
-		sharedData.setVariable("customFields", customFields);
-		sharedData.setVariable("LOG", LOG);
+        sharedData.setVariable("LOG", LOG);
 
 
         CompilerConfiguration conf = new CompilerConfiguration();
@@ -47,6 +46,11 @@ public class DslExecutor implements Executor {
 
         // Make these imports available to the scripts
         imports.addStaticImport("nl.finalist.liferay.lam.dslglue.Entrypoint", "with");
+        imports.addStaticImport("nl.finalist.liferay.lam.dslglue.Entrypoint", "customFields");
+
+        // TODO: niet houdbaar, dat elke operation hier ge-import moet worden
+        imports.addStaticImport("nl.finalist.liferay.lam.dslglue.Entrypoint.CustomFieldsOperation", "create");
+        imports.addStaticImport("nl.finalist.liferay.lam.dslglue.Entrypoint.CustomFieldsOperation", "update");
 
         conf.addCompilationCustomizers(imports);
 
