@@ -18,13 +18,4 @@ class Entrypoint {
         closure();
 
     }
-
-
-    static def customField(CustomFieldsOperation op) {
-        [
-            with: {
-                Map fields -> println "Here we actually do the operation ${op}, with fields: " + fields
-            }
-        ]
-    }
 }
