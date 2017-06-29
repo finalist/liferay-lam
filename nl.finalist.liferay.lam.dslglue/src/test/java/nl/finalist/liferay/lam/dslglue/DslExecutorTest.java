@@ -29,9 +29,8 @@ public class DslExecutorTest {
     @Test
     public void testRun() throws FileNotFoundException {
         ClassLoader classLoader = this.getClass().getClassLoader();
-        FileReader fileReader = new FileReader(classLoader.getResource("test.groovy").getFile());
+        FileReader fileReader = new FileReader(classLoader.getResource("customFields.groovy").getFile());
 
         dslExecutor.runScripts(fileReader);
-//        verify(customFields).deleteCustomField(0, "", "");
     }
 }
