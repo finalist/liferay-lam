@@ -40,7 +40,6 @@ public class SampleProjectConfig  {
 			} catch (IOException e) {
 				LOG.error(e);
 			}
-	        
 	    }
 	}
 }

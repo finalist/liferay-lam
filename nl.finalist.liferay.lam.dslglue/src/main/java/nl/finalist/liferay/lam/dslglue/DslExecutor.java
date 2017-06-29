@@ -48,8 +48,12 @@ public class DslExecutor implements Executor {
         // Make these imports available to the scripts
         imports.addImport("Roles", "nl.finalist.liferay.lam.dslglue.Roles");
         imports.addImport("Entities", "nl.finalist.liferay.lam.dslglue.Entities");
-        imports.addImport("customFields", "nl.finalist.liferay.lam.dslglue.CustomField");
+        imports.addImport("CustomFieldsOperation", "nl.finalist.liferay.lam.dslglue.CustomFieldsOperation");
+        imports.addImport("CustomField", "nl.finalist.liferay.lam.dslglue.CustomField");
+//        imports.addStaticImport("nl.finalist.liferay.lam.dslglue.Entrypoint", "customField");
+//        imports.addStaticImport("nl.finalist.liferay.lam.dslglue.Entrypoint", "with");
 
+        
         conf.addCompilationCustomizers(imports);
 
         // Use the classloader of this class
