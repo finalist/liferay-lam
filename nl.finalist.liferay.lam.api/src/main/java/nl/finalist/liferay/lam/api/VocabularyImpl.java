@@ -5,6 +5,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 import com.liferay.asset.kernel.model.AssetVocabulary;
@@ -23,6 +24,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.PropsUtil;
 
+@Component(immediate = true, service=Vocabulary.class)
 public class VocabularyImpl implements Vocabulary {
 
 	@Reference
@@ -58,7 +60,7 @@ public class VocabularyImpl implements Vocabulary {
 			vocabularyService.addVocabulary(defaultUser.getUserId(), groupId, null, titleMap,
 					new HashMap<Locale, String>(), "", new ServiceContext());
 		} catch (PortalException e) {
-			LOG.error(e);
+			LOG.error(String.format("Error while adding vocabulary %s, error is %s", vocabularyName, e.getMessage()));
 		}
 	}
 	/**
@@ -73,7 +75,7 @@ public class VocabularyImpl implements Vocabulary {
 			try {
 				vocabularyService.deleteAssetVocabulary(vocabulary.getVocabularyId());
 			} catch (PortalException e) {
-				LOG.error(e);
+				LOG.error(String.format("Error while deleting vocabulary %s, error is %s", vocabularyName, e.getMessage()));
 			}
 		} else {
 			LOG.debug(String.format("Vocabulary %s with groupId %d does not exist or is not retrievable",
@@ -116,7 +118,7 @@ public class VocabularyImpl implements Vocabulary {
 		try {
 			vocabulary = vocabularyService.getGroupVocabulary(groupId, vocabularyName);
 		} catch (PortalException e) {
-			LOG.error(e);
+			LOG.error(String.format("Error while retrieving vocabulary %s, error is %s", vocabularyName, e.getMessage()));
 		}
 		return vocabulary;
 	}
@@ -127,7 +129,7 @@ public class VocabularyImpl implements Vocabulary {
 			try {
 				defaultCompany = companyService.getCompanyByWebId(webId);
 			} catch (PortalException e) {
-				LOG.error(e);
+				LOG.error(String.format("Error while retrieving default company, error is %s", e.getMessage()));
 			}
 		}
 		return defaultCompany;
@@ -138,7 +140,7 @@ public class VocabularyImpl implements Vocabulary {
 		try {
 			userService.getDefaultUser(defaultCompany.getCompanyId());
 		} catch (PortalException e) {
-			LOG.error(e);
+			LOG.error(String.format("Error while retrieving default user, error is %s", e.getMessage()));
 		}
 		return defaultUser;
 	}
