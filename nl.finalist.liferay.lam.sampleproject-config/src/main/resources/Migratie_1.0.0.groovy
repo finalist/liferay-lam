@@ -7,13 +7,9 @@ create.customField (
 	roles: ['Roles.guest', 'Roles.user']
 )
 
-
-create.portalSetting (
-	name: 'field2',
-	type: 15,
-	value: 'Value2',
-	defaultValue: '0',
-	roles: ['Roles.guest', 'Roles.Owner']
+update.portalSettings(
+	virtualHostName: "blabla",
+	homeUrl: "/homeurl" 
 )
 
 

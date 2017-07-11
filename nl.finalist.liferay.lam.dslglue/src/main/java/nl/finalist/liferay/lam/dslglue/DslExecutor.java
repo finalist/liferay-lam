@@ -14,7 +14,9 @@ import org.osgi.service.component.annotations.Reference;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import nl.finalist.liferay.lam.api.CustomFields;
+import nl.finalist.liferay.lam.api.PortalSettings;
 import nl.finalist.liferay.lam.builder.CreateFactoryBuilder;
+import nl.finalist.liferay.lam.builder.UpdateFactoryBuilder;
 
 /**
  * Executor that evaluates configured scripts using a context containing all available APIs.
@@ -25,8 +27,9 @@ public class DslExecutor implements Executor {
 	private static final Log LOG = LogFactoryUtil.getLog(DslExecutor.class);
 
 	@Reference
-	private CustomFields customFields;
-
+	private CustomFields customFieldsService;
+	@Reference
+	private PortalSettings portalSettingsService;
 	@Activate
 	public void activate() {
 		LOG.debug("Bundle Activate DslExecutor");
@@ -43,8 +46,9 @@ public class DslExecutor implements Executor {
 		// Add all available API classes to the context of the scripts 
 		sharedData.setVariable("LOG", LOG);
 		
-		sharedData.setVariable("create", new CreateFactoryBuilder(customFields));
-
+		sharedData.setVariable("create", new CreateFactoryBuilder(customFieldsService));
+		sharedData.setVariable("update", new UpdateFactoryBuilder(portalSettingsService));
+		
         CompilerConfiguration conf = new CompilerConfiguration();
         ImportCustomizer imports = new ImportCustomizer();
 
