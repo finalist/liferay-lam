@@ -1,15 +1,6 @@
 package nl.finalist.liferay.lam.api;
 
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-
 import com.liferay.expando.kernel.exception.NoSuchTableException;
 import com.liferay.expando.kernel.model.ExpandoColumn;
 import com.liferay.expando.kernel.model.ExpandoColumnConstants;
@@ -26,6 +17,15 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.util.StringPool;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 public class CustomFieldsTest {
 
@@ -81,21 +81,21 @@ public class CustomFieldsTest {
             new String[]{ ActionKeys.VIEW, ActionKeys.UPDATE });
     }
 
-   // @Test
+    @Test
     public void testAddCustomIntegerField() throws PortalException {
         when(tableService.getDefaultTable(COMPANY_ID, ENTITY_NAME)).thenThrow(new NoSuchTableException());
         when(tableService.addTable(COMPANY_ID, ENTITY_NAME, ExpandoTableConstants.DEFAULT_TABLE_NAME)).thenReturn(mockTable);
         when(mockTable.getTableId()).thenReturn(1L);
         when(columnService.getColumn(COMPANY_ID, ENTITY_NAME, ExpandoTableConstants.DEFAULT_TABLE_NAME, FIELD_NAME)).thenReturn(null);
-        when(columnService.addColumn(1L, FIELD_NAME, ExpandoColumnConstants.INTEGER, StringPool.BLANK)).thenReturn(mockColumn);
+        when(columnService.addColumn(1L, FIELD_NAME, ExpandoColumnConstants.INTEGER, 0)).thenReturn(mockColumn);
         when(roleService.getRole(COMPANY_ID, RoleConstants.GUEST)).thenReturn(mockGuestRole);
 
-        customFields.addCustomIntegerField(COMPANY_ID, ENTITY_NAME, FIELD_NAME, "default", new String[]{RoleConstants.GUEST});
+        customFields.addCustomIntegerField(COMPANY_ID, ENTITY_NAME, FIELD_NAME, 1, new String[]{RoleConstants.GUEST});
 
         verify(tableService).getDefaultTable(COMPANY_ID, ENTITY_NAME);
         verify(tableService).addTable(COMPANY_ID, ENTITY_NAME, ExpandoTableConstants.DEFAULT_TABLE_NAME);
         verify(columnService).getColumn(COMPANY_ID, ENTITY_NAME, ExpandoTableConstants.DEFAULT_TABLE_NAME, FIELD_NAME);
-        verify(columnService).addColumn(1L, FIELD_NAME, ExpandoColumnConstants.INTEGER, StringPool.BLANK);
+        verify(columnService).addColumn(1L, FIELD_NAME, ExpandoColumnConstants.INTEGER, 0);
         verify(columnService).updateExpandoColumn(mockColumn);
         verify(roleService).getRole(COMPANY_ID, RoleConstants.GUEST);
         verify(resourcePermissionService).setResourcePermissions(COMPANY_ID,

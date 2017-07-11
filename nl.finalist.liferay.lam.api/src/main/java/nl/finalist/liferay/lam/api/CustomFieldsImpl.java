@@ -1,8 +1,5 @@
 package nl.finalist.liferay.lam.api;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 import com.liferay.expando.kernel.exception.NoSuchTableException;
 import com.liferay.expando.kernel.model.ExpandoColumn;
 import com.liferay.expando.kernel.model.ExpandoColumnConstants;
@@ -19,10 +16,17 @@ import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringPool;
 
 import java.util.Arrays;
 
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+
+/**
+ * Implementation for {@link nl.finalist.liferay.lam.api.CustomFields}
+ */
 @Component(immediate = true, service=CustomFields.class)
 public class CustomFieldsImpl implements CustomFields {
 
@@ -41,22 +45,14 @@ public class CustomFieldsImpl implements CustomFields {
     private static final Log LOG = LogFactoryUtil.getLog(CustomFieldsImpl.class);
      
 
-    /**
-     * Add a custom field of type text. 
-     * 
-     * @param companyId company ID that the field is valid for
-     * @param entityName entity that the field is added to
-     * @param fieldName name of the field
-     * @param value default value of the field
-     */
-    public void addCustomTextField(long companyId, String entityName, String fieldName, String value, String [] roles) {
-        LOG.debug(String.format("Start adding custom text field %s for company %d to entity %s with default value %s and roles %s", fieldName, companyId, entityName, value, Arrays.toString(roles)));
+    public void addCustomTextField(long companyId, String entityName, String fieldName, String defaultValue, String [] roles) {
+        LOG.debug(String.format("Start adding custom text field %s for company %d to entity %s with default value %s and roles %s", fieldName, companyId, entityName, defaultValue, Arrays.toString(roles)));
      
         ExpandoTable expandoTable = getOrAddExpandoTable(companyId, entityName, ExpandoTableConstants.DEFAULT_TABLE_NAME);
         LOG.debug("Expando Table ID : " + expandoTable.getTableId());
      
         ExpandoColumn expandoColumn = getOrAddExpandoTextColumn(companyId, entityName, ExpandoTableConstants.DEFAULT_TABLE_NAME, fieldName, expandoTable);
-        saveDefaultValueForColumn(value, expandoColumn);
+        saveDefaultValueForColumn(defaultValue, expandoColumn);
         for (String role : roles) {
         	addExpandoPermissions(companyId, expandoColumn, role);
 		}
@@ -66,22 +62,20 @@ public class CustomFieldsImpl implements CustomFields {
                 
     }
 
-	/**
-     * Add a custom field of type integer
-     * 
-     * @param companyId company ID that the field is valid for
-     * @param entityName entity that the field is added to
-     * @param fieldName name of the field
-     * @param value default value of the field
-     */
-    public void addCustomIntegerField(long companyId, String entityName, String fieldName, String value, String [] roles) {
-        LOG.debug(String.format("Start adding custom integer field %s for company %d to entity %s with default value %s", fieldName, companyId, entityName, value));
+    @Override
+    public void addCustomTextField(String entityName, String fieldName, String defaultValue, String[] roles) {
+        this.addCustomTextField(PortalUtil.getDefaultCompanyId(), entityName, fieldName, defaultValue, roles);
+    }
+
+    public void addCustomIntegerField(long companyId, String entityName, String fieldName, int defaultValue, String[] roles) {
+        LOG.debug(String.format("Start adding custom integer field %s for company %d to entity %s with default value %s",
+            fieldName, companyId, entityName, defaultValue));
      
         ExpandoTable expandoTable = getOrAddExpandoTable(companyId, entityName, ExpandoTableConstants.DEFAULT_TABLE_NAME);
         LOG.debug("Expando Table ID : " + expandoTable.getTableId());
      
         ExpandoColumn expandoColumn = getOrAddExpandoIntegerColumn(companyId, entityName, ExpandoTableConstants.DEFAULT_TABLE_NAME, fieldName, expandoTable);
-        saveDefaultValueForColumn(value, expandoColumn);
+        saveDefaultValueForColumn(String.valueOf(defaultValue), expandoColumn);
         for (String role : roles) {
         	addExpandoPermissions(companyId, expandoColumn, role);
 		}
@@ -89,14 +83,13 @@ public class CustomFieldsImpl implements CustomFields {
      
         LOG.debug("Done adding integer custom field");
     }
-     
-    /**
-     * Delete a custom field
-     * 
-     * @param companyId company ID that the field is valid for
-     * @param entityName entity to which the field applies
-     * @param fieldName name of the field
-     */
+
+    @Override
+    public void addCustomIntegerField(String entityName, String fieldName, int defaultValue, String[] roles) {
+        this.addCustomIntegerField(PortalUtil.getDefaultCompanyId(), entityName, fieldName, defaultValue, roles);
+    }
+
+    @Override
     public void deleteCustomField(long companyId, String entityName, String fieldName) {
         LOG.debug(String.format("Start deleting custom field %s for company %d of entity %s ", fieldName, companyId, entityName));
      
@@ -172,7 +165,7 @@ public class CustomFieldsImpl implements CustomFields {
     private void addExpandoPermissions(long companyId, ExpandoColumn column, String role) {
         try {
             Role guestUserRole = roleService.getRole(companyId, role);
-            LOG.debug("Guest role fetched");
+            LOG.debug("Guest role fetched: " + guestUserRole);
             if (guestUserRole != null) {
                   // define actions 
                   String[] actionIds = new String[] { ActionKeys.VIEW, ActionKeys.UPDATE };
