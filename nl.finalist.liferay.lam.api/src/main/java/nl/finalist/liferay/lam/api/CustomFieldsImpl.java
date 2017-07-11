@@ -21,6 +21,8 @@ import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.util.StringPool;
 
+import java.util.Arrays;
+
 @Component(immediate = true, service=CustomFields.class)
 public class CustomFieldsImpl implements CustomFields {
 
@@ -38,7 +40,7 @@ public class CustomFieldsImpl implements CustomFields {
 
     private static final Log LOG = LogFactoryUtil.getLog(CustomFieldsImpl.class);
      
-    
+
     /**
      * Add a custom field of type text. 
      * 
@@ -48,7 +50,7 @@ public class CustomFieldsImpl implements CustomFields {
      * @param value default value of the field
      */
     public void addCustomTextField(long companyId, String entityName, String fieldName, String value, String [] roles) {
-        LOG.debug(String.format("Start adding custom text field %s for company %d to entity %s with default value %s", fieldName, companyId, entityName, value));
+        LOG.debug(String.format("Start adding custom text field %s for company %d to entity %s with default value %s and roles %s", fieldName, companyId, entityName, value, Arrays.toString(roles)));
      
         ExpandoTable expandoTable = getOrAddExpandoTable(companyId, entityName, ExpandoTableConstants.DEFAULT_TABLE_NAME);
         LOG.debug("Expando Table ID : " + expandoTable.getTableId());
@@ -61,6 +63,7 @@ public class CustomFieldsImpl implements CustomFields {
         LOG.debug("Expando Column ID : " + expandoColumn.getColumnId());
      
         LOG.debug("Done adding text custom field");
+                
     }
 
 	/**
@@ -157,7 +160,7 @@ public class CustomFieldsImpl implements CustomFields {
             exandoColumn = columnService.getColumn(companyId, className, tableName, columnName);
             if (exandoColumn == null) {
                 exandoColumn = columnService.addColumn(expandoTable.getTableId(), columnName,
-                        columnType, StringPool.BLANK);
+                        columnType, columnType == ExpandoColumnConstants.INTEGER ? Integer.valueOf(0) :  StringPool.BLANK);
             }
         } catch (SystemException | PortalException e) {
             LOG.error(e);
@@ -177,7 +180,7 @@ public class CustomFieldsImpl implements CustomFields {
                   resourcePermissionService.setResourcePermissions(companyId, 
                     ExpandoColumn.class.getName(), ResourceConstants.SCOPE_INDIVIDUAL, 
                     String.valueOf(column.getColumnId()), guestUserRole.getRoleId(), actionIds);
-                  LOG.debug("permissions set");
+                  LOG.debug(role + " permissions set");
               }
         } catch (PortalException pe) {
         	LOG.error(pe);
