@@ -1,4 +1,4 @@
-package nl.finalist.liferay.lam.builder;
+package nl.finalist.liferay.lam.model;
 
 import java.util.Arrays;
 

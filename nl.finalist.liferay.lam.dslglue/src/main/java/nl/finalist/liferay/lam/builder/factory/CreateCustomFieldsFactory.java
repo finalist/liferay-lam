@@ -14,7 +14,7 @@ import org.osgi.service.component.annotations.Reference;
 import groovy.util.AbstractFactory;
 import groovy.util.FactoryBuilderSupport;
 import nl.finalist.liferay.lam.api.CustomFields;
-import nl.finalist.liferay.lam.builder.CustomField;
+import nl.finalist.liferay.lam.model.CustomField;
 
 public class CreateCustomFieldsFactory extends AbstractFactory {
 
