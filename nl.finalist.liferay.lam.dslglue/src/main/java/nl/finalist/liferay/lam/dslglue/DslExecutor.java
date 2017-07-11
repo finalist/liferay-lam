@@ -1,5 +1,8 @@
 package nl.finalist.liferay.lam.dslglue;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+
 import java.io.Reader;
 
 import org.codehaus.groovy.control.CompilerConfiguration;
@@ -8,12 +11,10 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import nl.finalist.liferay.lam.api.CustomFields;
+import nl.finalist.liferay.lam.builder.CreateFactoryBuilder;
 
 /**
  * Executor that evaluates configured scripts using a context containing all available APIs.
@@ -37,10 +38,13 @@ public class DslExecutor implements Executor {
 
 		Binding sharedData = new Binding();
 
+		
 
 		// Add all available API classes to the context of the scripts 
 		sharedData.setVariable("customFields", customFields);
 		sharedData.setVariable("LOG", LOG);
+		
+		sharedData.setVariable("create", new CreateFactoryBuilder(customFields));
 
         CompilerConfiguration conf = new CompilerConfiguration();
         ImportCustomizer imports = new ImportCustomizer();

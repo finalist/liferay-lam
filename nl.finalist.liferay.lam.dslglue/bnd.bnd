@@ -1,7 +1,9 @@
 Bundle-Name: nl.finalist.liferay.lam.dslglue
 Bundle-SymbolicName: nl.finalist.liferay.lam.dslglue
 Bundle-Version: 1.0.0
-Export-Package: nl.finalist.liferay.lam.dslglue
+Export-Package: \
+	nl.finalist.liferay.lam.dslglue,\
+	nl.finalist.liferay.lam.builder
 Include-Resource: \
  @groovy-*.jar,\
  @jansi-*.jar

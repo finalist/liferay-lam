@@ -1,8 +1,9 @@
-package nl.finalist.liferay.lam.builder;
+package nl.finalist.liferay.lam.builder.factory;
 
 import com.liferay.expando.kernel.model.ExpandoColumnConstants;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.xml.Entity;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -12,16 +13,22 @@ import org.osgi.service.component.annotations.Reference;
 
 import groovy.util.AbstractFactory;
 import groovy.util.FactoryBuilderSupport;
-import nl.finalist.liferay.lam.api.CustomField;
 import nl.finalist.liferay.lam.api.CustomFields;
+import nl.finalist.liferay.lam.builder.CustomField;
 
-public class CustomFieldsFactory extends AbstractFactory {
+public class CreateCustomFieldsFactory extends AbstractFactory {
 
-	private static final Log LOG = LogFactoryUtil.getLog(CustomFieldsFactory.class);
+	private static final Log LOG = LogFactoryUtil.getLog(CreateCustomFieldsFactory.class);
 	
-	@Reference
+
 	CustomFields service;
 	
+	public CreateCustomFieldsFactory(CustomFields customFields) {
+		this.service = customFields;
+	}
+
+
+
 	@Override
 	public Object newInstance(FactoryBuilderSupport builder, Object objectName, Object value, Map attributes)
 			throws InstantiationException, IllegalAccessException {
@@ -52,11 +59,10 @@ public class CustomFieldsFactory extends AbstractFactory {
 	public void onNodeCompleted(FactoryBuilderSupport builder, Object parent, Object node) {
 		super.onNodeCompleted(builder, parent, node);
 		CustomField cf = (CustomField)node;	
-		LOG.debug("Complete : " + cf);
-		
-//		if( cf.getType() == ExpandoColumnConstants.INTEGER){
-//			service.addCustomIntegerField(companyId, entityName, fieldName, value, roles);
-//		}
+		LOG.debug("Complete : " + cf + " : service : " + service );
+		if( cf.getType() == ExpandoColumnConstants.INTEGER){
+			//service.addCustomIntegerField(20116, "Entities.user", cf.getName(), cf.getValue().toString(), cf.getRoles());
+		}
 
 	}
 
