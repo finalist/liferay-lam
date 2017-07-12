@@ -1,4 +1,58 @@
-## Getting started
+## Introduction
+
+LAM is Liferay Automated Migrations, allowing for statement-based configuration across environments.
+Initially it's targeted towards development teams, but it's also definitely useful for functional/application administrators. 
+
+## Features
+
+* Human readable syntax (Groovy DSL)
+* Synthesized/combined API on top of Liferay's APIs (hiding clunky Expando, DDM*, addUser(44 args), etc...)
+* Exception handling
+* Sensible defaults (no need to fiddle with companyIds and groupIds if you've only got one site)
+* Statements groupable / orderable in separate files
+
+## Usage
+
+1. Create a module within your project, give it a name you like, for example `com.acme.myproject-config`
+2. Create a class like this:
+    ````
+    @Component(immediate=true)
+    class MyConfig {
+        @Reference
+        private Executor executor;
+        
+        @Activate
+        void activate() {
+            executor.runScripts();
+        }
+    }	
+    ````
+3. Create configuration scripts in src/main/resources, named `*.groovy`, using [the syntax](#Syntax) 
+4. Deploy to Liferay runtime
+
+See also the module `nl.finalist.liferay.lam.sampleproject-config`, our flagship example config
+
+## Syntax
+Allowed statements:
+
+````
+create.customField (
+        name: 'field1',
+        type: 9,
+        value: 'Value1',
+        defaultValue: '0',
+        roles: ['Roles.guest', 'Roles.user']
+)
+````
+
+
+## Roadmap
+
+* Versioning (state management for every environment, keeping track of scripts already executed)
+* Expose more APIs
+
+
+## Getting started with development
 
 1. Clone this repo
 2. download eclipse neon with liferay plugin. 
@@ -7,5 +61,4 @@
 3. Import existing Gradle project, point to base directory of cloned Git repo
 4. Run 'gradle build'
 5. Run unit tests
-
-
+6. Deploy modules to Liferay to see it in action: `dslglue`, `api`, and `sampleproject-config`
