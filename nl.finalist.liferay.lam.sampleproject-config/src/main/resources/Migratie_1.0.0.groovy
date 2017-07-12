@@ -8,8 +8,10 @@ create.customField (
 )
 
 update.portalSettings(
-	virtualHostName: "blabla",
-	homeUrl: "/homeurl" 
+	virtualHostName: "virtualTestName",
+	homeURL: "/homeTest",
+	portalName: "TestName",
+	availableLanguages: "nl_NL,en_GB"
 )
 
 
