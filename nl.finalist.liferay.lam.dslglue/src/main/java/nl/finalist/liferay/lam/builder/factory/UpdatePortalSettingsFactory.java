@@ -36,26 +36,29 @@ public class UpdatePortalSettingsFactory extends AbstractFactory {
     }
 
     private void callUpdateMethod(String key, Object value) {
-        Method method = null;
-        String methodName = getMethodName(key);
-        try {
-            Class<?> c = portalSettingsservice.getClass();
-            method = c.getDeclaredMethod(methodName, String.class);
-        } catch (NoSuchMethodException | SecurityException e) {
-            LOG.error(String.format("The method %s is not supported", key));
-        }
+        Method method = getMethodIfExists(getMethodName(key));
         if (Validator.isNotNull(method)) {
             try {
                 method.invoke(portalSettingsservice, value);
                 LOG.info(String.format("%s succesfully set to %s", key, value));
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                LOG.error(String.format("The method %s can not be invoked with %s", key, value));
+                LOG.error(String.format("The set method for %s can not be invoked with %s", key, value));
             }
         }
+    }
 
+    private Method getMethodIfExists(String methodName){
+        Method method = null;
+        try {
+            Class<?> c = portalSettingsservice.getClass();
+            method = c.getDeclaredMethod(methodName, String.class);
+        } catch (NoSuchMethodException | SecurityException e) {
+            LOG.error(String.format("The method %s is not supported", methodName));
+        }
+        return method;
     }
 
     private String getMethodName(String attributeName) {
-        return "set" + attributeName.substring(0, 1).toUpperCase() + attributeName.substring(1);
+        return String.format("set%s%s", attributeName.substring(0, 1).toUpperCase(),attributeName.substring(1));
     }
 }
