@@ -1,6 +1,5 @@
 package nl.finalist.liferay.lam.testhook;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -28,54 +27,50 @@ import nl.finalist.liferay.lam.api.TypeOfRole;
  */
 @Component(immediate = true, property = { "key=login.events.pre" }, service = LifecycleAction.class)
 public class StartupAction implements LifecycleAction {
-	@Reference
-	private CustomFields customFields;
+    @Reference
+    private CustomFields customFields;
 
-	@Reference
-	private PortalProperties portalValues;
+    @Reference
+    private PortalProperties portalValues;
 
-	@Reference
-	private RoleAndPermissions rolesAndPermission;
+    @Reference
+    private RoleAndPermissions rolesAndPermission;
 
-	@Override
-	public void processLifecycleEvent(LifecycleEvent lifecycleEvent) throws ActionException {
-		System.out.println("Adding custom field");
-		customFields.addCustomTextField(20116L, User.class.getName(), "test2", "default",
-				new String[] { RoleConstants.GUEST });
+    @Override
+    public void processLifecycleEvent(LifecycleEvent lifecycleEvent) throws ActionException {
+        System.out.println("Adding custom field");
+        customFields.addCustomTextField(20116L, User.class.getName(), "test2", "default",
+                        new String[] { RoleConstants.GUEST });
 
-		System.out.println("Checking portal-ext.properties");
+        System.out.println("Checking portal-ext.properties");
 
-		try {
-			portalValues.validatePortalProperties(newProperties());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+        portalValues.validatePortalProperties(newProperties());
 
-		System.out.println("Checking for Roles and Permission");
-		System.out.println("Please update CompanyId and UserId");
-		rolesAndPermission.addCustomRoleAndPermission("WebEditor", 20156L, TypeOfRole.REGULARROLES, titleOrDescription(),
-				titleOrDescription(), 20116L, permissions(),JournalArticle.class.getName());
-	}
+        System.out.println("Checking for Roles and Permission");
+        System.out.println("Please update CompanyId and UserId");
+        rolesAndPermission.addCustomRoleAndPermission("WebEditor", 20156L, TypeOfRole.REGULARROLES, titleOrDescription(),
+                        titleOrDescription(), 20116L, permissions(),JournalArticle.class.getName());
+    }
 
-	private Map<Locale, String> titleOrDescription() {
-		Map<Locale, String> title = new HashMap<>();
-		title.put(Locale.ENGLISH, "value");
-		return title;
-	}
+    private Map<Locale, String> titleOrDescription() {
+        Map<Locale, String> title = new HashMap<>();
+        title.put(Locale.ENGLISH, "value");
+        return title;
+    }
 
-	private String[] permissions() {
-		String[] actionIds = new String[] { ActionKeys.VIEW, ActionKeys.ADD_ARTICLE, ActionKeys.DELETE };
-		return actionIds;
-	}
+    private String[] permissions() {
+        String[] actionIds = new String[] { ActionKeys.VIEW, ActionKeys.ADD_ARTICLE, ActionKeys.DELETE };
+        return actionIds;
+    }
 
-	private Map<String, String> newProperties() {
-		Map<String, String> propertyValues = new HashMap<String, String>();
-		propertyValues.put("admin.email.from.address", "test@liferay.com");
-		propertyValues.put("admin.email.from.name", "Test Test");
-		propertyValues.put("company.default.name", "shlUpgrade");
-		propertyValues.put("default.admin.first.name", "Test");
-		propertyValues.put("default.admin.last.name", "Test");
-		propertyValues.put("jdbc.default.driverClassName", "com.mysql.jdbc.Driver");
-		return propertyValues;
-	}
+    private Map<String, String> newProperties() {
+        Map<String, String> propertyValues = new HashMap<String, String>();
+        propertyValues.put("admin.email.from.address", "test@liferay.com");
+        propertyValues.put("admin.email.from.name", "Test Test");
+        propertyValues.put("company.default.name", "shlUpgrade");
+        propertyValues.put("default.admin.first.name", "Test");
+        propertyValues.put("default.admin.last.name", "Test");
+        propertyValues.put("jdbc.default.driverClassName", "com.mysql.jdbc.Driver");
+        return propertyValues;
+    }
 }

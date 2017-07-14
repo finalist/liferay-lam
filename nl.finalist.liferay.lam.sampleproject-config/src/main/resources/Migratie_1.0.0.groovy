@@ -9,9 +9,13 @@ create.customField (
 
 update.portalSettings(
 	virtualHostName: "virtualTestName",
-	homeURL: "/homeTest",
 	portalName: "TestName",
 	availableLanguages: "nl_NL,en_GB"
+)
+
+read.portalProperties(
+	"database.indexes.update.on.startup": "true",
+	"auth.token.check.enabled": "true"
 )
 
 
