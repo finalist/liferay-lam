@@ -44,4 +44,12 @@ public interface CustomFields {
      * @param fieldName name of the field
      */
     void deleteCustomField(long companyId, String entityName, String fieldName);
+
+    /**
+     * Delete a custom field for the default company
+     *
+     * @param entityName entity to which the field applies
+     * @param fieldName name of the field
+     */
+    void deleteCustomField(String entityName, String fieldName);
 }

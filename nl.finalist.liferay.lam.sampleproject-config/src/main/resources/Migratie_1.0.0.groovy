@@ -7,6 +7,10 @@ create.customField (
 	roles: [Roles.guest, Roles.user]
 )
 
+delete.customField(
+	name: 'fieldTest',
+	entityName: Entities.user
+)
 update.portalSettings(
 	virtualHostName: "virtualTestName",
 	portalName: "TestName",

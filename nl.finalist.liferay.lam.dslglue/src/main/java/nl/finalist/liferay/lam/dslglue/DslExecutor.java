@@ -17,6 +17,7 @@ import nl.finalist.liferay.lam.api.CustomFields;
 import nl.finalist.liferay.lam.api.PortalProperties;
 import nl.finalist.liferay.lam.api.PortalSettings;
 import nl.finalist.liferay.lam.builder.CreateFactoryBuilder;
+import nl.finalist.liferay.lam.builder.DeleteFactoryBuilder;
 import nl.finalist.liferay.lam.builder.ReadFactoryBuilder;
 import nl.finalist.liferay.lam.builder.UpdateFactoryBuilder;
 import nl.finalist.liferay.lam.model.Entities;
@@ -56,6 +57,8 @@ public class DslExecutor implements Executor {
         sharedData.setVariable("create", new CreateFactoryBuilder(customFieldsService));
         sharedData.setVariable("update", new UpdateFactoryBuilder(portalSettingsService));
         sharedData.setVariable("read", new ReadFactoryBuilder(portalPropertiesService));
+        sharedData.setVariable("delete", new DeleteFactoryBuilder(customFieldsService));
+
         sharedData.setVariable("Roles", new Roles());
         sharedData.setVariable("Entities", new Entities());
         CompilerConfiguration conf = new CompilerConfiguration();
