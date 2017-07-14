@@ -19,6 +19,8 @@ import nl.finalist.liferay.lam.api.PortalSettings;
 import nl.finalist.liferay.lam.builder.CreateFactoryBuilder;
 import nl.finalist.liferay.lam.builder.ReadFactoryBuilder;
 import nl.finalist.liferay.lam.builder.UpdateFactoryBuilder;
+import nl.finalist.liferay.lam.model.Entities;
+import nl.finalist.liferay.lam.model.Roles;
 
 /**
  * Executor that evaluates configured scripts using a context containing all
@@ -54,12 +56,12 @@ public class DslExecutor implements Executor {
         sharedData.setVariable("create", new CreateFactoryBuilder(customFieldsService));
         sharedData.setVariable("update", new UpdateFactoryBuilder(portalSettingsService));
         sharedData.setVariable("read", new ReadFactoryBuilder(portalPropertiesService));
-
+        sharedData.setVariable("Roles", new Roles());
+        sharedData.setVariable("Entities", new Entities());
         CompilerConfiguration conf = new CompilerConfiguration();
         ImportCustomizer imports = new ImportCustomizer();
 
         // Make these imports available to the scripts
-        imports.addImport("Roles", "nl.finalist.liferay.lam.dslglue.Roles");
 
         conf.addCompilationCustomizers(imports);
 
