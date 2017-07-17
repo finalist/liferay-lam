@@ -1,9 +1,19 @@
 package nl.finalist.liferay.lam.api;
 
+import com.liferay.asset.kernel.model.AssetVocabulary;
+import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
+import com.liferay.counter.kernel.service.CounterLocalService;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsUtil;
+
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Locale;
-import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -14,18 +24,6 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import com.liferay.asset.kernel.model.AssetVocabulary;
-import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
-import com.liferay.counter.kernel.service.CounterLocalService;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.language.LanguageUtil;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.service.CompanyLocalService;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.util.PropsUtil;
-
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -33,7 +31,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ LanguageUtil.class, VocabularyImpl.class, PropsUtil.class, Locale.class })
+@PrepareForTest({ LocaleUtil.class, VocabularyImpl.class, PropsUtil.class, Locale.class })
 public class VocabularyImplTest {
 
     @Mock
@@ -52,7 +50,6 @@ public class VocabularyImplTest {
     private User mockDefaultUser;
     @Mock
     private HashMap<Locale, String> mockTitleMap;
-
     @Mock
     private ServiceContext mockServiceContext;
     @InjectMocks
@@ -61,29 +58,27 @@ public class VocabularyImplTest {
     @Before
     public void setUp() {
         vocabularyImpl = new VocabularyImpl();
-        PowerMockito.mockStatic(LanguageUtil.class);
+        PowerMockito.mockStatic(LocaleUtil.class);
         PowerMockito.mockStatic(PropsUtil.class);
-        PowerMockito.mockStatic(Locale.class);
-
         PowerMockito.when(PropsUtil.get("company.default.web.id")).thenReturn("liferay.com");
         initMocks(this);
     }
 
     @Test
     public void testAddVocabulary() throws Exception {
-        Set<Locale> mockLocales = new HashSet<>();
-        PowerMockito.when(LanguageUtil.getAvailableLocales(1L)).thenReturn(mockLocales);
         String vocabularyName = "testName";
         when(companyService.getCompanyByWebId("liferay.com")).thenReturn(mockCompany);
         when(mockCompany.getCompanyId()).thenReturn(1L);
-        when(userService.getDefaultUser(1L)).thenReturn(mockDefaultUser);
+        Locale mockLocale = new Locale("nl_NL");
+        PowerMockito.when(LocaleUtil.getSiteDefault()).thenReturn(mockLocale);
+        when(mockCompany.getDefaultUser()).thenReturn(mockDefaultUser);
         when(mockDefaultUser.getUserId()).thenReturn(10L);
         whenNew(HashMap.class).withAnyArguments().thenReturn(mockTitleMap);
         whenNew(ServiceContext.class).withNoArguments().thenReturn(mockServiceContext);
 
         vocabularyImpl.addVocabulary(vocabularyName, 1L);
 
-        verify(vocabularyService).addVocabulary(10L, 1L, null, mockTitleMap, mockTitleMap, "", mockServiceContext);
+        verify(vocabularyService).addVocabulary(10L, 1L, vocabularyName, mockTitleMap, mockTitleMap, "", mockServiceContext);
     }
 
     @Test

@@ -21,6 +21,8 @@ read.portalProperties(
 	"database.indexes.update.on.startup": "true",
 	"auth.token.check.enabled": "true"
 )
-
+create.vocabulary(
+name: "TestVocabulary"
+)
 
 

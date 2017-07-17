@@ -16,6 +16,7 @@ import groovy.lang.GroovyShell;
 import nl.finalist.liferay.lam.api.CustomFields;
 import nl.finalist.liferay.lam.api.PortalProperties;
 import nl.finalist.liferay.lam.api.PortalSettings;
+import nl.finalist.liferay.lam.api.Vocabulary;
 import nl.finalist.liferay.lam.builder.CreateFactoryBuilder;
 import nl.finalist.liferay.lam.builder.DeleteFactoryBuilder;
 import nl.finalist.liferay.lam.builder.ReadFactoryBuilder;
@@ -36,7 +37,8 @@ public class DslExecutor implements Executor {
     private CustomFields customFieldsService;
     @Reference
     private PortalSettings portalSettingsService;
-
+    @Reference
+    private Vocabulary vocabularyService;
     @Reference
     private PortalProperties portalPropertiesService;
 
@@ -54,7 +56,7 @@ public class DslExecutor implements Executor {
         // Add all available API classes to the context of the scripts
         sharedData.setVariable("LOG", LOG);
 
-        sharedData.setVariable("create", new CreateFactoryBuilder(customFieldsService));
+        sharedData.setVariable("create", new CreateFactoryBuilder(customFieldsService, vocabularyService));
         sharedData.setVariable("update", new UpdateFactoryBuilder(portalSettingsService));
         sharedData.setVariable("read", new ReadFactoryBuilder(portalPropertiesService));
         sharedData.setVariable("delete", new DeleteFactoryBuilder(customFieldsService));
