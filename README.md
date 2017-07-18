@@ -50,6 +50,9 @@ create.customField (
 
 * Versioning (state management for every environment, keeping track of scripts already executed)
 * Expose more APIs
+* Control panel portlets for:
+    - one-off script execution
+    - status display
 
 
 ## Getting started with development
