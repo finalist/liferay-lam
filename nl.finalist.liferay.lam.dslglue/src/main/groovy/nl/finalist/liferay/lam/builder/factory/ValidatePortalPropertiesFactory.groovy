@@ -1,8 +1,5 @@
 package nl.finalist.liferay.lam.builder.factory;
 
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,18 +7,16 @@ import groovy.util.AbstractFactory;
 import groovy.util.FactoryBuilderSupport;
 import nl.finalist.liferay.lam.api.PortalProperties;
 
-public class ValidatePortalPropertiesFactory extends AbstractFactory {
-
-    private static final Log LOG = LogFactoryUtil.getLog(CreateCustomFieldsFactory.class);
+class ValidatePortalPropertiesFactory extends AbstractFactory {
 
     PortalProperties portalPropertiesService;
 
-    public ValidatePortalPropertiesFactory(PortalProperties portalPropertiesService) {
+    ValidatePortalPropertiesFactory(PortalProperties portalPropertiesService) {
         this.portalPropertiesService = portalPropertiesService;
     }
 
     @Override
-    public Object newInstance(FactoryBuilderSupport builder, Object objectName, Object value, Map attributes)
+    Object newInstance(FactoryBuilderSupport builder, Object objectName, Object value, Map attributes)
                     throws InstantiationException, IllegalAccessException {
         Map<String, String> extProperties = new HashMap<>(attributes);
         portalPropertiesService.validatePortalProperties(extProperties);
@@ -30,9 +25,7 @@ public class ValidatePortalPropertiesFactory extends AbstractFactory {
     }
 
     @Override
-    public void onNodeCompleted(FactoryBuilderSupport builder, Object parent, Object node) {
+    void onNodeCompleted(FactoryBuilderSupport builder, Object parent, Object node) {
         super.onNodeCompleted(builder, parent, node);
-        LOG.info("PortalProperties node completed");
     }
-
 }

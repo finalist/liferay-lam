@@ -4,11 +4,9 @@ import groovy.util.FactoryBuilderSupport;
 import nl.finalist.liferay.lam.api.PortalProperties;
 import nl.finalist.liferay.lam.builder.factory.ValidatePortalPropertiesFactory;
 
-public class ValidateFactoryBuilder extends FactoryBuilderSupport {
+class ValidateFactoryBuilder extends FactoryBuilderSupport {
 
-    public ValidateFactoryBuilder(PortalProperties portalPropertiesService){
-        System.out.println("Registering validatefactorybuilder");
+    ValidateFactoryBuilder(PortalProperties portalPropertiesService){
         registerFactory("portalProperties", new ValidatePortalPropertiesFactory(portalPropertiesService));
     }
-
 }
