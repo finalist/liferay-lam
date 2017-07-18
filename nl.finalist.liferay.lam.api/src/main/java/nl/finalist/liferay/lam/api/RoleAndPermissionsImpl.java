@@ -35,11 +35,11 @@ public class RoleAndPermissionsImpl implements RoleAndPermissions {
 	 * @param typeOfRole
 	 *            type of the role.
 	 * @param titles
-	 *            role titles which is Map with the Locale.
+	 *            role titles which is a map of titles by Locale.
 	 * @param description
-	 *            role descriptions which is Map with the Locale.
+	 *            role descriptions which is a map of descriptions by Locale.
 	 * @param companyId
-	 *            companyId for which Role should be added.
+	 *            companyId for which the Role should be added.
 	 * @param actionIds
 	 *            permissions to be added for the Role.
 	 * @param entityName
@@ -49,47 +49,46 @@ public class RoleAndPermissionsImpl implements RoleAndPermissions {
 	public boolean addCustomRoleAndPermission(String roleName, Long userId, TypeOfRole typeOfRole,
 			Map<Locale, String> titles, Map<Locale, String> descriptions, Long companyId, String[] actionIds,
 			String entityName) {
-		LOG.info(String.format("Adding the Role with %s with userId= %d", roleName, userId));
+		LOG.info(String.format("Adding role  %s with userId = %d", roleName, userId));
 		try {
 			Role role = roleLocalService.addRole(userId, null, 0L, roleName, titles, descriptions,
 					typeOfRole.getValue(), null, null);
 			LOG.info(String.format("Added the role", role.getCreateDate()));
-			LOG.info("Strting to set the permission");
 			if (actionIds != null) {
-				for (String actionId : actionIds)
-					addPermissions(role.getRoleId(), companyId, actionId, entityName);
+				for (String actionId : actionIds) {
+					addPermission(role.getRoleId(), companyId, actionId, entityName);
+				}
 			} else {
-				LOG.info("Permissions to the roles where not found. You should add the permissions later.");
+				LOG.info("Permissions to the roles were not found. You should add the permissions later.");
 			}
 			return true;
 		} catch (PortalException e) {
-			LOG.info("For some reason Role was not added. Please check and confirm your Role credentials");
+			LOG.info("For some reason the role was not added. Please check and confirm your role credentials");
 			return false;
 		}
 	}
 
 	/**
-	 * Add a Permissions to the custom Role.
+	 * Add a Permission to the custom Role.
 	 * 
 	 * @param roleId
 	 *            name of the role to be added.
 	 * @param companyId
-	 *            company Id for which role should be added.
+	 *            company Id for which the role is added.
 	 * @param actionId
 	 *            permission which should be added to the role.
 	 * @param entityName
-	 *            entity for which permissions should be added.
+	 *            entity for which the permission should be added.
 	 * @throws PortalException
 	 */
-	private void addPermissions(Long roleId, Long companyId, String actionId, String entityName)
+	private void addPermission(Long roleId, Long companyId, String actionId, String entityName)
 			throws PortalException {
 
-		LOG.info(String.format("Starting to add the permision %s to entity %s", actionId, entityName));
+		LOG.info(String.format("Starting to add permision %s to entity %s", actionId, entityName));
 
 		resourcePermissionLocalService.addResourcePermission(companyId, entityName, ResourceConstants.SCOPE_COMPANY,
 				String.valueOf(companyId), roleId, actionId);
 
-		LOG.info(String.format("Added the permision %s to entity %s", actionId, entityName));
+		LOG.info(String.format("Added permision %s to entity %s", actionId, entityName));
 	}
-
 }
