@@ -27,23 +27,10 @@ Initially it's targeted towards development teams, but it's also definitely usef
         }
     }	
     ````
-3. Create configuration scripts in src/main/resources, named `*.groovy`, using [the syntax](#Syntax) 
+3. Create configuration scripts in src/main/resources, named `*.groovy`, using [the syntax](documentation.md) 
 4. Deploy to Liferay runtime
 
 See also the module `nl.finalist.liferay.lam.sampleproject-config`, our flagship example config
-
-## Syntax
-Allowed statements:
-
-````
-create.customField (
-        name: 'field1',
-        type: 9,
-        value: 'Value1',
-        defaultValue: '0',
-        roles: ['Roles.guest', 'Roles.user']
-)
-````
 
 
 ## Roadmap
