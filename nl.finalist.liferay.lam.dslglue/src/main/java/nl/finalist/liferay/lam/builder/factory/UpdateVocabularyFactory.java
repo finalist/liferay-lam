@@ -9,11 +9,12 @@ import groovy.util.AbstractFactory;
 import groovy.util.FactoryBuilderSupport;
 import nl.finalist.liferay.lam.api.Vocabulary;
 
-public class CreateAssetVocabularyFactory extends AbstractFactory  {
-    private static final Log LOG = LogFactoryUtil.getLog(CreateAssetVocabularyFactory.class);
+public class UpdateVocabularyFactory extends AbstractFactory {
+
+    private static final Log LOG = LogFactoryUtil.getLog(UpdateVocabularyFactory.class);
     Vocabulary vocabularyService;
 
-    public  CreateAssetVocabularyFactory(Vocabulary vocabularyService) {
+    public UpdateVocabularyFactory(Vocabulary vocabularyService) {
         this.vocabularyService = vocabularyService;
     }
 
@@ -21,14 +22,13 @@ public class CreateAssetVocabularyFactory extends AbstractFactory  {
     public Object newInstance(FactoryBuilderSupport builder, Object name, Object value, Map attributes)
                     throws InstantiationException, IllegalAccessException {
         String vocabularyName = (String) attributes.get("name");
-        vocabularyService.addVocabulary(vocabularyName);
-        return attributes;
+        String languageId = (String) attributes.get("forLanguage");
+        String translatedName = (String) attributes.get("translation");
+
+        vocabularyService.updateVocabularyTranslation(languageId, translatedName, vocabularyName);
+
+        LOG.info(String.format("Vocabulary %s updated with translation %s for language %s", vocabularyName, translatedName,languageId));
+        return null;
     }
 
-    @Override
-    public void onNodeCompleted(FactoryBuilderSupport builder, Object parent, Object node) {
-        super.onNodeCompleted(builder, parent, node);
-        LOG.info("Vocabulary node completed");
-
-    }
 }

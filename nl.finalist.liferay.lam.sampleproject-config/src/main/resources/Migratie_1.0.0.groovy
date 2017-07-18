@@ -24,5 +24,11 @@ validate.portalProperties(
 create.vocabulary(
 	name: "TestVocabulary"
 )
-
-
+update.vocabulary(
+	name: "TestVocabulary",
+	forLanguage: "en_GB",
+	translation: "TestVocabularyTranslation"
+)
+delete.vocabulary(
+	name: "TestVocabulary"
+)
