@@ -45,8 +45,8 @@ public class CustomFieldsImpl implements CustomFields {
     private static final Log LOG = LogFactoryUtil.getLog(CustomFieldsImpl.class);
 
 
-    @Override
-    public void addCustomTextField(long companyId, String entityName, String fieldName, String defaultValue, String [] roles) {
+    
+    private void addCustomTextField(long companyId, String entityName, String fieldName, String defaultValue, String [] roles) {
         LOG.debug(String.format("Start adding custom text field %s for company %d to entity %s with default value %s and roles %s", fieldName, companyId, entityName, defaultValue, Arrays.toString(roles)));
 
         ExpandoTable expandoTable = getOrAddExpandoTable(companyId, entityName, ExpandoTableConstants.DEFAULT_TABLE_NAME);
@@ -68,8 +68,8 @@ public class CustomFieldsImpl implements CustomFields {
         this.addCustomTextField(PortalUtil.getDefaultCompanyId(), entityName, fieldName, defaultValue, roles);
     }
 
-    @Override
-    public void addCustomIntegerField(long companyId, String entityName, String fieldName, int defaultValue, String[] roles) {
+    
+    private void addCustomIntegerField(long companyId, String entityName, String fieldName, int defaultValue, String[] roles) {
         LOG.debug(String.format("Start adding custom integer field %s for company %d to entity %s with default value %s",
                         fieldName, companyId, entityName, defaultValue));
 
@@ -91,8 +91,8 @@ public class CustomFieldsImpl implements CustomFields {
         this.addCustomIntegerField(PortalUtil.getDefaultCompanyId(), entityName, fieldName, defaultValue, roles);
     }
 
-    @Override
-    public void deleteCustomField(long companyId, String entityName, String fieldName) {
+  
+    private void deleteCustomField(long companyId, String entityName, String fieldName) {
         LOG.debug(String.format("Start deleting custom field %s for company %d of entity %s ", fieldName, companyId, entityName));
 
         try {

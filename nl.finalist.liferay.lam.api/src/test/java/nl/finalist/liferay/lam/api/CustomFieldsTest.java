@@ -16,17 +16,23 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringPool;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({PortalUtil.class})
 public class CustomFieldsTest {
 
     private static final String FIELD_NAME = "TestField";
@@ -55,6 +61,8 @@ public class CustomFieldsTest {
     @Before
     public void setUp() throws PortalException {
         customFields = new CustomFieldsImpl();
+        PowerMockito.mockStatic(PortalUtil.class);
+		PowerMockito.when(PortalUtil.getDefaultCompanyId()).thenReturn(1L);
         initMocks(this);
     }
 
@@ -67,7 +75,7 @@ public class CustomFieldsTest {
         when(columnService.addColumn(1L, FIELD_NAME, ExpandoColumnConstants.STRING, StringPool.BLANK)).thenReturn(mockColumn);
         when(roleService.getRole(COMPANY_ID, RoleConstants.GUEST)).thenReturn(mockGuestRole);
 
-        customFields.addCustomTextField(COMPANY_ID, ENTITY_NAME, FIELD_NAME, "default", new String[]{RoleConstants.GUEST});
+        customFields.addCustomTextField(ENTITY_NAME, FIELD_NAME, "default", new String[]{RoleConstants.GUEST});
 
         verify(tableService).getDefaultTable(COMPANY_ID, ENTITY_NAME);
         verify(tableService).addTable(COMPANY_ID, ENTITY_NAME, ExpandoTableConstants.DEFAULT_TABLE_NAME);
@@ -90,7 +98,7 @@ public class CustomFieldsTest {
         when(columnService.addColumn(1L, FIELD_NAME, ExpandoColumnConstants.INTEGER, 0)).thenReturn(mockColumn);
         when(roleService.getRole(COMPANY_ID, RoleConstants.GUEST)).thenReturn(mockGuestRole);
 
-        customFields.addCustomIntegerField(COMPANY_ID, ENTITY_NAME, FIELD_NAME, 1, new String[]{RoleConstants.GUEST});
+        customFields.addCustomIntegerField(ENTITY_NAME, FIELD_NAME, 1, new String[]{RoleConstants.GUEST});
 
         verify(tableService).getDefaultTable(COMPANY_ID, ENTITY_NAME);
         verify(tableService).addTable(COMPANY_ID, ENTITY_NAME, ExpandoTableConstants.DEFAULT_TABLE_NAME);
@@ -109,7 +117,7 @@ public class CustomFieldsTest {
     	when(tableService.getDefaultTable(COMPANY_ID, ENTITY_NAME)).thenReturn(mockTable);
     	when(columnService.getColumn(COMPANY_ID, ENTITY_NAME, ExpandoTableConstants.DEFAULT_TABLE_NAME, FIELD_NAME)).thenReturn(mockColumn);
 
-        customFields.deleteCustomField(COMPANY_ID, ENTITY_NAME, FIELD_NAME);
+        customFields.deleteCustomField(ENTITY_NAME, FIELD_NAME);
 
         verify(tableService).getDefaultTable(COMPANY_ID, ENTITY_NAME);
         verify(columnService).getColumn(COMPANY_ID, ENTITY_NAME, ExpandoTableConstants.DEFAULT_TABLE_NAME, FIELD_NAME);

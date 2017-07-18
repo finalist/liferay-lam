@@ -13,6 +13,7 @@ import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.util.PortalUtil;
 
 /**
  * Add the Role and the respective Permissions to the role.
@@ -38,8 +39,6 @@ public class RoleAndPermissionsImpl implements RoleAndPermissions {
 	 *            role titles which is a map of titles by Locale.
 	 * @param description
 	 *            role descriptions which is a map of descriptions by Locale.
-	 * @param companyId
-	 *            companyId for which the Role should be added.
 	 * @param actionIds
 	 *            permissions to be added for the Role.
 	 * @param entityName
@@ -47,8 +46,9 @@ public class RoleAndPermissionsImpl implements RoleAndPermissions {
 	 */
 	@Override
 	public boolean addCustomRoleAndPermission(String roleName, Long userId, TypeOfRole typeOfRole,
-			Map<Locale, String> titles, Map<Locale, String> descriptions, Long companyId, String[] actionIds,
+			Map<Locale, String> titles, Map<Locale, String> descriptions, String[] actionIds,
 			String entityName) {
+		long companyId = PortalUtil.getDefaultCompanyId();
 		LOG.info(String.format("Adding role  %s with userId = %d", roleName, userId));
 		try {
 			Role role = roleLocalService.addRole(userId, null, 0L, roleName, titles, descriptions,
@@ -73,8 +73,6 @@ public class RoleAndPermissionsImpl implements RoleAndPermissions {
 	 * 
 	 * @param roleId
 	 *            name of the role to be added.
-	 * @param companyId
-	 *            company Id for which the role is added.
 	 * @param actionId
 	 *            permission which should be added to the role.
 	 * @param entityName

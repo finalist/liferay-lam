@@ -39,7 +39,7 @@ public class StartupAction implements LifecycleAction {
     @Override
     public void processLifecycleEvent(LifecycleEvent lifecycleEvent) throws ActionException {
         System.out.println("Adding custom field");
-        customFields.addCustomTextField(20116L, User.class.getName(), "test2", "default",
+        customFields.addCustomTextField(User.class.getName(), "test2", "default",
                         new String[] { RoleConstants.GUEST });
 
         System.out.println("Checking portal-ext.properties");
@@ -49,7 +49,7 @@ public class StartupAction implements LifecycleAction {
         System.out.println("Checking for Roles and Permission");
         System.out.println("Please update CompanyId and UserId");
         rolesAndPermission.addCustomRoleAndPermission("WebEditor", 20156L, TypeOfRole.REGULARROLES, titleOrDescription(),
-                        titleOrDescription(), 20116L, permissions(),JournalArticle.class.getName());
+                        titleOrDescription(), permissions(),JournalArticle.class.getName());
     }
 
     private Map<Locale, String> titleOrDescription() {
