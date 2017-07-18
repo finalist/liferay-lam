@@ -10,13 +10,13 @@ import groovy.util.AbstractFactory;
 import groovy.util.FactoryBuilderSupport;
 import nl.finalist.liferay.lam.api.PortalProperties;
 
-public class ReadPortalPropertiesFactory extends AbstractFactory {
+public class ValidatePortalPropertiesFactory extends AbstractFactory {
 
     private static final Log LOG = LogFactoryUtil.getLog(CreateCustomFieldsFactory.class);
 
     PortalProperties portalPropertiesService;
 
-    public ReadPortalPropertiesFactory(PortalProperties portalPropertiesService) {
+    public ValidatePortalPropertiesFactory(PortalProperties portalPropertiesService) {
         this.portalPropertiesService = portalPropertiesService;
     }
 

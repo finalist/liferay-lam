@@ -14,15 +14,16 @@ delete.customField(
 update.portalSettings(
 	virtualHostName: "virtualTestName",
 	portalName: "TestName",
-	availableLanguages: "nl_NL,en_GB"
+	availableLanguages: "nl_NL,en_GB",
+	testbalab: balbala
 )
 
-read.portalProperties(
+validate.portalProperties(
 	"database.indexes.update.on.startup": "true",
 	"auth.token.check.enabled": "true"
 )
 create.vocabulary(
-name: "TestVocabulary"
+	name: "TestVocabulary"
 )
 
 
