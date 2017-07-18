@@ -14,8 +14,7 @@ delete.customField(
 update.portalSettings(
 	virtualHostName: "virtualTestName",
 	portalName: "TestName",
-	availableLanguages: "nl_NL,en_GB",
-	testbalab: balbala
+	availableLanguages: "nl_NL,en_GB"
 )
 
 validate.portalProperties(
