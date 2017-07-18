@@ -7,7 +7,7 @@ import nl.finalist.liferay.lam.builder.factory.ValidatePortalPropertiesFactory;
 public class ValidateFactoryBuilder extends FactoryBuilderSupport {
 
     public ValidateFactoryBuilder(PortalProperties portalPropertiesService){
-        System.out.println("Registering readfactorybuilder");
+        System.out.println("Registering validatefactorybuilder");
         registerFactory("portalProperties", new ValidatePortalPropertiesFactory(portalPropertiesService));
     }
 
