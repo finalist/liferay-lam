@@ -1,7 +1,9 @@
 package nl.finalist.liferay.lam
 
-import groovy.transform.ToString
+import org.junit.Ignore
 import org.junit.Test
+
+import groovy.transform.ToString
 /*
 
 This is a playground / PoC to see the nested builder structure in action.
@@ -82,8 +84,6 @@ class BuilderPlaygroundTest {
 
     }
 
-
-    @Test
     void testDSL() {
 
         // Would be fed to the DslExecutor's binding
