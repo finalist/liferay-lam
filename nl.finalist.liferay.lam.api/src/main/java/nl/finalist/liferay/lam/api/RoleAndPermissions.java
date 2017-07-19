@@ -10,6 +10,6 @@ import java.util.Map;
  */
 public interface RoleAndPermissions {
 	boolean addCustomRoleAndPermission(String role, TypeOfRole typeOfRole, Map<Locale, String> title,
-			Map<Locale, String> description, String[] actionId, String entityName);
+			Map<Locale, String> description, Map<String, String[]> permissions);
 
 }

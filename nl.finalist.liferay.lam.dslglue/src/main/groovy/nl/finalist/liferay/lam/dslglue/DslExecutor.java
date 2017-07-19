@@ -2,6 +2,7 @@ package nl.finalist.liferay.lam.dslglue;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 
 import java.io.File;
 import java.io.Reader;
@@ -65,12 +66,12 @@ public class DslExecutor implements Executor {
 
         sharedData.setVariable("Roles", new Roles());
         sharedData.setVariable("Entities", new Entities());
+        sharedData.setVariable("ActionKeys", new ActionKeys());
 
         CompilerConfiguration conf = new CompilerConfiguration();
         ImportCustomizer imports = new ImportCustomizer();
 
         imports.addImport("TypeOfRole", "nl.finalist.liferay.lam.api.TypeOfRole");
-        imports.addImport("ActionKeys", "com.liferay.portal.kernel.security.permission.ActionKeys");
 
         // Make these imports available to the scripts
 

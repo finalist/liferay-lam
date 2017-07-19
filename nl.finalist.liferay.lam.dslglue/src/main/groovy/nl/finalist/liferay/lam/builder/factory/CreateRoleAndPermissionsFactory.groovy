@@ -30,6 +30,6 @@ class CreateRoleAndPermissionsFactory extends AbstractFactory {
         RoleAndPermissionsModel model = (RoleAndPermissionsModel) node;
         
             roleAndPermissionsService.addCustomRoleAndPermission(model.roleName, model.roleType, model.titles,
-                model.descriptions, model.actionIds, model.entityName);
+                model.descriptions, model.permissions);
     }
 }

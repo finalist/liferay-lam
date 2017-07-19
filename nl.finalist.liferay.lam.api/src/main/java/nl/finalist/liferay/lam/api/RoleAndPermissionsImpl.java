@@ -2,6 +2,7 @@ package nl.finalist.liferay.lam.api;
 
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import com.liferay.portal.kernel.service.UserLocalService;
 import org.osgi.service.component.annotations.Component;
@@ -10,6 +11,7 @@ import org.osgi.service.component.annotations.Reference;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Permission;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
@@ -40,15 +42,12 @@ public class RoleAndPermissionsImpl implements RoleAndPermissions {
 	 *            role titles which is a map of titles by Locale.
 	 * @param descriptions
 	 *            role descriptions which is a map of descriptions by Locale.
-	 * @param actionIds
-	 *            permissions to be added for the Role.
-	 * @param entityName
-	 *            entity for which permissions should be added.
+	 * @param permissions
+	 *            Map that holds the entityName as key and a String array of actionids as the value
 	 */
 	@Override
 	public boolean addCustomRoleAndPermission(String roleName, TypeOfRole typeOfRole,
-			Map<Locale, String> titles, Map<Locale, String> descriptions, String[] actionIds,
-			String entityName) {
+			Map<Locale, String> titles, Map<Locale, String> descriptions, Map<String, String[]> permissions) {
 		long companyId = PortalUtil.getDefaultCompanyId();
 
 		LOG.info(String.format("Adding role  %s", roleName));
@@ -57,13 +56,8 @@ public class RoleAndPermissionsImpl implements RoleAndPermissions {
 			Role role = roleLocalService.addRole(userId, null, 0L, roleName, titles, descriptions,
 					typeOfRole.getValue(), null, null);
 			LOG.info(String.format("Added the role", role.getCreateDate()));
-			if (actionIds != null) {
-				for (String actionId : actionIds) {
-					addPermission(role.getRoleId(), companyId, actionId, entityName);
-				}
-			} else {
-				LOG.info("Permissions to the roles were not found. You should add the permissions later.");
-			}
+			addPermission(role.getRoleId(), companyId, permissions);
+				
 			return true;
 		} catch (PortalException e) {
 			LOG.error("For some reason the role was not added. ");
@@ -76,20 +70,24 @@ public class RoleAndPermissionsImpl implements RoleAndPermissions {
 	 * 
 	 * @param roleId
 	 *            name of the role to be added.
-	 * @param actionId
-	 *            permission which should be added to the role.
-	 * @param entityName
-	 *            entity for which the permission should be added.
+	 * @param permissions
+	 *            Map that holds the entityName as key and a String array of actionids as the value
 	 * @throws PortalException
 	 */
-	private void addPermission(Long roleId, Long companyId, String actionId, String entityName)
+	private void addPermission(Long roleId, Long companyId, Map<String, String[]> permissions)
 			throws PortalException {
 
-		LOG.info(String.format("Starting to add permision %s to entity %s", actionId, entityName));
-
-		resourcePermissionLocalService.addResourcePermission(companyId, entityName, ResourceConstants.SCOPE_COMPANY,
-				String.valueOf(companyId), roleId, actionId);
-
-		LOG.info(String.format("Added permision %s to entity %s", actionId, entityName));
+		Set<String> entityNames = permissions.keySet();
+		for (String entityName : entityNames) {
+			String[] actionIds = permissions.get(entityName);
+			for (String actionId : actionIds) {
+				LOG.info(String.format("Starting to add permision %s to entity %s", permissions.get(entityName), entityName));
+		
+				resourcePermissionLocalService.addResourcePermission(companyId, entityName, ResourceConstants.SCOPE_COMPANY,
+						String.valueOf(companyId), roleId, actionId);
+		
+				LOG.info(String.format("Added permision %s to entity %s", actionId, entityName));
+			}
+		}
 	}
 }
