@@ -24,8 +24,8 @@ import nl.finalist.liferay.lam.builder.DeleteFactoryBuilder;
 import nl.finalist.liferay.lam.builder.UpdateFactoryBuilder;
 import nl.finalist.liferay.lam.builder.ValidateFactoryBuilder;
 import nl.finalist.liferay.lam.dslglue.Executor;
-import nl.finalist.liferay.lam.model.Entities;
-import nl.finalist.liferay.lam.model.Roles;
+import nl.finalist.liferay.lam.dslglue.Entities;
+import nl.finalist.liferay.lam.dslglue.Roles;
 
 /**
  * Executor that evaluates configured scripts using a context containing all

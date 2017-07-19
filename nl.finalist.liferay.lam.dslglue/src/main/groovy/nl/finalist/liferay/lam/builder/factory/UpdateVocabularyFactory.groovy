@@ -17,12 +17,14 @@ class UpdateVocabularyFactory extends AbstractFactory {
     @Override
     Object newInstance(FactoryBuilderSupport builder, Object name, Object value, Map attributes)
                     throws InstantiationException, IllegalAccessException {
-        String vocabularyName = (String) attributes.get("name");
-        String languageId = (String) attributes.get("forLanguage");
-        String translatedName = (String) attributes.get("translation");
+        new VocabularyModel(attributes);
+    }
 
-        vocabularyService.updateVocabularyTranslation(languageId, translatedName, vocabularyName);
-
-        return null;
+    @Override
+    void onNodeCompleted(FactoryBuilderSupport builder, Object parent, Object node) {
+        super.onNodeCompleted(builder, parent, node);
+        VocabularyModel vocabulary = (VocabularyModel) node;
+        
+        vocabularyService.updateVocabularyTranslation(vocabulary.forLanguage, vocabulary.translation, vocabulary.name);
     }
 }

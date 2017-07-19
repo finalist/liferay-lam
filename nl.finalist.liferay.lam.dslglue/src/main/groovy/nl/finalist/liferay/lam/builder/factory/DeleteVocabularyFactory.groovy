@@ -17,9 +17,14 @@ class DeleteVocabularyFactory extends AbstractFactory{
     @Override
     Object newInstance(FactoryBuilderSupport builder, Object name, Object value, Map attributes)
                     throws InstantiationException, IllegalAccessException {
-        String vocabularyName = (String) attributes.get("name");
+       new VocabularyModel(attributes);
+    }
+
+    @Override
+    void onNodeCompleted(FactoryBuilderSupport builder, Object parent, Object node) {
+        super.onNodeCompleted(builder, parent, node);
+        VocabularyModel vocabulary = (VocabularyModel) node;
+        
         vocabularyService.deleteVocabulary(vocabularyName);
-        String.format("Vocabulary %s deletion completed", vocabularyName);
-        return null;
     }
 }

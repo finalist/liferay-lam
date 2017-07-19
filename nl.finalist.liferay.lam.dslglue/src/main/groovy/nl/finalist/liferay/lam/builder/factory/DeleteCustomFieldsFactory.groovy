@@ -5,7 +5,7 @@ import java.util.Map;
 import groovy.util.AbstractFactory;
 import groovy.util.FactoryBuilderSupport;
 import nl.finalist.liferay.lam.api.CustomFields;
-import nl.finalist.liferay.lam.model.CustomFieldModel;
+import nl.finalist.liferay.lam.dslglue.CustomFieldModel;
 
 class DeleteCustomFieldsFactory extends AbstractFactory{
     CustomFields customFieldsService;
@@ -17,13 +17,7 @@ class DeleteCustomFieldsFactory extends AbstractFactory{
     @Override
     Object newInstance(FactoryBuilderSupport builder, Object name, Object value, Map attributes)
                     throws InstantiationException, IllegalAccessException {
-        CustomFieldModel customField = null;
-        if (attributes != null) {
-            customField = new CustomFieldModel();
-            customField.setName((String) attributes.get("name"));
-            customField.setEntityName((String) attributes.get("entityName"));
-        }
-        return customField;
+        new CustomFieldModel(attributes);
     }
 
     @Override

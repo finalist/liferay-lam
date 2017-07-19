@@ -6,7 +6,7 @@ import java.util.Map;
 import groovy.util.AbstractFactory;
 import groovy.util.FactoryBuilderSupport;
 import nl.finalist.liferay.lam.api.CustomFields;
-import nl.finalist.liferay.lam.model.CustomFieldModel;
+import nl.finalist.liferay.lam.dslglue.CustomFieldModel;
 
 class CreateCustomFieldsFactory extends AbstractFactory {
 
@@ -19,19 +19,7 @@ class CreateCustomFieldsFactory extends AbstractFactory {
     @Override
     Object newInstance(FactoryBuilderSupport builder, Object objectName, Object value, Map attributes)
                     throws InstantiationException, IllegalAccessException {
-        CustomFieldModel customFieldObject = null;
-        if (attributes != null) {
-            ArrayList<String> list = (ArrayList<String>) attributes.get("roles");
-            String[] rolesArray = list.toArray(new String[list.size()]);
-            customFieldObject = new CustomFieldModel();
-            customFieldObject.setName((String) attributes.get("name"));
-            customFieldObject.setDefaultValue(attributes.get("defaultValue"));
-            customFieldObject.setRoles(rolesArray);
-            customFieldObject.setType((String) attributes.get("type"));
-            customFieldObject.setEntityName((String) attributes.get("entityName"));
-        }
-
-        return customFieldObject;
+        new CustomFieldModel(attributes);
     }
 
     @Override
