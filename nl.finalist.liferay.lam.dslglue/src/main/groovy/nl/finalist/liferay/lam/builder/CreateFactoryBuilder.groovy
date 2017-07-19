@@ -13,6 +13,6 @@ class CreateFactoryBuilder extends FactoryBuilderSupport {
     CreateFactoryBuilder(CustomFields customFieldsService, Vocabulary vocabularyService, RoleAndPermissions roleAndPermissionsService) {
         registerFactory("customField", new CreateCustomFieldsFactory(customFieldsService));
         registerFactory("vocabulary", new CreateVocabularyFactory(vocabularyService));
-        registerFactory("roleAndPermission", new CreateRoleAndPermissionsFactory(roleAndPermissionsService));
+        registerFactory("role", new CreateRoleAndPermissionsFactory(roleAndPermissionsService));
     }
 }

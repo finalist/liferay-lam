@@ -32,9 +32,9 @@ delete.vocabulary(
 	name: "TestVocabulary"
 )
 
-create.roleAndPermission(
-    roleName: "SomeRole",
-	roleType: TypeOfRole.REGULARROLES,
+create.role(
+    name: "SomeRole",
+	type: TypeOfRole.REGULARROLES,
 	titles: [
 		"en_GB": "SomeRole"
 	],

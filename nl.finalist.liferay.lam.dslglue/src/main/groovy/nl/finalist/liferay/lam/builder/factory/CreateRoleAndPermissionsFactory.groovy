@@ -1,14 +1,7 @@
 package nl.finalist.liferay.lam.builder.factory
 
-import nl.finalist.liferay.lam.dslglue.model.RoleAndPermissionsModel;
-
-import java.util.ArrayList;
-import java.util.Map;
-
-import groovy.util.AbstractFactory;
-import groovy.util.FactoryBuilderSupport;
 import nl.finalist.liferay.lam.api.RoleAndPermissions;
-import nl.finalist.liferay.lam.dslglue.model.RoleAndPermissionsModel;
+import nl.finalist.liferay.lam.dslglue.model.RoleModel;
 
 class CreateRoleAndPermissionsFactory extends AbstractFactory {
 
@@ -21,15 +14,15 @@ class CreateRoleAndPermissionsFactory extends AbstractFactory {
     @Override
     Object newInstance(FactoryBuilderSupport builder, Object objectName, Object value, Map attributes)
                     throws InstantiationException, IllegalAccessException {
-        new RoleAndPermissionsModel(attributes);
+        new RoleModel(attributes);
     }
 
     @Override
     void onNodeCompleted(FactoryBuilderSupport builder, Object parent, Object node) {
         super.onNodeCompleted(builder, parent, node);
-        RoleAndPermissionsModel model = (RoleAndPermissionsModel) node;
+        RoleModel model = (RoleModel) node;
         
-            roleAndPermissionsService.addCustomRoleAndPermission(model.roleName, model.roleType, model.titles,
+            roleAndPermissionsService.addCustomRoleAndPermission(model.name, model.type, model.titles,
                 model.descriptions, model.permissions);
     }
 }
