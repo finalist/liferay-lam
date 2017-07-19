@@ -3,6 +3,7 @@ package nl.finalist.liferay.lam.api;
 import java.util.Locale;
 import java.util.Map;
 
+import com.liferay.portal.kernel.service.UserLocalService;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -25,19 +26,19 @@ public class RoleAndPermissionsImpl implements RoleAndPermissions {
 	private RoleLocalService roleLocalService;
 	@Reference
 	private ResourcePermissionLocalService resourcePermissionLocalService;
+	@Reference
+	private UserLocalService userLocalService;
 
 	/**
 	 * Add a custom Role.
 	 * 
 	 * @param roleName
 	 *            name of the role to be added.
-	 * @param userId
-	 *            Id of the User who is performing the operation.
 	 * @param typeOfRole
 	 *            type of the role.
 	 * @param titles
 	 *            role titles which is a map of titles by Locale.
-	 * @param description
+	 * @param descriptions
 	 *            role descriptions which is a map of descriptions by Locale.
 	 * @param actionIds
 	 *            permissions to be added for the Role.
@@ -45,12 +46,14 @@ public class RoleAndPermissionsImpl implements RoleAndPermissions {
 	 *            entity for which permissions should be added.
 	 */
 	@Override
-	public boolean addCustomRoleAndPermission(String roleName, Long userId, TypeOfRole typeOfRole,
+	public boolean addCustomRoleAndPermission(String roleName, TypeOfRole typeOfRole,
 			Map<Locale, String> titles, Map<Locale, String> descriptions, String[] actionIds,
 			String entityName) {
 		long companyId = PortalUtil.getDefaultCompanyId();
-		LOG.info(String.format("Adding role  %s with userId = %d", roleName, userId));
+
+		LOG.info(String.format("Adding role  %s", roleName));
 		try {
+			Long userId = userLocalService.getDefaultUserId(companyId);
 			Role role = roleLocalService.addRole(userId, null, 0L, roleName, titles, descriptions,
 					typeOfRole.getValue(), null, null);
 			LOG.info(String.format("Added the role", role.getCreateDate()));
@@ -63,7 +66,7 @@ public class RoleAndPermissionsImpl implements RoleAndPermissions {
 			}
 			return true;
 		} catch (PortalException e) {
-			LOG.info("For some reason the role was not added. Please check and confirm your role credentials");
+			LOG.error("For some reason the role was not added. ");
 			return false;
 		}
 	}

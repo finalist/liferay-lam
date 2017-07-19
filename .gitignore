@@ -11,3 +11,7 @@ TestStartupHook/gradle/
 build
 
 .metadata
+gradlew
+gradle/
+gradlew.bat
+nl.finalist.liferay.lam.api/out/

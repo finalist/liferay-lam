@@ -1,4 +1,3 @@
-
 create.customField (
 	name: 'fieldTest',
 	type: 'String',
@@ -31,4 +30,17 @@ update.vocabulary(
 )
 delete.vocabulary(
 	name: "TestVocabulary"
+)
+
+create.roleAndPermission(
+    roleName: "SomeRole",
+	roleType: TypeOfRole.REGULARROLES,
+	titles: [
+		"en_GB": "SomeRole"
+	],
+	descriptions: [
+		"en_GB": "SomeDescription"
+	],
+	actionIds: [ActionKeys.VIEW, ActionKeys.ADD_ARTICLE, ActionKeys.DELETE],
+	entityName: Entities.webcontent
 )

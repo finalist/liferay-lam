@@ -1,4 +1,4 @@
-package nl.finalist.liferay.lam.dslglue;
+package nl.finalist.liferay.lam.dslglue.model;
 
 import java.util.Arrays;
 
