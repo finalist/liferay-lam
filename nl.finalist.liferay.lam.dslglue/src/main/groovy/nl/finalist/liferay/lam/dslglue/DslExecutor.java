@@ -3,6 +3,7 @@ package nl.finalist.liferay.lam.dslglue;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
+import java.io.File;
 import java.io.Reader;
 
 import org.codehaus.groovy.control.CompilerConfiguration;
@@ -12,6 +13,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 import groovy.lang.Binding;
+import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyShell;
 import nl.finalist.liferay.lam.api.CustomFields;
 import nl.finalist.liferay.lam.api.PortalProperties;
@@ -21,8 +23,9 @@ import nl.finalist.liferay.lam.builder.CreateFactoryBuilder;
 import nl.finalist.liferay.lam.builder.DeleteFactoryBuilder;
 import nl.finalist.liferay.lam.builder.UpdateFactoryBuilder;
 import nl.finalist.liferay.lam.builder.ValidateFactoryBuilder;
-import nl.finalist.liferay.lam.model.Entities;
-import nl.finalist.liferay.lam.model.Roles;
+import nl.finalist.liferay.lam.dslglue.Executor;
+import nl.finalist.liferay.lam.dslglue.Entities;
+import nl.finalist.liferay.lam.dslglue.Roles;
 
 /**
  * Executor that evaluates configured scripts using a context containing all
@@ -52,7 +55,7 @@ public class DslExecutor implements Executor {
         LOG.debug("DSL Executor running the available scripts");
 
         Binding sharedData = new Binding();
-
+        
         // Add all available API classes to the context of the scripts
         sharedData.setVariable("LOG", LOG);
 

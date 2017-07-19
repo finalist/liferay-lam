@@ -32,7 +32,6 @@ public class UpdatePortalSettingsFactory extends AbstractFactory {
     @Override
     public void onNodeCompleted(FactoryBuilderSupport builder, Object parent, Object node) {
         super.onNodeCompleted(builder, parent, node);
-        LOG.info("PortalSettings node completed");
     }
 
     private void callUpdateMethod(String key, Object value) {
@@ -40,7 +39,6 @@ public class UpdatePortalSettingsFactory extends AbstractFactory {
         if (Validator.isNotNull(method)) {
             try {
                 method.invoke(portalSettingsservice, value);
-                LOG.info(String.format("%s succesfully set to %s", key, value));
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
                 LOG.error(String.format("The set method for %s can not be invoked with %s", key, value));
             }
