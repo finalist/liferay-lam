@@ -67,7 +67,7 @@ public class CustomFieldsImpl implements CustomFields {
     public void addCustomTextField(String entityName, String fieldName, String defaultValue, String[] roles) {
         this.addCustomTextField(PortalUtil.getDefaultCompanyId(), entityName, fieldName, defaultValue, roles);
     }
-
+   
     
     private void addCustomIntegerField(long companyId, String entityName, String fieldName, int defaultValue, String[] roles) {
         LOG.debug(String.format("Start adding custom integer field %s for company %d to entity %s with default value %s",

@@ -1,6 +1,7 @@
 
 package nl.finalist.liferay.lam.api;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -10,6 +11,6 @@ import java.util.Map;
  */
 public interface RoleAndPermissions {
 	boolean addCustomRoleAndPermission(String role, TypeOfRole typeOfRole, Map<Locale, String> title,
-			Map<Locale, String> description, Map<String, String[]> permissions);
+			Map<Locale, String> description, Map<String, List<String>> permissions);
 
 }

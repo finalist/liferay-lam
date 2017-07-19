@@ -3,7 +3,9 @@ package nl.finalist.liferay.lam.api;
 import static org.junit.Assert.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -63,21 +65,30 @@ public class RoleAndPermissionsImplTest {
 		assertTrue(result);
 	}
 
-	private Map<String, String[]> getUserAccessPermissions() {
-		Map permissions = new HashMap<String, String[]>();
-		permissions.put(User.class.getName(), new String[] { ActionKeys.ACCESS });
+	private Map<String, List<String>> getUserAccessPermissions() {
+		Map<String, List<String>> permissions = new HashMap<>();
+		List<String> actionIds = new ArrayList<>();
+		actionIds.add(ActionKeys.ACCESS);
+		
+		permissions.put(User.class.getName(), actionIds);
 		return permissions;
 	}
 	
-	private Map<String, String[]> getUserAccessAndViewPermissions() {
-		Map permissions = new HashMap<String, String[]>();
-		permissions.put(User.class.getName(), new String[] { ActionKeys.ACCESS, ActionKeys.VIEW });
+	private Map<String, List<String>> getUserAccessAndViewPermissions() {
+		Map<String, List<String>> permissions = new HashMap<>();
+		List<String> actionIds = new ArrayList<>();
+		actionIds.add(ActionKeys.ACCESS);
+		actionIds.add(ActionKeys.VIEW);
+		
+		permissions.put(User.class.getName(), actionIds);
 		return permissions;
 	}
 	
-	private Map<String, String[]> getUserNoPermissions() {
-		Map permissions = new HashMap<String, String[]>();
-		permissions.put(User.class.getName(), new String[]{});
+	private Map<String, List<String>> getUserNoPermissions() {
+		Map<String, List<String>> permissions = new HashMap<>();
+		List<String> actionIds = new ArrayList<>();
+
+		permissions.put(User.class.getName(), actionIds);
 		return permissions;
 	}
 	

@@ -7,6 +7,5 @@ class RoleAndPermissionsModel {
     TypeOfRole roleType
     Map<Locale, String> titles
     Map<Locale, String> descriptions
-    String[] actionIds
-    String entityName
+    Map<String, ArrayList<String>> permissions
 }

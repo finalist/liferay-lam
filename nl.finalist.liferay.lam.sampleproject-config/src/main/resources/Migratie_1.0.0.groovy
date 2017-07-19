@@ -42,6 +42,6 @@ create.roleAndPermission(
 		"en_GB": "SomeDescription"
 	],
 	permissions: [
-		(Entities.webcontent):[ActionKeys.VIEW, ActionKeys.ADD_ARTICLE, ActionKeys.DELETE]
+		(Entities.webcontent):[ActionKeys.VIEW, ActionKeys.DELETE]
 	]
 )
