@@ -16,14 +16,17 @@ Initially it's targeted towards development teams, but it's also definitely usef
 1. Create a module within your project, give it a name you like, for example `com.acme.myproject-config`
 2. Create a class like this:
     ````
-    @Component(immediate=true)
-    class MyConfig {
-        @Reference
-        private Executor executor;
-        
+    @Component(immediate = true)
+    public class SampleProjectConfig extends ProjectConfig {
+    
         @Activate
-        void activate() {
-            executor.runScripts();
+        public void activate(BundleContext context) {
+            super.doActivate(context);
+        }
+    
+        @Reference
+        protected void setExecutor(Executor executor) {
+            this.executor = executor;
         }
     }	
     ````

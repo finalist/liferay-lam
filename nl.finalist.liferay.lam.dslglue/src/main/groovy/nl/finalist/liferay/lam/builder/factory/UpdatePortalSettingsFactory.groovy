@@ -1,36 +1,32 @@
-package nl.finalist.liferay.lam.builder.factory;
+package nl.finalist.liferay.lam.builder.factory
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Map;
+import com.liferay.portal.kernel.log.Log
+import com.liferay.portal.kernel.log.LogFactoryUtil
+import com.liferay.portal.kernel.util.Validator
+import nl.finalist.liferay.lam.api.PortalSettings
 
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.Validator;
+import java.lang.reflect.InvocationTargetException
+import java.lang.reflect.Method
 
-import groovy.util.AbstractFactory;
-import groovy.util.FactoryBuilderSupport;
-import nl.finalist.liferay.lam.api.PortalSettings;
-
-public class UpdatePortalSettingsFactory extends AbstractFactory {
+class UpdatePortalSettingsFactory extends AbstractFactory {
 
     private static final Log LOG = LogFactoryUtil.getLog(UpdatePortalSettingsFactory.class);
-    PortalSettings portalSettingsservice;
+    PortalSettings portalSettingsservice
 
-    public UpdatePortalSettingsFactory(PortalSettings portalSettingsService) {
-        this.portalSettingsservice = portalSettingsService;
+    UpdatePortalSettingsFactory(PortalSettings portalSettingsService) {
+        this.portalSettingsservice = portalSettingsService
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public Object newInstance(FactoryBuilderSupport builder, Object name, Object value, Map attributes)
+    Object newInstance(FactoryBuilderSupport builder, Object name, Object value, Map attributes)
                     throws InstantiationException, IllegalAccessException {
-        attributes.forEach((key, entry) -> callUpdateMethod((String) key, entry));
+        attributes.forEach { key, entry -> callUpdateMethod((String) key, entry)};
         return attributes;
     }
 
     @Override
-    public void onNodeCompleted(FactoryBuilderSupport builder, Object parent, Object node) {
+    void onNodeCompleted(FactoryBuilderSupport builder, Object parent, Object node) {
         super.onNodeCompleted(builder, parent, node);
     }
 
