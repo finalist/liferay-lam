@@ -5,6 +5,7 @@ import java.util.Map;
 import groovy.util.AbstractFactory;
 import groovy.util.FactoryBuilderSupport;
 import nl.finalist.liferay.lam.api.Vocabulary;
+import nl.finalist.liferay.lam.dslglue.VocabularyModel;
 
 class CreateVocabularyFactory extends AbstractFactory  {
     Vocabulary vocabularyService;
@@ -16,13 +17,13 @@ class CreateVocabularyFactory extends AbstractFactory  {
     @Override
     Object newInstance(FactoryBuilderSupport builder, Object name, Object value, Map attributes)
                     throws InstantiationException, IllegalAccessException {
-        String vocabularyName = (String) attributes.get("name");
-        vocabularyService.addVocabulary(vocabularyName);
-        return attributes;
+        new VocabularyModel(attributes);
     }
 
     @Override
     void onNodeCompleted(FactoryBuilderSupport builder, Object parent, Object node) {
         super.onNodeCompleted(builder, parent, node);
+        VocabularyModel vocabulary = (VocabularyModel) node;
+        vocabularyService.addVocabulary(vocabularyName);
     }
 }

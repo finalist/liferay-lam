@@ -5,6 +5,7 @@ import java.util.Map;
 import groovy.util.AbstractFactory;
 import groovy.util.FactoryBuilderSupport;
 import nl.finalist.liferay.lam.api.Vocabulary;
+import nl.finalist.liferay.lam.dslglue.VocabularyModel;
 
 class UpdateVocabularyFactory extends AbstractFactory {
 
