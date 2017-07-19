@@ -24,6 +24,6 @@ class CreateVocabularyFactory extends AbstractFactory  {
     void onNodeCompleted(FactoryBuilderSupport builder, Object parent, Object node) {
         super.onNodeCompleted(builder, parent, node);
         VocabularyModel vocabulary = (VocabularyModel) node;
-        vocabularyService.addVocabulary(vocabularyName);
+        vocabularyService.addVocabulary(vocabulary.name);
     }
 }
