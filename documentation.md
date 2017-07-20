@@ -113,4 +113,14 @@ The following script shows how you can delete a vocabulary:
 	
 As you can see, all you have to specify is the name of the vocabulary. If the vocabulary doesn't exist in the global scope, an error message will be logged.
 
+#User groups
+You can add user groups.
+
+The following script shows how you can delete a vocabulary:
+
+	create.userGroup(
+		name: "usergroup1",
+		description: "SomeUseGroupWeTested"
+	)
 	
+As you can see, you only have to specify the name and the description.
