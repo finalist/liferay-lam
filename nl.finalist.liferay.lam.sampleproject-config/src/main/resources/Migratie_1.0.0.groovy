@@ -1,8 +1,19 @@
+<<<<<<< Updated upstream
+=======
+import nl.finalist.liferay.lam.dslglue.CustomFieldType
+>>>>>>> Stashed changes
 
 create.customField (
 	name: 'fieldTest',
-	type: 'String',
+	type: CustomFieldType.TEXT,
 	defaultValue: 'test',
+	entityName: Entities.user,
+	roles: [Roles.guest, Roles.user]
+)
+create.customField (
+	name: 'fieldGroupTest',
+	type: CustomFieldType.TEXT_GROUP,
+	defaultValue: 'a,b,c',
 	entityName: Entities.user,
 	roles: [Roles.guest, Roles.user]
 )
@@ -11,6 +22,7 @@ delete.customField(
 	name: 'fieldTest',
 	entityName: Entities.user
 )
+
 update.portalSettings(
 	virtualHostName: "virtualTestName",
 	portalName: "TestName",

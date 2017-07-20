@@ -10,13 +10,18 @@ The following script shows how to define a custom field in your script:
 
     create.customField (
         name: 'fieldTest',
-        type: 'String',
+	    type: CustomFieldType.TEXT,
         defaultValue: 'test',
         entityName: Entities.user,
         roles: [Roles.guest, Roles.user]
     )
 
-If the custom field called 'fieldTest' already exists, it will be overwritten. For each custom field you have to define a name, a type (string or integer are the only two supported types at this moment), an entity name (the supported entities are listed in the table below), a default value, and the roles that will be allowed to view and update the custom field. The newly created field will be added to the default Liferay instance. 
+If the custom field called 'fieldTest' already exists, it will be overwritten. For each custom field you have to define 
+a name, a type (string or integer are the only two supported types at this moment), an entity name (the supported 
+entities are listed in the table below), a default value, and the roles that will be allowed to view and update the 
+custom field. The newly created field will be added to the default Liferay instance. 
+
+At the moment the following entities are supported:
 
 | Entity name | Lifery object |
 |---|---|
@@ -27,6 +32,14 @@ If the custom field called 'fieldTest' already exists, it will be overwritten. F
 | role | Role |
 | site | Group |
 | webcontent | JournalArticle |
+
+At the moment the following types are supported:
+
+| Type |
+|---|
+| CustomFieldType.INTEGER_32 |
+| CustomFieldType.TEXT |
+| CustomFieldType.TEXT_GROUP |
 
 ## Delete
 The following script shows how to specify the deletion of a custom field in your script:

@@ -15,6 +15,15 @@ public interface CustomFields {
     void addCustomTextField(String entityName, String fieldName, String defaultValue, String[] roles);
 
     /**
+     * Add a custom field of type text array.
+     *
+     * @param entityName entity that the field is added to
+     * @param fieldName name of the field
+     * @param possibleValues possible values of the field, comma separated
+     */
+    void addCustomTextArrayField(String entityName, String fieldName, String possibleValues, String[] roles);
+
+    /**
      * Add a custom field of type integer
      *
      * @param entityName entity that the field is added to

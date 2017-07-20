@@ -69,6 +69,12 @@ public class DslExecutor implements Executor {
         CompilerConfiguration conf = new CompilerConfiguration();
         ImportCustomizer imports = new ImportCustomizer();
 
+<<<<<<< Updated upstream
+=======
+        imports.addImport("TypeOfRole", "nl.finalist.liferay.lam.api.TypeOfRole");
+        imports.addImport("CustomFieldType", "nl.finalist.liferay.lam.dslglue.CustomFieldType");
+
+>>>>>>> Stashed changes
         // Make these imports available to the scripts
 
         conf.addCompilationCustomizers(imports);
