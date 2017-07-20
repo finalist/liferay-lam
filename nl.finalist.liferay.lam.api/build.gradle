@@ -30,7 +30,7 @@ dependencies {
     testCompile 'org.powermock:powermock-core:1.6.1'
     testCompile 'org.powermock:powermock-module-junit4:1.6.1'
     testCompile 'org.powermock:powermock-api-mockito:1.6.1'
-     compile "org.javassist:javassist:3.15.0-GA"
+    testCompile "org.javassist:javassist:3.15.0-GA"
     
     
 }
