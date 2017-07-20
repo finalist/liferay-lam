@@ -1,7 +1,4 @@
-<<<<<<< Updated upstream
-=======
-import nl.finalist.liferay.lam.dslglue.CustomFieldType
->>>>>>> Stashed changes
+import nl.finalist.liferay.lam.dslglue.DisplayType
 
 create.customField (
 	name: 'fieldTest',
@@ -15,7 +12,8 @@ create.customField (
 	type: CustomFieldType.TEXT_GROUP,
 	defaultValue: 'a,b,c',
 	entityName: Entities.user,
-	roles: [Roles.guest, Roles.user]
+	roles: [Roles.guest, Roles.user],
+	displayType: DisplayType.CHECKBOX
 )
 
 delete.customField(

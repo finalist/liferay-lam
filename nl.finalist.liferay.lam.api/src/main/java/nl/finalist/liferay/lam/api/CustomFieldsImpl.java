@@ -93,7 +93,7 @@ public class CustomFieldsImpl implements CustomFields {
     }
 
     @Override
-    public void addCustomTextArrayField(String entityName, String fieldName, String possibleValues, String[] roles) {
+    public void addCustomTextArrayField(String entityName, String fieldName, String possibleValues, String[] roles, String displayType) {
         Long companyId = PortalUtil.getDefaultCompanyId();
         LOG.info(String.format("Start adding custom text array field %s for company %d to entity %s with default value %s and roles %s", fieldName, companyId, entityName, possibleValues, Arrays.toString(roles)));
 
@@ -102,7 +102,11 @@ public class CustomFieldsImpl implements CustomFields {
 
         ExpandoColumn expandoColumn = getOrAddExpandoTextArrayColumn(companyId, entityName, ExpandoTableConstants.DEFAULT_TABLE_NAME, fieldName, expandoTable);
         saveDefaultValueForColumn(possibleValues, expandoColumn);
-        
+
+        UnicodeProperties properties = expandoColumn.getTypeSettingsProperties();
+        properties.setProperty("display-type", displayType);
+        columnService.updateExpandoColumn(expandoColumn);
+
         // possible display-types: checkbox, radio, selection-list, text-box
         for (String role : roles) {
             addExpandoPermissions(companyId, expandoColumn, role);

@@ -9,7 +9,7 @@ class CustomFieldModel {
     String type;
     String entityName;
     String[] roles;
-
+    String displayType;
     
     @Override
     public String toString() {

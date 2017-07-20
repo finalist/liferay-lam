@@ -1,18 +1,8 @@
 package nl.finalist.liferay.lam.builder.factory;
 
-<<<<<<< Updated upstream
-import java.util.ArrayList;
-import java.util.Map;
-
-import groovy.util.AbstractFactory;
-import groovy.util.FactoryBuilderSupport;
 import nl.finalist.liferay.lam.api.CustomFields;
-import nl.finalist.liferay.lam.dslglue.CustomFieldModel;
-=======
-import nl.finalist.liferay.lam.api.CustomFields
 import nl.finalist.liferay.lam.dslglue.CustomFieldType;
-import nl.finalist.liferay.lam.dslglue.model.CustomFieldModel;
->>>>>>> Stashed changes
+import nl.finalist.liferay.lam.dslglue.CustomFieldModel;
 
 class CreateCustomFieldsFactory extends AbstractFactory {
 
@@ -40,7 +30,7 @@ class CreateCustomFieldsFactory extends AbstractFactory {
                 customFieldsService.addCustomTextField(cf.getEntityName(), cf.getName(), (String) cf.getDefaultValue(), cf.getRoles());
                 break;
             case(CustomFieldType.TEXT_GROUP):
-                customFieldsService.addCustomTextArrayField(cf.getEntityName(), cf.getName(), (String) cf.getDefaultValue(), cf.getRoles());
+                customFieldsService.addCustomTextArrayField(cf.getEntityName(), cf.getName(), (String) cf.getDefaultValue(), cf.getRoles(), cf.getDisplayType());
                 break;
         }
     }

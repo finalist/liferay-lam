@@ -9,17 +9,18 @@ You can create/update and delete custom fields.
 The following script shows how to define a custom field in your script:
 
     create.customField (
-        name: 'fieldTest',
-	    type: CustomFieldType.TEXT,
-        defaultValue: 'test',
-        entityName: Entities.user,
-        roles: [Roles.guest, Roles.user]
-    )
+		name: 'fieldGroupTest',
+		type: CustomFieldType.TEXT_GROUP,
+		defaultValue: 'a,b,c',
+		entityName: Entities.user,
+		roles: [Roles.guest, Roles.user],
+		displayType: DisplayType.CHECKBOX
+	)
 
-If the custom field called 'fieldTest' already exists, it will be overwritten. For each custom field you have to define 
+If the custom field of this name already exists, it will be overwritten. For each custom field you have to define 
 a name, a type (string or integer are the only two supported types at this moment), an entity name (the supported 
 entities are listed in the table below), a default value, and the roles that will be allowed to view and update the 
-custom field. The newly created field will be added to the default Liferay instance. 
+custom field. For custom fields of the type TEXT_GROUP, you can also define a displayType. The newly created field will be added to the default Liferay instance. 
 
 At the moment the following entities are supported:
 
@@ -40,6 +41,15 @@ At the moment the following types are supported:
 | CustomFieldType.INTEGER_32 |
 | CustomFieldType.TEXT |
 | CustomFieldType.TEXT_GROUP |
+
+This is the list of display types for TEXT_GROUP:
+
+| Display type |
+|---|
+| DisplayType.CHECKBOX |
+| DisplayType.RADIO |
+| DisplayType.SELECTION_LIST |
+| DisplayType.TEXT_BOX |
 
 ## Delete
 The following script shows how to specify the deletion of a custom field in your script:
