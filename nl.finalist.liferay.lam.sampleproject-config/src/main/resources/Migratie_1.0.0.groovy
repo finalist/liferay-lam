@@ -32,3 +32,8 @@ update.vocabulary(
 delete.vocabulary(
 	name: "TestVocabulary"
 )
+
+create.userGroup(
+	name: "usergroup1",
+	description: "SomeUseGroupWeTested"
+)
