@@ -2,6 +2,7 @@ package nl.finalist.liferay.lam.dslglue;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.InfrastructureUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,7 +10,13 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
+import org.flywaydb.core.Flyway;
+import org.flywaydb.core.api.MigrationVersion;
+import org.flywaydb.core.api.resolver.MigrationResolver;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -34,28 +41,59 @@ public abstract class ProjectConfig {
      */
     protected abstract void setExecutor(Executor executor);
 
+
     protected void doActivate(BundleContext context) {
+
+
 
         LOG.info("Running project-specific configuration with @Activate");
 
         Enumeration<URL> entries = context.getBundle().findEntries("/", "*.groovy", true);
-        Collections.list(entries).forEach(scriptUrl -> {
 
-            LOG.info("Entry :  " + scriptUrl.getFile());
 
-            InputStream input;
-            try {
-                input = scriptUrl.openStream();
+        List<Script> scripts = Collections.list(entries).stream()
+            .map(scriptUrl -> {
+
+                LOG.info("Entry :  " + scriptUrl.getFile());
+
+                InputStream input;
                 try {
-                    executor.runScripts(new InputStreamReader(input));
-                } finally {
-                    input.close();
-                }
-            } catch (IOException e) {
-                LOG.error(e);
-            }
+                    input = scriptUrl.openStream();
+                    return new Script(scriptUrl.getFile(), new InputStreamReader(input));
 
-        });
+                } catch (IOException e) {
+                    LOG.error(e);
+                }
+                return null;
+            })
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList());
+
+        flyway(scripts);
     }
 
+
+    void flyway(List<Script> scripts) {
+        LOG.info("Running flyway migrations with scripts: " + scripts);
+        Flyway flyway = new Flyway();
+
+        flyway.setSkipDefaultResolvers(true);
+
+        flyway.setDataSource(InfrastructureUtil.getDataSource());
+
+        flyway.setResolvers((MigrationResolver) () ->
+            scripts
+            .stream()
+            .map(s -> new FlywayLAMMigration(executor, s))
+            .collect(Collectors.toList()));
+
+        flyway.setTable("LAM_Changelog");
+
+        // TODO: is this safe enough? The Flyway javadoc says it removes the safety net.
+        flyway.setBaselineOnMigrate(true);
+        flyway.setBaselineVersion(MigrationVersion.fromVersion("0"));
+        flyway.setBaselineVersionAsString("0");
+        flyway.setBaselineDescription("Baseline");
+        flyway.migrate();
+    }
 }
