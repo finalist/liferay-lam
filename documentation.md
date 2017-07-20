@@ -118,9 +118,14 @@ You can add user groups.
 
 The following script shows how you can delete a vocabulary:
 
-	create.userGroup(
-		name: "usergroup1",
-		description: "SomeUseGroupWeTested"
-	)
+    create.userGroup(
+        name: "usergroup1",
+        description: "SomeUseGroupWeTested",
+        customFields: [
+            "someField": "another value"
+        ]
+    )
 	
-As you can see, you only have to specify the name and the description.
+As you can see, you have to specify the name and the description. It is also possible to give a value to a custom field.
+Of course this custom field has to exist before you can give it a value here. CustomFields is a map where the key is
+the name of the custom field, and the value is the actual value you want to give it.

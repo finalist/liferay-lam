@@ -1,12 +1,19 @@
 package nl.finalist.liferay.lam.api;
 
+import java.util.Arrays;
+
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+
 import com.liferay.expando.kernel.exception.NoSuchTableException;
 import com.liferay.expando.kernel.model.ExpandoColumn;
 import com.liferay.expando.kernel.model.ExpandoColumnConstants;
 import com.liferay.expando.kernel.model.ExpandoTable;
 import com.liferay.expando.kernel.model.ExpandoTableConstants;
 import com.liferay.expando.kernel.service.ExpandoColumnLocalService;
+import com.liferay.expando.kernel.service.ExpandoRowLocalService;
 import com.liferay.expando.kernel.service.ExpandoTableLocalService;
+import com.liferay.expando.kernel.service.ExpandoValueLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
@@ -19,11 +26,6 @@ import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringPool;
 
-import java.util.Arrays;
-
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * Implementation for {@link nl.finalist.liferay.lam.api.CustomFields}
  */
@@ -32,9 +34,12 @@ public class CustomFieldsImpl implements CustomFields {
 
     @Reference
     private ExpandoTableLocalService tableService;
-
     @Reference
     private ExpandoColumnLocalService columnService;
+    @Reference
+    private ExpandoRowLocalService rowService;
+    @Reference
+    private ExpandoValueLocalService valueService;
 
     @Reference
     private RoleLocalService roleService;
@@ -120,6 +125,14 @@ public class CustomFieldsImpl implements CustomFields {
         deleteCustomField(PortalUtil.getDefaultCompanyId(), entityName, fieldName);
     }
 
+    @Override
+    public void addCustomFieldValue(String entityName, String fieldName, long classPK, String content) {
+		try {
+			valueService.addValue(PortalUtil.getDefaultCompanyId(), entityName, ExpandoTableConstants.DEFAULT_TABLE_NAME, fieldName, classPK, content);
+		} catch (PortalException e) {
+			LOG.error(e);
+		}
+    }
 
     private ExpandoTable getOrAddExpandoTable(long companyId, String className, String tableName) {
         ExpandoTable expandoTable = null;

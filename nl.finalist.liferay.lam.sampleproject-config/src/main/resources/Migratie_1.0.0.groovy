@@ -1,10 +1,17 @@
-
 create.customField (
 	name: 'fieldTest',
 	type: 'String',
 	defaultValue: 'test',
 	entityName: Entities.user,
 	roles: [Roles.guest, Roles.user]
+)
+
+create.customField (
+    name: 'someField',
+    type: 'String',
+    defaultValue: 'test',
+    entityName: Entities.usergroup,
+    roles: [Roles.guest, Roles.user]
 )
 
 delete.customField(
@@ -35,5 +42,8 @@ delete.vocabulary(
 
 create.userGroup(
 	name: "usergroup1",
-	description: "SomeUseGroupWeTested"
+	description: "SomeUseGroupWeTested",
+	customFields: [
+	    "someField": "another value"
+	]
 )

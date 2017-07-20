@@ -12,6 +12,8 @@ import com.liferay.portal.kernel.util.PropsUtil;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+import java.util.Map;
+
 @Component(immediate = true, service = UserGroups.class)
 public class UserGroupsImpl implements UserGroups {
 
@@ -19,11 +21,13 @@ public class UserGroupsImpl implements UserGroups {
     private UserGroupLocalService userGroupLocalService;
     @Reference
     CompanyLocalService companyService;
+    @Reference
+    CustomFields customFieldsService;
 
     private static final Log LOG = LogFactoryUtil.getLog(UserGroupsImpl.class);
 
     @Override
-    public boolean addUserGroup(String name, String description) {
+    public boolean addUserGroup(String name, String description, Map<String, String> customFields) {
         try {
         	UserGroup group = userGroupLocalService.fetchUserGroup(getDefaultCompany().getCompanyId(), name);
         	if (group != null) {
@@ -32,6 +36,10 @@ public class UserGroupsImpl implements UserGroups {
 				userGroupLocalService.addUserGroup(getDefaultUserId(), getDefaultCompany().getCompanyId(), name, description, new ServiceContext());
 				return true;
         	}
+
+            for (String fieldName : customFields.keySet()) {
+                customFieldsService.addCustomFieldValue(UserGroup.class.getName(), fieldName, group.getPrimaryKey(), customFields.get(fieldName));
+            }
 		} catch (PortalException e) {
 			LOG.error("Adding the user group failed");
 		}

@@ -8,6 +8,7 @@ import com.liferay.expando.kernel.model.ExpandoTable;
 import com.liferay.expando.kernel.model.ExpandoTableConstants;
 import com.liferay.expando.kernel.service.ExpandoColumnLocalService;
 import com.liferay.expando.kernel.service.ExpandoTableLocalService;
+import com.liferay.expando.kernel.service.ExpandoValueLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
@@ -42,6 +43,8 @@ public class CustomFieldsTest {
     private ExpandoTableLocalService tableService;
     @Mock
     private ExpandoColumnLocalService columnService;
+    @Mock
+    private ExpandoValueLocalService valueService;
     @Mock
     private RoleLocalService roleService;
     @Mock
@@ -123,5 +126,12 @@ public class CustomFieldsTest {
         verify(columnService).getColumn(COMPANY_ID, ENTITY_NAME, ExpandoTableConstants.DEFAULT_TABLE_NAME, FIELD_NAME);
         verify(columnService).deleteExpandoColumn(mockColumn);
         verify(tableService).deleteExpandoTable(mockTable);
+    }
+    
+    @Test
+    public void testAddCustomFieldValue() throws PortalException {
+    	customFields.addCustomFieldValue(ENTITY_NAME, FIELD_NAME, 0L, "content");
+    	
+    	verify(valueService).addValue(1L, ENTITY_NAME, ExpandoTableConstants.DEFAULT_TABLE_NAME, FIELD_NAME, 0L, "content");
     }
 }

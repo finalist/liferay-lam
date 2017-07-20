@@ -20,6 +20,6 @@ class CreateUserGroupFactory extends AbstractFactory  {
     void onNodeCompleted(FactoryBuilderSupport builder, Object parent, Object node) {
         super.onNodeCompleted(builder, parent, node);
         UserGroupModel model = (UserGroupModel) node;
-        userGroupsService.addUserGroup(model.name, model.description);
+        userGroupsService.addUserGroup(model.name, model.description, model.customFields);
     }
 }

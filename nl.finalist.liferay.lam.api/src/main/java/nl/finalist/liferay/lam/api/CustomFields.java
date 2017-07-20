@@ -30,4 +30,14 @@ public interface CustomFields {
      * @param fieldName name of the field
      */
     void deleteCustomField(String entityName, String fieldName);
+
+    /**
+     * Add a value to a custom field
+     * 
+     * @param entityName entity to which the field applies
+     * @param fieldName name of the field
+     * @param classPK primary key of the entity that the value belongs to
+     * @param content value of the field
+     */
+	void addCustomFieldValue(String entityName, String fieldName, long classPK, String content);
 }

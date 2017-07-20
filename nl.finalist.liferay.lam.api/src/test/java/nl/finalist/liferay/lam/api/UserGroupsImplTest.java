@@ -38,6 +38,9 @@ public class UserGroupsImplTest {
     private ServiceContext mockServiceContext;
     @Mock
     private UserGroupLocalService userGroupService;
+    @Mock
+    private CustomFields customFieldsService;
+    
     @InjectMocks
     private UserGroupsImpl userGroupsImpl;
 
@@ -59,8 +62,9 @@ public class UserGroupsImplTest {
         when(mockDefaultUser.getUserId()).thenReturn(10L);
         whenNew(ServiceContext.class).withNoArguments().thenReturn(mockServiceContext);
 
-        userGroupsImpl.addUserGroup(groupName, description);
+        userGroupsImpl.addUserGroup(groupName, description, null);
 
         verify(userGroupService).addUserGroup(10L, 1L, groupName, description, mockServiceContext);
     }
+    
 }
