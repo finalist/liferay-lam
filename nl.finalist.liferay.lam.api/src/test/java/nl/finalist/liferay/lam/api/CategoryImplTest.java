@@ -1,32 +1,25 @@
 package nl.finalist.liferay.lam.api;
 
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import com.liferay.portal.kernel.dao.orm.Criterion;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.Property;
-import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
-import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.CompanyLocalService;
@@ -78,8 +71,8 @@ public class CategoryImplTest {
 		names[0] = "xxx";
 		when(assetCategoryLocalService.getCategoryNames()).thenReturn(names);
 		 whenNew(ServiceContext.class).withNoArguments().thenReturn(mockServiceContext);
-		 assetCategroy.setName("Style");
 		when(assetCategoryLocalService.addCategory(1L, 1L, "Style", 123L, mockServiceContext)).thenReturn(assetCategroy);
 		categoryImpl.addCategory("Style", "test", "testing it");
+		verify(assetCategoryLocalService).addCategory(1L, 1L, "Style", 123L, mockServiceContext);
 	}
 }
