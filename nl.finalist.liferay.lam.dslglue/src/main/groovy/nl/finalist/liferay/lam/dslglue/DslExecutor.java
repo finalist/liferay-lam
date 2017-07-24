@@ -19,6 +19,7 @@ import nl.finalist.liferay.lam.api.CustomFields;
 import nl.finalist.liferay.lam.api.PortalProperties;
 import nl.finalist.liferay.lam.api.PortalSettings;
 import nl.finalist.liferay.lam.api.Vocabulary;
+import nl.finalist.liferay.lam.api.Category;
 import nl.finalist.liferay.lam.builder.CreateFactoryBuilder;
 import nl.finalist.liferay.lam.builder.DeleteFactoryBuilder;
 import nl.finalist.liferay.lam.builder.UpdateFactoryBuilder;
@@ -44,6 +45,8 @@ public class DslExecutor implements Executor {
     private Vocabulary vocabularyService;
     @Reference
     private PortalProperties portalPropertiesService;
+    @Reference
+    private Category categoryService;
 
     @Activate
     public void activate() {
@@ -59,10 +62,10 @@ public class DslExecutor implements Executor {
         // Add all available API classes to the context of the scripts
         sharedData.setVariable("LOG", LOG);
 
-        sharedData.setVariable("create", new CreateFactoryBuilder(customFieldsService, vocabularyService));
-        sharedData.setVariable("update", new UpdateFactoryBuilder(portalSettingsService, vocabularyService));
+        sharedData.setVariable("create", new CreateFactoryBuilder(customFieldsService, vocabularyService, categoryService));
+        sharedData.setVariable("update", new UpdateFactoryBuilder(portalSettingsService, vocabularyService, categoryService));
         sharedData.setVariable("validate", new ValidateFactoryBuilder(portalPropertiesService));
-        sharedData.setVariable("delete", new DeleteFactoryBuilder(customFieldsService, vocabularyService));
+        sharedData.setVariable("delete", new DeleteFactoryBuilder(customFieldsService, vocabularyService, categoryService));
 
         sharedData.setVariable("Roles", new Roles());
         sharedData.setVariable("Entities", new Entities());
