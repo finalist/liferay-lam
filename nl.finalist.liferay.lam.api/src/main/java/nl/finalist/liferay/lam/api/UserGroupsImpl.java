@@ -27,23 +27,23 @@ public class UserGroupsImpl implements UserGroups {
     private static final Log LOG = LogFactoryUtil.getLog(UserGroupsImpl.class);
 
     @Override
-    public boolean addUserGroup(String name, String description, Map<String, String> customFields) {
+    public void addUserGroup(String name, String description, Map<String, String> customFields) {
         try {
         	UserGroup group = userGroupLocalService.fetchUserGroup(getDefaultCompany().getCompanyId(), name);
         	if (group != null) {
         		LOG.debug("The user group already exists");
         	} else {
-				userGroupLocalService.addUserGroup(getDefaultUserId(), getDefaultCompany().getCompanyId(), name, description, new ServiceContext());
-				return true;
+				group = userGroupLocalService.addUserGroup(getDefaultUserId(), getDefaultCompany().getCompanyId(), name, description, new ServiceContext());
         	}
 
-            for (String fieldName : customFields.keySet()) {
-                customFieldsService.addCustomFieldValue(UserGroup.class.getName(), fieldName, group.getPrimaryKey(), customFields.get(fieldName));
-            }
+        	if (customFields != null) {
+	            for (String fieldName : customFields.keySet()) {
+	                customFieldsService.addCustomFieldValue(UserGroup.class.getName(), fieldName, group.getPrimaryKey(), customFields.get(fieldName));
+	            }
+        	}
 		} catch (PortalException e) {
-			LOG.error("Adding the user group failed");
+			LOG.error("Adding the user group failed", e);
 		}
-        return false;
     }
 
     private long getDefaultUserId() {
@@ -52,7 +52,7 @@ public class UserGroupsImpl implements UserGroups {
         try {
             userId = defaultCompany.getDefaultUser().getUserId();
         } catch (PortalException e) {
-            LOG.error(String.format("Error while retrieving default userId, error is %s", e.getMessage()));
+            LOG.error("Error while retrieving default userId", e);
         }
         return userId;
     }
@@ -63,7 +63,7 @@ public class UserGroupsImpl implements UserGroups {
         try {
             defaultCompany = companyService.getCompanyByWebId(webId);
         } catch (PortalException e) {
-            LOG.error(String.format("Error while retrieving default company, error is %s", e.getMessage()));
+            LOG.error("Error while retrieving default company", e);
         }
         return defaultCompany;
     }

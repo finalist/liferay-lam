@@ -8,6 +8,6 @@ import java.util.Map;
  *
  */
 public interface UserGroups {
-	boolean addUserGroup(String name, String description, Map<String, String> customFields);
+	void addUserGroup(String name, String description, Map<String, String> customFields);
 
 }
