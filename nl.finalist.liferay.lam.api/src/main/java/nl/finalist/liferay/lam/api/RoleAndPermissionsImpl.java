@@ -66,7 +66,7 @@ public class RoleAndPermissionsImpl implements RoleAndPermissions {
 				return true;
 			}
 		} catch (PortalException e) {
-			LOG.error("For some reason the role was not added");
+			LOG.error(e);
 			return false;
 		}
 	}

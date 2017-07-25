@@ -38,7 +38,7 @@ public class PortalSettingsImpl implements PortalSettings {
             account.setName(portalName);
             accountService.updateAccount(account);
         } catch (PortalException e) {
-            LOG.error(String.format("Error while setting portalName, error is %s", e.getMessage()));
+            LOG.error("Error while setting portalName", e);
         }
     }
 
@@ -56,7 +56,7 @@ public class PortalSettingsImpl implements PortalSettings {
             companyService.updateCompany(company.getCompanyId(), virtualHostName, company.getMx(),
                             company.getMaxUsers(), company.isActive());
         } catch (PortalException e) {
-            LOG.error(String.format("Error while setting virtualHostName, error is %s", e.getMessage()));
+            LOG.error("Error while setting virtualHostName", e);
         }
     }
 
@@ -75,7 +75,7 @@ public class PortalSettingsImpl implements PortalSettings {
         try {
             companyService.updatePreferences(company.getCompanyId(), properties);
         } catch (PortalException e) {
-            LOG.error(String.format("Error while setting default landing page, error is %s", e.getMessage()));
+            LOG.error("Error while setting default landing page", e);
         }
     }
 
@@ -87,7 +87,7 @@ public class PortalSettingsImpl implements PortalSettings {
         try {
             companyService.updatePreferences(company.getCompanyId(), properties);
         } catch (PortalException e) {
-            LOG.error(String.format("Error while setting the default logout page, error is %s", e.getMessage()));
+            LOG.error("Error while setting the default logout page", e);
         }
     }
 
@@ -99,8 +99,7 @@ public class PortalSettingsImpl implements PortalSettings {
         try {
             companyService.updatePreferences(company.getCompanyId(), properties);
         } catch (PortalException e) {
-            LOG.error(String.format("Error while setting whether the terms of use is required, error is %s",
-                            e.getMessage()));
+            LOG.error("Error while setting whether the terms of use is required", e);
         }
     }
 
@@ -112,8 +111,7 @@ public class PortalSettingsImpl implements PortalSettings {
         try {
             companyService.updatePreferences(company.getCompanyId(), properties);
         } catch (PortalException e) {
-            LOG.error(String.format("Error while setting name of email notification sender, error is %s",
-                            e.getMessage()));
+            LOG.error("Error while setting name of email notification sender", e);
         }
     }
 
@@ -125,8 +123,7 @@ public class PortalSettingsImpl implements PortalSettings {
         try {
             companyService.updatePreferences(company.getCompanyId(), properties);
         } catch (PortalException e) {
-            LOG.error(String.format("Error while setting address of email notification sender, error is %s",
-                            e.getMessage()));
+            LOG.error("Error while setting address of email notification sender", e);
         }
     }
 
@@ -136,7 +133,7 @@ public class PortalSettingsImpl implements PortalSettings {
         try {
             companyService.updateDisplay(company.getCompanyId(), languageId, company.getTimeZone().getID());
         } catch (PortalException e) {
-            LOG.error(String.format("Error while setting defualt language, error is %s", e.getMessage()));
+            LOG.error("Error while setting defualt language", e);
         }
     }
 
@@ -148,7 +145,7 @@ public class PortalSettingsImpl implements PortalSettings {
         try {
             companyService.updatePreferences(company.getCompanyId(), properties);
         } catch (PortalException e) {
-            LOG.error(String.format("Error while setting available languages, error is %s", e.getMessage()));
+            LOG.error("Error while setting available languages", e);
         }
     }
 
@@ -160,7 +157,7 @@ public class PortalSettingsImpl implements PortalSettings {
             user = userService.getDefaultUser(company.getCompanyId());
             companyService.updateDisplay(company.getCompanyId(), user.getLanguageId(), timezoneId);
         } catch (PortalException e) {
-            LOG.error(String.format("Error while setting portal timezone, error is %s", e.getMessage()));
+            LOG.error("Error while setting portal timezone", e);
         }
     }
 
@@ -169,7 +166,7 @@ public class PortalSettingsImpl implements PortalSettings {
         try {
             company = companyService.getCompanyByWebId(webId);
         } catch (PortalException e) {
-            LOG.error(String.format("Error while retrieving default company, error is %s", e.getMessage()));
+            LOG.error("Error while retrieving default company", e);
         }
         return company;
     }
