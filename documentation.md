@@ -113,4 +113,51 @@ The following script shows how you can delete a vocabulary:
 	
 As you can see, all you have to specify is the name of the vocabulary. If the vocabulary doesn't exist in the global scope, an error message will be logged.
 
+# Sites
+You can create, update and delete sites.
+
+## Create
+The following script shows how you can create a vocabulary:
+
+	create.site(
+		nameMap: [
+			"en_US": "AutomatedTestSite",
+			"nl_NL": "AutomatedTestSite"
+		],
+		descriptionMap: [
+		    "nl_NL": "Description of automated site"
+		],
+		friendlyURL: "/automatedTestSite"
+	)
+
+To create a site, you have to specify a map of names for the available locales. Make sure the default locale is present, as this will be the groupKey that you will later use for updating and deleting. You also have to specify a map of descriptions and a friendlyURL. If you try to add a site that already exists, an error message will be logged.
+
+This group will be created at the top level, and will be an open group. It will have the default restrictions on membership, will not have a site associated with it, will not inherit content, and will be immediately active.
+
+## Update
+The following script shows how you can update a site:
+
+	update.site(
+		groupKey: "AutomatedTestSite",
+		nameMap: [
+			"en_US": "AutomatedTestSite",
+			"nl_NL": "AutomatedTestSiteNL"
+		],
+		descriptionMap: [
+		    "en_US": "Description",
+		    "nl_NL": "Beschrijving"
+		],
+		friendlyURL: "/automatedTestSite"
+	)
+
+To update a site, you have to specify the groupKey, which is the title associated with the default locale. You will also have to specify a map of names and one of descriptions per locale and a friendlyURL.
+
+## Delete
+The following script shows how you can delete a site:
+
+	delete.site(
+		groupKey: "AutomatedTestSite"
+	)
+	
+As you can see, all you have to specify is the groupKey of the site. This is the title associated with the default locale.
 	
