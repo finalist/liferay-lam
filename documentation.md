@@ -9,14 +9,20 @@ You can create/update and delete custom fields.
 The following script shows how to define a custom field in your script:
 
     create.customField (
-        name: 'fieldTest',
-        type: 'String',
-        defaultValue: 'test',
-        entityName: Entities.user,
-        roles: [Roles.guest, Roles.user]
-    )
+		name: 'fieldGroupTest',
+		type: CustomFieldType.TEXT_GROUP,
+		defaultValue: 'a,b,c',
+		entityName: Entities.user,
+		roles: [Roles.guest, Roles.user],
+		displayType: DisplayType.CHECKBOX
+	)
 
-If the custom field called 'fieldTest' already exists, it will be overwritten. For each custom field you have to define a name, a type (string or integer are the only two supported types at this moment), an entity name (the supported entities are listed in the table below), a default value, and the roles that will be allowed to view and update the custom field. The newly created field will be added to the default Liferay instance. 
+If the custom field of this name already exists, it will be overwritten. For each custom field you have to define 
+a name, a type (string or integer are the only two supported types at this moment), an entity name (the supported 
+entities are listed in the table below), a default value, and the roles that will be allowed to view and update the 
+custom field. For custom fields of the type TEXT_GROUP, you can also define a displayType. The newly created field will be added to the default Liferay instance. 
+
+At the moment the following entities are supported:
 
 | Entity name | Lifery object |
 |---|---|
@@ -27,6 +33,23 @@ If the custom field called 'fieldTest' already exists, it will be overwritten. F
 | role | Role |
 | site | Group |
 | webcontent | JournalArticle |
+
+At the moment the following types are supported:
+
+| Type |
+|---|
+| CustomFieldType.INTEGER_32 |
+| CustomFieldType.TEXT |
+| CustomFieldType.TEXT_GROUP |
+
+This is the list of display types for TEXT_GROUP:
+
+| Display type |
+|---|
+| DisplayType.CHECKBOX |
+| DisplayType.RADIO |
+| DisplayType.SELECTION_LIST |
+| DisplayType.TEXT_BOX |
 
 ## Delete
 The following script shows how to specify the deletion of a custom field in your script:
@@ -112,6 +135,44 @@ The following script shows how you can delete a vocabulary:
 	)
 	
 As you can see, all you have to specify is the name of the vocabulary. If the vocabulary doesn't exist in the global scope, an error message will be logged.
+
+# Roles and permissions
+You can add roles with permissions.
+
+The following script shows how you can add a role and the accompanying permissions:
+
+    create.role(
+        name: "SomeRole",
+    	type: TypeOfRole.REGULARROLES,
+    	titles: [
+    		"en_GB": "SomeRole"
+    	],
+    	descriptions: [
+    		"en_GB": "SomeDescription"
+    	],
+    	permissions: [
+    		(Entities.webcontent):[ActionKeys.VIEW, ActionKeys.DELETE]
+    	]
+    )
+    
+As you can see, to add a role, you have to specify the name, the type, one or more titles, one or more descriptions, and
+a map of permissions. Titles are a map of locales with the title of the role in that language. The same goes for
+descriptions. Permissions are a map of entities with a list of accompanying actions.
+
+The list of role types is as follows:
+
+| type |
+|---|
+| TypeOfRole.REGULARROLES |
+| TypeOfRole.SITEROLES |
+| TypeOfRole.ORGANISATIONROLES | 
+| TypeOfRole.STANDARD |
+
+The list of entities is the same as that for custom fields, which is described above. The list of actions should be 
+looked up in the liferay documentation, as it is too long to include here.
+
+Beware that the name of the entity that is used as a key should be between parenthesis, as Groovy will treat it as a 
+literal string otherwise.
 
 #User groups
 You can add user groups.

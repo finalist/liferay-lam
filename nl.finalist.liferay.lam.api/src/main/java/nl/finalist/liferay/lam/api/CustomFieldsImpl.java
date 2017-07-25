@@ -26,6 +26,13 @@ import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringPool;
 
+
+import java.util.Arrays;
+
+import com.liferay.portal.kernel.util.UnicodeProperties;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+
 /**
  * Implementation for {@link nl.finalist.liferay.lam.api.CustomFields}
  */
@@ -96,6 +103,29 @@ public class CustomFieldsImpl implements CustomFields {
         this.addCustomIntegerField(PortalUtil.getDefaultCompanyId(), entityName, fieldName, defaultValue, roles);
     }
 
+    @Override
+    public void addCustomTextArrayField(String entityName, String fieldName, String possibleValues, String[] roles, String displayType) {
+        Long companyId = PortalUtil.getDefaultCompanyId();
+        LOG.info(String.format("Start adding custom text array field %s for company %d to entity %s with default value %s and roles %s", fieldName, companyId, entityName, possibleValues, Arrays.toString(roles)));
+
+        ExpandoTable expandoTable = getOrAddExpandoTable(companyId, entityName, ExpandoTableConstants.DEFAULT_TABLE_NAME);
+        LOG.debug("Expando Table ID : " + expandoTable.getTableId());
+
+        ExpandoColumn expandoColumn = getOrAddExpandoTextArrayColumn(companyId, entityName, ExpandoTableConstants.DEFAULT_TABLE_NAME, fieldName, expandoTable);
+        saveDefaultValueForColumn(possibleValues, expandoColumn);
+
+        UnicodeProperties properties = expandoColumn.getTypeSettingsProperties();
+        properties.setProperty("display-type", displayType);
+        columnService.updateExpandoColumn(expandoColumn);
+
+        // possible display-types: checkbox, radio, selection-list, text-box
+        for (String role : roles) {
+            addExpandoPermissions(companyId, expandoColumn, role);
+        }
+        LOG.debug("Expando Column ID : " + expandoColumn.getColumnId());
+
+        LOG.debug("Done adding text custom field");
+    }
   
     private void deleteCustomField(long companyId, String entityName, String fieldName) {
         LOG.debug(String.format("Start deleting custom field %s for company %d of entity %s ", fieldName, companyId, entityName));
@@ -161,6 +191,11 @@ public class CustomFieldsImpl implements CustomFields {
         return getOrAddExpandoColumn(companyId, className, tableName, columnName, expandoTable, ExpandoColumnConstants.STRING);
     }
 
+    private ExpandoColumn getOrAddExpandoTextArrayColumn(long companyId, String className, String tableName, String columnName,
+                                                    ExpandoTable expandoTable) {
+        return getOrAddExpandoColumn(companyId, className, tableName, columnName, expandoTable, ExpandoColumnConstants.STRING_ARRAY);
+    }
+
     private ExpandoColumn getOrAddExpandoIntegerColumn(long companyId, String className, String tableName, String columnName,
                     ExpandoTable expandoTable) {
         return getOrAddExpandoColumn(companyId, className, tableName, columnName, expandoTable, ExpandoColumnConstants.INTEGER);
@@ -173,13 +208,26 @@ public class CustomFieldsImpl implements CustomFields {
             exandoColumn = columnService.getColumn(companyId, className, tableName, columnName);
             if (exandoColumn == null) {
                 exandoColumn = columnService.addColumn(expandoTable.getTableId(), columnName,
-                                columnType, columnType == ExpandoColumnConstants.INTEGER ? Integer.valueOf(0) :  StringPool.BLANK);
+                                columnType, defaultValue(columnType));
             }
         } catch (SystemException | PortalException e) {
             LOG.error(e);
         }
 
         return exandoColumn;
+    }
+
+    private Object defaultValue(int columnType) {
+        switch (columnType) {
+            case ExpandoColumnConstants.INTEGER:
+                return Integer.valueOf(0);
+            case ExpandoColumnConstants.STRING:
+                return StringPool.BLANK;
+            case ExpandoColumnConstants.STRING_ARRAY:
+                return  StringPool.EMPTY_ARRAY;
+            default:
+                return StringPool.BLANK;
+        }
     }
 
     private void addExpandoPermissions(long companyId, ExpandoColumn column, String role) {

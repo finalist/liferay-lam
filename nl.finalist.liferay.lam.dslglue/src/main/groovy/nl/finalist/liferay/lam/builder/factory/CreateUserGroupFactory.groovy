@@ -1,7 +1,7 @@
 package nl.finalist.liferay.lam.builder.factory
 
 import nl.finalist.liferay.lam.api.UserGroups
-import nl.finalist.liferay.lam.dslglue.UserGroupModel;
+import nl.finalist.liferay.lam.dslglue.model.UserGroupModel;
 
 class CreateUserGroupFactory extends AbstractFactory  {
     UserGroups userGroupsService;

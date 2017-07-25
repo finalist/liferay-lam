@@ -122,10 +122,8 @@ public class CustomFieldsTest {
 
         customFields.deleteCustomField(ENTITY_NAME, FIELD_NAME);
 
-        verify(tableService).getDefaultTable(COMPANY_ID, ENTITY_NAME);
         verify(columnService).getColumn(COMPANY_ID, ENTITY_NAME, ExpandoTableConstants.DEFAULT_TABLE_NAME, FIELD_NAME);
         verify(columnService).deleteExpandoColumn(mockColumn);
-        verify(tableService).deleteExpandoTable(mockTable);
     }
     
     @Test

@@ -1,4 +1,0 @@
-Bundle-Name: TestStartupHook
-Bundle-SymbolicName: TestStartupHook
-Bundle-Version: 1.0.0
-Export-Package: nl.finalist.liferay.lam.testhook
