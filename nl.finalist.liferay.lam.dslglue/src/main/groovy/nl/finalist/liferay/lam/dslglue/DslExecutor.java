@@ -72,6 +72,8 @@ public class DslExecutor implements Executor {
         ImportCustomizer imports = new ImportCustomizer();
 
         imports.addImport("TypeOfRole", "nl.finalist.liferay.lam.api.TypeOfRole");
+        imports.addImport("CustomFieldType", "nl.finalist.liferay.lam.dslglue.CustomFieldType");
+        imports.addImport("DisplayType", "nl.finalist.liferay.lam.dslglue.DisplayType");
 
         // Make these imports available to the scripts
 

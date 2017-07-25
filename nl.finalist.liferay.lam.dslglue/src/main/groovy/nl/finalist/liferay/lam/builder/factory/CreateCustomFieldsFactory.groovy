@@ -1,6 +1,7 @@
-package nl.finalist.liferay.lam.builder.factory
+package nl.finalist.liferay.lam.builder.factory;
 
 import nl.finalist.liferay.lam.api.CustomFields;
+import nl.finalist.liferay.lam.dslglue.CustomFieldType;
 import nl.finalist.liferay.lam.dslglue.model.CustomFieldModel;
 
 class CreateCustomFieldsFactory extends AbstractFactory {
@@ -21,11 +22,16 @@ class CreateCustomFieldsFactory extends AbstractFactory {
     void onNodeCompleted(FactoryBuilderSupport builder, Object parent, Object node) {
         super.onNodeCompleted(builder, parent, node);
         CustomFieldModel cf = (CustomFieldModel) node;
-        if (cf.getType().equalsIgnoreCase("Int")) {
-            customFieldsService.addCustomIntegerField(cf.getEntityName(), cf.getName(), (int) cf.getDefaultValue(), cf.getRoles());
-        }
-        if (cf.getType().equalsIgnoreCase("String")) {
-            customFieldsService.addCustomTextField(cf.getEntityName(), cf.getName(), (String) cf.getDefaultValue(), cf.getRoles());
+        switch (CustomFieldType.valueOf(cf.type)) {
+            case(CustomFieldType.INTEGER_32):
+                customFieldsService.addCustomIntegerField(cf.getEntityName(), cf.getName(), (int) cf.getDefaultValue(), cf.getRoles());
+                break;
+            case(CustomFieldType.TEXT):
+                customFieldsService.addCustomTextField(cf.getEntityName(), cf.getName(), (String) cf.getDefaultValue(), cf.getRoles());
+                break;
+            case(CustomFieldType.TEXT_GROUP):
+                customFieldsService.addCustomTextArrayField(cf.getEntityName(), cf.getName(), (String) cf.getDefaultValue(), cf.getRoles(), cf.getDisplayType());
+                break;
         }
     }
 }

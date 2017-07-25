@@ -12,6 +12,6 @@ build
 
 .metadata
 gradlew
-gradle/
 gradlew.bat
+gradle/
 nl.finalist.liferay.lam.api/out/
