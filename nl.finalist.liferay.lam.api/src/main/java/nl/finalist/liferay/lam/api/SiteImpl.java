@@ -38,7 +38,7 @@ public class SiteImpl implements Site {
 					GroupConstants.DEFAULT_LIVE_GROUP_ID, nameMap,
 					descriptionMap, GroupConstants.TYPE_SITE_OPEN, true, GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION,
 					friendlyURL, true, false, true, null);
-			LOG.debug("Group was added ");
+			LOG.debug(String.format("Group %s was added", LocaleUtil.getDefault()));
 		} catch(DuplicateGroupException dge) {
 			LOG.error("The site already exists.");
 		} catch (PortalException e) {

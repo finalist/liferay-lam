@@ -40,7 +40,7 @@ create.site(
 )
 
 update.site(
-	groupKey: "AutomatedTestSite",
+	siteKey: "AutomatedTestSite",
 	nameMap: [
 		"en_US": "AutomatedTestSite",
 		"nl_NL": "AutomatedTestSiteNL"
@@ -52,5 +52,5 @@ update.site(
 	friendlyURL: "/automatedTestSite"
 )
 delete.site(
-	groupKey: "AutomatedTestSite"
+	siteKey: "AutomatedTestSite"
 )

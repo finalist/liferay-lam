@@ -23,6 +23,6 @@ class UpdateSiteFactory extends AbstractFactory {
         super.onNodeCompleted(builder, parent, node);
         SiteModel model = (SiteModel) node;
 
-        siteService.updateSite(model.groupKey, LocaleMapConverter.convert(model.nameMap), LocaleMapConverter.convert(model.descriptionMap), model.friendlyURL);
+        siteService.updateSite(model.siteKey, LocaleMapConverter.convert(model.nameMap), LocaleMapConverter.convert(model.descriptionMap), model.friendlyURL);
     }
 }

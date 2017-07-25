@@ -4,5 +4,5 @@ class SiteModel {
 	Map<String, String> nameMap
 	Map<String, String> descriptionMap
 	String friendlyURL
-	String groupKey
+	String siteKey
 }

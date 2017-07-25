@@ -20,6 +20,6 @@ class DeleteSiteFactory extends AbstractFactory{
     void onNodeCompleted(FactoryBuilderSupport builder, Object parent, Object node) {
         super.onNodeCompleted(builder, parent, node);
         SiteModel model = (SiteModel) node;
-        siteService.deleteSite(model.groupKey);
+        siteService.deleteSite(model.siteKey);
     }
 }
