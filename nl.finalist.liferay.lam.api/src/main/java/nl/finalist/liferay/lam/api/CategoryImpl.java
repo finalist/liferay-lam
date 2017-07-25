@@ -14,14 +14,8 @@ import org.osgi.service.component.annotations.Reference;
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
-import com.liferay.asset.kernel.service.AssetCategoryLocalServiceUtil;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
-import com.liferay.asset.kernel.service.AssetVocabularyLocalServiceUtil;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
@@ -41,7 +35,7 @@ public class CategoryImpl implements Category {
 
 	@Reference
 	private AssetCategoryLocalService assetCategoryService;
-	
+
 	@Reference
 	private AssetVocabularyLocalService assetVocabularyLocalService;
 
@@ -54,11 +48,11 @@ public class CategoryImpl implements Category {
 			String[] names = assetCategoryService.getCategoryNames();
 			boolean mayAdd = true;
 			for (String name : names) {
-				if(name.equals(categoryName)){
+				if (name.equals(categoryName)) {
 					mayAdd = false;
 				}
 			}
-			if(mayAdd){
+			if (mayAdd) {
 				AssetCategory newCategory = assetCategoryService.addCategory(getDefaultUserId(), getGlobalGroupId(),
 						categoryName, vocabulary.getVocabularyId(), new ServiceContext());
 				LOG.info(String.format("Added the categroy %S", newCategory.getName()));
@@ -72,30 +66,38 @@ public class CategoryImpl implements Category {
 
 	}
 
-
 	@Override
 	public void updateCategory(String categoryName, String vocabularyName, String updateName) {
 		LOG.info("Trying to update the category");
 		LOG.info(String.format("Category Name %s", categoryName));
 		try {
-			AssetVocabulary vocabulary = AssetVocabularyLocalServiceUtil.getGroupVocabulary(getGlobalGroupId(),
+			AssetVocabulary vocabulary = assetVocabularyLocalService.getGroupVocabulary(getGlobalGroupId(),
 					vocabularyName);
-			LOG.info(String.format("found the vocabulary %d", vocabulary.getCategories().size()));
-			AssetCategory assetCategory = getCategoryByNameAndVocabularyId(categoryName, vocabulary.getVocabularyId());
-			
-			LOG.info(String.format("Found the category %s", assetCategory));
-			Map<Locale, String> titleMap = new HashMap<Locale, String>();
-			titleMap.put(NL_LOCALE, assetCategory.getName());
-			assetCategory.setTitleMap(titleMap);
+			List<AssetCategory> categories = vocabulary.getCategories();
+			LOG.info(String.format("found the vocabulary %d", categories.size()));
+			for (AssetCategory assetCategory : categories) {
+				LOG.info(String.format("Name of category is %s",categories.get(0).getName()));
+				if (assetCategory.getName().equals(categoryName)) {
+					LOG.info(String.format("Found the category %s", assetCategory));
+					Map<Locale, String> titleMap = new HashMap<Locale, String>();
+					titleMap.put(NL_LOCALE, assetCategory.getName());
+					assetCategory.setTitleMap(titleMap);
+					LOG.info(String.format("Found the category:titleMap %s", assetCategory.getTitleMap().get(NL_LOCALE)));
+					Map<Locale, String> descriptionMap = new HashMap<Locale, String>();
+					descriptionMap.put(NL_LOCALE, assetCategory.getName());
+					assetCategory.setDescriptionMap(descriptionMap);
+					assetCategory.setDescription("Testing the update");
+					assetCategory.setName(updateName);
+					LOG.info(String.format("Found the category:descriptionMap %s", assetCategory.getDescriptionMap().get(NL_LOCALE)));
+					AssetCategory updatedCategory = assetCategoryService.updateAssetCategory(assetCategory);
+					LOG.info(String.format("Updated the category %s", updatedCategory.getName()));
+					return;
+					
+				}
 
-			Map<Locale, String> descriptionMap = new HashMap<Locale, String>();
-			descriptionMap.put(NL_LOCALE, assetCategory.getName());
-			assetCategory.setDescriptionMap(descriptionMap);
-			assetCategory.setDescription("Testing the update");
-			assetCategory.setName(updateName);
-			
-			AssetCategory updatedCategory = assetCategoryService.updateAssetCategory(assetCategory);
-			LOG.info((String.format("Updated the category %s", updatedCategory.getName())));
+			}
+			LOG.info(String.format("Category doesnot exists %s", categoryName));
+
 		} catch (PortalException e) {
 			LOG.info(String.format("Update of a category went wrong %s", e.getMessage()));
 		}
@@ -106,17 +108,19 @@ public class CategoryImpl implements Category {
 	public void deleteCategory(String categoryName, String vocabularyName) {
 		LOG.info("Trying to delete the category");
 		try {
-			AssetVocabulary vocabulary = AssetVocabularyLocalServiceUtil.getGroupVocabulary(getGlobalGroupId(),
+			AssetVocabulary vocabulary = assetVocabularyLocalService.getGroupVocabulary(getGlobalGroupId(),
 					vocabularyName);
+			List<AssetCategory> categories = vocabulary.getCategories();
+			LOG.info(String.format("found the vocabulary %d", categories.size()));
+			for (AssetCategory assetCategory : categories) {
+				if (assetCategory.getName().equals(categoryName)) {
+					assetCategoryService.deleteCategory(assetCategory);
+					LOG.info("deleted the category");
+					return;
+				}
 
-			AssetCategory category = getCategoryByNameAndVocabularyId(categoryName, vocabulary.getVocabularyId());
-			if (category != null) {
-				assetCategoryService.deleteCategory(category);
-				LOG.info("deleted the category");
-			} else {
-				LOG.info("category doesn't exist");
 			}
-
+			LOG.info("category doesn't exist");
 		} catch (PortalException e) {
 			LOG.error(String.format(
 					"Something went wrong while deleting or while finding the category .please check the info provided %s",
@@ -157,27 +161,6 @@ public class CategoryImpl implements Category {
 			}
 		}
 		return defaultCompany;
-	}
-
-	private AssetCategory getCategoryByNameAndVocabularyId(String name, long vocabularyId) throws SystemException {
-		Map<String, Object> queryParams = new HashMap<String, Object>();
-		queryParams.put("vocabularyId", vocabularyId);
-		queryParams.put("name", name);
-
-		return getCategoryByDynamicQuery(queryParams);
-	}
-
-	private AssetCategory getCategoryByDynamicQuery(Map<String, Object> queryParams) throws SystemException {
-		DynamicQuery categoryQuery = DynamicQueryFactoryUtil.forClass(AssetCategory.class);
-		for (String key : queryParams.keySet()) {
-			categoryQuery.add(PropertyFactoryUtil.forName(key).eq(queryParams.get(key)));
-		}
-		List<?> categories = AssetCategoryLocalServiceUtil.dynamicQuery(categoryQuery);
-		AssetCategory category = null;
-		if (categories.size() > 0) {
-			category = (AssetCategory) categories.get(0);
-		}
-		return category;
 	}
 
 }

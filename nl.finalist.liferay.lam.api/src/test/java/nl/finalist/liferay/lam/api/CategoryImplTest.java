@@ -1,10 +1,13 @@
 package nl.finalist.liferay.lam.api;
 
-import static org.junit.Assert.*;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
+
+import java.util.LinkedList;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -19,7 +22,7 @@ import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.CompanyLocalService;
@@ -27,52 +30,139 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.PropsUtil;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ PropsUtil.class, CategoryImpl.class, DynamicQueryFactoryUtil.class })
+@PrepareForTest({ PropsUtil.class, CategoryImpl.class })
 public class CategoryImplTest {
 
 	@Mock
-	CompanyLocalService companyService;
+	private CompanyLocalService companyService;
+
 	@Mock
-	Company company;
+	private Company company;
 	@Mock
-	AssetVocabulary assetVocabulary;
+	private AssetVocabulary assetVocabulary;
 	@Mock
-	AssetCategory assetCategroy;
+	private AssetCategory assetCategroy;
 	@Mock
-	AssetVocabularyLocalService assetVocabularyLocalService;
+	private AssetVocabularyLocalService assetVocabularyLocalService;
 	@Mock
-	AssetCategoryLocalService assetCategoryLocalService;
+	private AssetCategoryLocalService assetCategoryLocalService;
 	@Mock
 	private User user;
-	 @Mock
-	    private ServiceContext mockServiceContext;
+	@Mock
+	private ServiceContext mockServiceContext;
 	@InjectMocks
-	CategoryImpl categoryImpl;
+	private CategoryImpl categoryImpl;
 
 	@Before
-	public void setUp() {
+	public void setUp() throws PortalException {
 		categoryImpl = new CategoryImpl();
 		PowerMockito.mockStatic(PropsUtil.class);
 		PowerMockito.when(PropsUtil.get("company.default.web.id")).thenReturn("liferay.com");
-		PowerMockito.mockStatic(DynamicQueryFactoryUtil.class);
+		when(companyService.getCompanyByWebId("liferay.com")).thenReturn(company);
+		
+		
 		initMocks(this);
 	}
 
 	@Test
 	public void testAddNewCategory() throws Exception {
-		when(companyService.getCompanyByWebId("liferay.com")).thenReturn(company);
 		when(company.getGroupId()).thenReturn(1L);
 		when(company.getDefaultUser()).thenReturn(user);
-        when(user.getUserId()).thenReturn(1L);
-
+		when(user.getUserId()).thenReturn(1L);
 		when(assetVocabularyLocalService.getGroupVocabulary(1L, "test")).thenReturn(assetVocabulary);
 		when(assetVocabulary.getVocabularyId()).thenReturn(123L);
 		String[] names = new String[1];
 		names[0] = "xxx";
 		when(assetCategoryLocalService.getCategoryNames()).thenReturn(names);
-		 whenNew(ServiceContext.class).withNoArguments().thenReturn(mockServiceContext);
-		when(assetCategoryLocalService.addCategory(1L, 1L, "Style", 123L, mockServiceContext)).thenReturn(assetCategroy);
+		whenNew(ServiceContext.class).withNoArguments().thenReturn(mockServiceContext);
+		when(assetCategoryLocalService.addCategory(1L, 1L, "Style", 123L, mockServiceContext))
+				.thenReturn(assetCategroy);
 		categoryImpl.addCategory("Style", "test", "testing it");
 		verify(assetCategoryLocalService).addCategory(1L, 1L, "Style", 123L, mockServiceContext);
+	}
+
+	@Test
+	public void testNotAddNewCategory() throws Exception {
+		when(company.getGroupId()).thenReturn(1L);
+		when(company.getDefaultUser()).thenReturn(user);
+		when(user.getUserId()).thenReturn(1L);
+		when(assetVocabularyLocalService.getGroupVocabulary(1L, "test")).thenReturn(assetVocabulary);
+		when(assetVocabulary.getVocabularyId()).thenReturn(123L);
+		String[] names = new String[1];
+		names[0] = "xxx";
+		when(assetCategoryLocalService.getCategoryNames()).thenReturn(names);
+		whenNew(ServiceContext.class).withNoArguments().thenReturn(mockServiceContext);
+		when(assetCategoryLocalService.addCategory(1L, 1L, "Style", 123L, mockServiceContext))
+				.thenReturn(assetCategroy);
+		categoryImpl.addCategory("xxx", "test", "testing it");
+		verify(assetCategoryLocalService, never()).addCategory(1L, 1L, "Style", 123L, mockServiceContext);
+	}
+
+	@Test
+	public void testUpdateCategory() throws PortalException {
+		when(company.getGroupId()).thenReturn(1L);
+		when(company.getDefaultUser()).thenReturn(user);
+		when(user.getUserId()).thenReturn(1L);
+		assetCategroy.setName("StyleUpdate");
+		List<AssetCategory> assetCategories = new LinkedList<>();
+		assetCategories.add(assetCategroy);
+		assetVocabulary.getCategories().add(assetCategroy);
+
+		when(assetVocabularyLocalService.getGroupVocabulary(1L, "vocabularyName")).thenReturn(assetVocabulary);
+		when(assetVocabulary.getCategories()).thenReturn(assetCategories);
+		when(assetCategroy.getName()).thenReturn("StyleUpdate");
+		when(assetCategoryLocalService.updateAssetCategory(assetCategroy)).thenReturn(assetCategroy);
+		categoryImpl.updateCategory("StyleUpdate", "vocabularyName", "updateName");
+		verify(assetCategoryLocalService).updateAssetCategory(assetCategroy);
+	}
+
+	@Test
+	public void testNotUpdateCategory() throws PortalException {
+		when(company.getGroupId()).thenReturn(1L);
+		when(company.getDefaultUser()).thenReturn(user);
+		when(user.getUserId()).thenReturn(1L);
+		assetCategroy.setName("StyleUpdate");
+		List<AssetCategory> assetCategories = new LinkedList<>();
+		assetCategories.add(assetCategroy);
+		assetVocabulary.getCategories().add(assetCategroy);
+
+		when(assetVocabularyLocalService.getGroupVocabulary(1L, "vocabularyName")).thenReturn(assetVocabulary);
+		when(assetVocabulary.getCategories()).thenReturn(assetCategories);
+		when(assetCategroy.getName()).thenReturn("StyleUpdate");
+		when(assetCategoryLocalService.updateAssetCategory(assetCategroy)).thenReturn(assetCategroy);
+		categoryImpl.updateCategory("StyleNotUpdate", "vocabularyName", "updateName");
+		verify(assetCategoryLocalService, never()).updateAssetCategory(assetCategroy);
+	}
+
+	@Test
+	public void testNotDeleteCategory() throws PortalException {
+		when(company.getGroupId()).thenReturn(1L);
+		when(company.getDefaultUser()).thenReturn(user);
+		when(user.getUserId()).thenReturn(1L);
+		assetCategroy.setName("StyleUpdate");
+		List<AssetCategory> assetCategories = new LinkedList<>();
+		assetCategories.add(assetCategroy);
+		assetVocabulary.getCategories().add(assetCategroy);
+		when(assetVocabularyLocalService.getGroupVocabulary(1L, "vocabularyName")).thenReturn(assetVocabulary);
+		when(assetVocabulary.getCategories()).thenReturn(assetCategories);
+		when(assetCategroy.getName()).thenReturn("StyleUpdate");
+		categoryImpl.deleteCategory("StyleDelete", "vocabularyName");
+		verify(assetCategoryLocalService, never()).deleteCategory(assetCategroy);
+	}
+
+	@Test
+	public void testDeleteCategory() throws PortalException {
+		when(company.getGroupId()).thenReturn(1L);
+		when(company.getDefaultUser()).thenReturn(user);
+		when(user.getUserId()).thenReturn(1L);
+		assetCategroy.setName("StyleUpdate");
+		List<AssetCategory> assetCategories = new LinkedList<>();
+		assetCategories.add(assetCategroy);
+		assetVocabulary.getCategories().add(assetCategroy);
+		when(assetVocabularyLocalService.getGroupVocabulary(1L, "vocabularyName")).thenReturn(assetVocabulary);
+		when(assetVocabulary.getCategories()).thenReturn(assetCategories);
+		when(assetCategroy.getName()).thenReturn("StyleUpdate");
+		categoryImpl.deleteCategory("StyleUpdate", "vocabularyName");
+		verify(assetCategoryLocalService).deleteCategory(assetCategroy);
 	}
 }
