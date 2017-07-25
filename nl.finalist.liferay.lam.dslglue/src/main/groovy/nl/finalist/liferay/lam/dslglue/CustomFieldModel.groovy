@@ -14,6 +14,6 @@ class CustomFieldModel {
     @Override
     public String toString() {
         return "CustomField [name=" + name + "\n\tdefaultValue=" + defaultValue + "\n\tentityName=" + entityName + "\n\ttype=" + type
-                        + "\n\troles=" + Arrays.toString(roles) + "]";
+                        + "\n\troles=" + Arrays.toString(roles) + "\n\tdisplayType=" + displayType + "]";
     }
 }

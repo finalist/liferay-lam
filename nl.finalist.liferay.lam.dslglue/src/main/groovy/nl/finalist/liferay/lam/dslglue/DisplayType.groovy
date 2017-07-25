@@ -6,6 +6,6 @@ enum DisplayType {
     String description;
 
     private DisplayType(String description) {
-        description = description;
+        this.description = description;
     }
 }
