@@ -113,4 +113,40 @@ The following script shows how you can delete a vocabulary:
 	
 As you can see, all you have to specify is the name of the vocabulary. If the vocabulary doesn't exist in the global scope, an error message will be logged.
 
+# Category
+You can create, update and delete categories.
+
+## Create
+The following script shows how you can create a category to a vocabulary:
+
+	create.category(
+	name: "categoryName",
+	vocabularyName: "TestVocabulary",
+	title : "Create a new category for TestVocabulary"
+)
+
+
+As you can see, all you have to do is to specify the name of the vocabulary, name of category and the title to the category. This category will be added to the vocabulary.
+
+## Update
+The following script shows how you can update a category:
+
+	update.category(
+	name: "categoryName",
+	updateName:"updateCategoryName",
+	vocabularyName: "TestVocabulary"
+	)
+
+To update a category, you have to specify the name of the category, the vocabulary name and the name it should be updated to. If the category doesn't exist in the vocabulary, an error message will be logged.
+
+## Delete
+The following script shows how you can delete a category:
+
+	delete.category(
+	name: "categoryName",
+	vocabularyName: "TestVocabulary"
+	)
+	
+As you can see, all you have to do is to specify the name of the category to be deleted and the vocabulary name where the category exists. If the categroy doesn't exist in the given vocabulary name, an error message will be logged.
+
 	
