@@ -1,9 +1,5 @@
 package nl.finalist.liferay.lam.dslglue;
 
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-
-import java.io.File;
 import java.io.Reader;
 
 import org.codehaus.groovy.control.CompilerConfiguration;
@@ -12,18 +8,20 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+
 import groovy.lang.Binding;
-import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyShell;
 import nl.finalist.liferay.lam.api.CustomFields;
 import nl.finalist.liferay.lam.api.PortalProperties;
 import nl.finalist.liferay.lam.api.PortalSettings;
+import nl.finalist.liferay.lam.api.Site;
 import nl.finalist.liferay.lam.api.Vocabulary;
 import nl.finalist.liferay.lam.builder.CreateFactoryBuilder;
 import nl.finalist.liferay.lam.builder.DeleteFactoryBuilder;
 import nl.finalist.liferay.lam.builder.UpdateFactoryBuilder;
 import nl.finalist.liferay.lam.builder.ValidateFactoryBuilder;
-import nl.finalist.liferay.lam.dslglue.Executor;
 import nl.finalist.liferay.lam.dslglue.Entities;
 import nl.finalist.liferay.lam.dslglue.Roles;
 
@@ -44,6 +42,8 @@ public class DslExecutor implements Executor {
     private Vocabulary vocabularyService;
     @Reference
     private PortalProperties portalPropertiesService;
+    @Reference
+    private Site siteService;
 
     @Activate
     public void activate() {
@@ -59,13 +59,14 @@ public class DslExecutor implements Executor {
         // Add all available API classes to the context of the scripts
         sharedData.setVariable("LOG", LOG);
 
-        sharedData.setVariable("create", new CreateFactoryBuilder(customFieldsService, vocabularyService));
-        sharedData.setVariable("update", new UpdateFactoryBuilder(portalSettingsService, vocabularyService));
+        sharedData.setVariable("create", new CreateFactoryBuilder(customFieldsService, vocabularyService, siteService));
+        sharedData.setVariable("update", new UpdateFactoryBuilder(portalSettingsService, vocabularyService, siteService));
         sharedData.setVariable("validate", new ValidateFactoryBuilder(portalPropertiesService));
-        sharedData.setVariable("delete", new DeleteFactoryBuilder(customFieldsService, vocabularyService));
+        sharedData.setVariable("delete", new DeleteFactoryBuilder(customFieldsService, vocabularyService, siteService));
 
         sharedData.setVariable("Roles", new Roles());
         sharedData.setVariable("Entities", new Entities());
+
         CompilerConfiguration conf = new CompilerConfiguration();
         ImportCustomizer imports = new ImportCustomizer();
 

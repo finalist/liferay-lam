@@ -1,0 +1,28 @@
+package nl.finalist.liferay.lam.builder.factory
+
+import nl.finalist.liferay.lam.api.Site
+import nl.finalist.liferay.lam.dslglue.LocaleMapConverter
+import nl.finalist.liferay.lam.dslglue.SiteModel
+
+class UpdateSiteFactory extends AbstractFactory {
+
+    Site siteService;
+
+    UpdateSiteFactory(Site siteService) {
+        this.siteService = siteService;
+    }
+
+    @Override
+    Object newInstance(FactoryBuilderSupport builder, Object name, Object value, Map attributes)
+                    throws InstantiationException, IllegalAccessException {
+        new SiteModel(attributes);
+    }
+
+    @Override
+    void onNodeCompleted(FactoryBuilderSupport builder, Object parent, Object node) {
+        super.onNodeCompleted(builder, parent, node);
+        SiteModel model = (SiteModel) node;
+
+        siteService.updateSite(model.groupKey, LocaleMapConverter.convert(model.nameMap), LocaleMapConverter.convert(model.descriptionMap), model.friendlyURL);
+    }
+}

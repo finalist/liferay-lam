@@ -11,11 +11,6 @@ delete.customField(
 	name: 'fieldTest',
 	entityName: Entities.user
 )
-update.portalSettings(
-	virtualHostName: "virtualTestName",
-	portalName: "TestName",
-	availableLanguages: "nl_NL,en_GB"
-)
 
 validate.portalProperties(
 	"database.indexes.update.on.startup": "true",
@@ -26,9 +21,36 @@ create.vocabulary(
 )
 update.vocabulary(
 	name: "TestVocabulary",
-	forLanguage: "en_GB",
+	forLanguage: "nl_NL",
 	translation: "TestVocabularyTranslation"
 )
 delete.vocabulary(
 	name: "TestVocabulary"
+)
+
+create.site(
+	nameMap: [
+		"en_US": "AutomatedTestSite",
+		"nl_NL": "AutomatedTestSite"
+	],
+	descriptionMap: [
+	    "nl_NL": "Description of automated site"
+	],
+	friendlyURL: "/automatedTestSite"
+)
+
+update.site(
+	groupKey: "AutomatedTestSite",
+	nameMap: [
+		"en_US": "AutomatedTestSite",
+		"nl_NL": "AutomatedTestSiteNL"
+	],
+	descriptionMap: [
+	    "en_US": "Description",
+	    "nl_NL": "Beschrijving"
+	],
+	friendlyURL: "/automatedTestSite"
+)
+delete.site(
+	groupKey: "AutomatedTestSite"
 )
