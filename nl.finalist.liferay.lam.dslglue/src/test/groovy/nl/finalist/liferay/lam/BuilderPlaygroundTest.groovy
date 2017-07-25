@@ -1,6 +1,7 @@
 package nl.finalist.liferay.lam
 
 import groovy.transform.ToString
+import org.junit.Ignore
 import org.junit.Test
 /*
 
@@ -84,6 +85,7 @@ class BuilderPlaygroundTest {
 
 
     @Test
+    @Ignore
     void testDSL() {
 
         // Would be fed to the DslExecutor's binding
