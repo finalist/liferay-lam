@@ -21,18 +21,20 @@ import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-
+/**
+ * Implementation for {@link nl.finalist.liferay.lam.api.Vocabulary}
+ */
 @Component(immediate = true, service = Vocabulary.class)
 public class VocabularyImpl implements Vocabulary {
 
     @Reference
-    AssetVocabularyLocalService vocabularyService;
+    private AssetVocabularyLocalService vocabularyService;
     @Reference
-    CounterLocalService counterService;
+    private CounterLocalService counterService;
     @Reference
-    CompanyLocalService companyService;
+    private CompanyLocalService companyService;
     @Reference
-    UserLocalService userService;
+    private UserLocalService userService;
 
     private Company defaultCompany;
 
