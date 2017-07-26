@@ -5,7 +5,6 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 
-import java.io.File;
 import java.io.Reader;
 
 import org.codehaus.groovy.control.CompilerConfiguration;
@@ -15,11 +14,10 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 import groovy.lang.Binding;
-import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyShell;
 import nl.finalist.liferay.lam.api.*;
 import nl.finalist.liferay.lam.builder.*;
-import nl.finalist.liferay.lam.dslglue.*;
+
 
 /**
  * Executor that evaluates configured scripts using a context containing all

@@ -35,7 +35,8 @@ import com.liferay.portal.kernel.util.PropsUtil;
 @PrepareForTest({ LocaleUtil.class, SiteImpl.class, PropsUtil.class, Locale.class, PortalUtil.class })
 public class SiteImplTest {
 
-    private static final long USER_ID = 10L;
+    private static final long SITE_ID = 123L;
+	private static final long USER_ID = 10L;
 	private static final long COMPANY_ID = 1L;
 	@Mock
     private CompanyLocalService companyService;
@@ -55,6 +56,8 @@ public class SiteImplTest {
     private HashMap<Locale, String> mockTitleMap;
     @Mock
     private ServiceContext mockServiceContext;
+    @Mock
+    private CustomFields customFieldsService;
     @InjectMocks
     private SiteImpl siteImpl;
 
@@ -90,29 +93,67 @@ public class SiteImplTest {
         PowerMockito.when(LocaleUtil.getSiteDefault()).thenReturn(mockLocale);
         when(mockCompany.getDefaultUser()).thenReturn(mockDefaultUser);
         when(mockDefaultUser.getUserId()).thenReturn(USER_ID);
-        siteImpl.addSite(nameMap, descriptionMap, friendlyURL);
+        siteImpl.addSite(nameMap, descriptionMap, friendlyURL, null);
 
         verify(siteService).addGroup(USER_ID, GroupConstants.DEFAULT_PARENT_GROUP_ID, Group.class.getName(), 0L, GroupConstants.DEFAULT_LIVE_GROUP_ID, nameMap, descriptionMap, GroupConstants.TYPE_SITE_OPEN, true, GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, friendlyURL, true, false, true, null);
+    }
+    
+    @Test
+    public void testAddSiteWithCustomField() throws Exception {
+    	Map<String,String> customFields = new HashMap<>();
+        customFields.put("someField", "someValue");
+        
+        when(companyService.getCompanyByWebId("liferay.com")).thenReturn(mockCompany);
+        when(mockCompany.getCompanyId()).thenReturn(COMPANY_ID);
+        Locale mockLocale = new Locale("en_US");
+        PowerMockito.when(LocaleUtil.getSiteDefault()).thenReturn(mockLocale);
+        when(mockCompany.getDefaultUser()).thenReturn(mockDefaultUser);
+        when(mockDefaultUser.getUserId()).thenReturn(USER_ID);
+        
+        when(siteService.addGroup(USER_ID, GroupConstants.DEFAULT_PARENT_GROUP_ID, Group.class.getName(), 0L, GroupConstants.DEFAULT_LIVE_GROUP_ID, nameMap, descriptionMap, GroupConstants.TYPE_SITE_OPEN, true, GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, friendlyURL, true, false, true, null)).thenReturn(mockSite);
+        when(mockSite.getPrimaryKey()).thenReturn(1L);
+
+        siteImpl.addSite(nameMap, descriptionMap, friendlyURL, customFields);
+
+        verify(siteService).addGroup(USER_ID, GroupConstants.DEFAULT_PARENT_GROUP_ID, Group.class.getName(), 0L, GroupConstants.DEFAULT_LIVE_GROUP_ID, nameMap, descriptionMap, GroupConstants.TYPE_SITE_OPEN, true, GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, friendlyURL, true, false, true, null);
+        verify(customFieldsService).addCustomFieldValue(Group.class.getName(), "someField", 1L, "someValue");
     }
 
     @Test
     public void testDeleteExistingSite() throws PortalException {
         when(siteService.getGroup(COMPANY_ID, siteKey)).thenReturn(mockSite);
-        when(mockSite.getGroupId()).thenReturn(123L);
+        when(mockSite.getGroupId()).thenReturn(SITE_ID);
 
         siteImpl.deleteSite(siteKey);
 
-        verify(siteService).deleteGroup(123L);
+        verify(siteService).deleteGroup(SITE_ID);
     }
 
     @Test
     public void testUpdateSiteTranslation() throws PortalException {
     	when(siteService.getGroup(COMPANY_ID, siteKey)).thenReturn(mockSite);
-        when(mockSite.getGroupId()).thenReturn(123L);
+        when(mockSite.getGroupId()).thenReturn(SITE_ID);
 
-        siteImpl.updateSite(siteKey, nameMap, descriptionMap, friendlyURL);
+        siteImpl.updateSite(siteKey, nameMap, descriptionMap, friendlyURL, null);
 
-        verify(siteService).updateGroup(123L, GroupConstants.DEFAULT_PARENT_GROUP_ID, nameMap, descriptionMap, GroupConstants.TYPE_SITE_OPEN, true, GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, friendlyURL, true, true, null);
+        verify(siteService).updateGroup(SITE_ID, GroupConstants.DEFAULT_PARENT_GROUP_ID, nameMap, descriptionMap, GroupConstants.TYPE_SITE_OPEN, true, GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, friendlyURL, false, true, null);
     }
+    
+    @Test
+    public void testUpdateSiteTranslationWithCustomFields() throws PortalException {
+    	Map<String,String> customFields = new HashMap<>();
+        customFields.put("someField", "someValue");
+        
+        when(siteService.getGroup(COMPANY_ID, siteKey)).thenReturn(mockSite);
+        when(mockSite.getGroupId()).thenReturn(SITE_ID);
 
+        when(siteService.updateGroup(SITE_ID, GroupConstants.DEFAULT_PARENT_GROUP_ID, nameMap, descriptionMap, GroupConstants.TYPE_SITE_OPEN, true, GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, friendlyURL, false, true, null)).thenReturn(mockSite);
+        when(mockSite.getPrimaryKey()).thenReturn(1L);
+
+        siteImpl.updateSite(siteKey, nameMap, descriptionMap, friendlyURL, customFields);
+
+        verify(siteService).updateGroup(SITE_ID, GroupConstants.DEFAULT_PARENT_GROUP_ID, nameMap, descriptionMap, GroupConstants.TYPE_SITE_OPEN, true, GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, friendlyURL, false, true, null);
+        verify(customFieldsService).updateCustomFieldValue(Group.class.getName(), "someField", 1L, "someValue");
+
+    }
 }

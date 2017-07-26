@@ -1,7 +1,7 @@
 package nl.finalist.liferay.lam.builder.factory
 
 import nl.finalist.liferay.lam.api.Site
-import nl.finalist.liferay.lam.dslglue.SiteModel
+import nl.finalist.liferay.lam.dslglue.model.SiteModel
 
 class DeleteSiteFactory extends AbstractFactory{
     Site siteService;

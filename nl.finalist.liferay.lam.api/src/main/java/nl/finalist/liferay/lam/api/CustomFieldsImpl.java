@@ -25,13 +25,7 @@ import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringPool;
-
-
-import java.util.Arrays;
-
 import com.liferay.portal.kernel.util.UnicodeProperties;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * Implementation for {@link nl.finalist.liferay.lam.api.CustomFields}
@@ -158,6 +152,16 @@ public class CustomFieldsImpl implements CustomFields {
     @Override
     public void addCustomFieldValue(String entityName, String fieldName, long classPK, String content) {
 		try {
+			valueService.addValue(PortalUtil.getDefaultCompanyId(), entityName, ExpandoTableConstants.DEFAULT_TABLE_NAME, fieldName, classPK, content);
+		} catch (PortalException e) {
+			LOG.error(e);
+		}
+    }
+    
+    @Override
+    public void updateCustomFieldValue(String entityName, String fieldName, long classPK, String content) {
+		try {
+			valueService.deleteValue(PortalUtil.getDefaultCompanyId(), entityName, ExpandoTableConstants.DEFAULT_TABLE_NAME, fieldName, classPK);
 			valueService.addValue(PortalUtil.getDefaultCompanyId(), entityName, ExpandoTableConstants.DEFAULT_TABLE_NAME, fieldName, classPK, content);
 		} catch (PortalException e) {
 			LOG.error(e);

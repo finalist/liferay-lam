@@ -2,7 +2,7 @@ package nl.finalist.liferay.lam.builder.factory
 
 import nl.finalist.liferay.lam.api.Site
 import nl.finalist.liferay.lam.dslglue.LocaleMapConverter
-import nl.finalist.liferay.lam.dslglue.SiteModel
+import nl.finalist.liferay.lam.dslglue.model.SiteModel
 
 class UpdateSiteFactory extends AbstractFactory {
 
@@ -23,6 +23,6 @@ class UpdateSiteFactory extends AbstractFactory {
         super.onNodeCompleted(builder, parent, node);
         SiteModel model = (SiteModel) node;
 
-        siteService.updateSite(model.siteKey, LocaleMapConverter.convert(model.nameMap), LocaleMapConverter.convert(model.descriptionMap), model.friendlyURL);
+        siteService.updateSite(model.siteKey, LocaleMapConverter.convert(model.nameMap), LocaleMapConverter.convert(model.descriptionMap), model.friendlyURL, model.customFields);
     }
 }

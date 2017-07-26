@@ -13,6 +13,11 @@ create.customField (
 	roles: [Roles.guest, Roles.user],
 	displayType: DisplayType.CHECKBOX
 )
+create.customField (
+	name: 'automatedField',
+	type: CustomFieldType.TEXT,
+	entityName: Entities.site,
+	roles: [Roles.guest, Roles.user])
 
 delete.customField(
 	name: 'fieldTest',
@@ -70,7 +75,10 @@ create.site(
 	descriptionMap: [
 	    "nl_NL": "Description of automated site"
 	],
-	friendlyURL: "/automatedTestSite"
+	friendlyURL: "/automatedTestSite",
+	customFields: [
+	    "automatedField": "value"
+	]
 )
 
 update.site(
@@ -83,7 +91,10 @@ update.site(
 	    "en_US": "Description",
 	    "nl_NL": "Beschrijving"
 	],
-	friendlyURL: "/automatedTestSite"
+	friendlyURL: "/automatedTestSite",
+	customFields: [
+		"automatedField": "automated value"
+	]
 )
 delete.site(
 	siteKey: "AutomatedTestSite"
