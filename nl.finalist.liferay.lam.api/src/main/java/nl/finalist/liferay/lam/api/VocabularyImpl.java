@@ -56,7 +56,7 @@ public class VocabularyImpl implements Vocabulary {
             vocabularyService.addVocabulary(userId, groupId, vocabularyName, titleMap,
                             new HashMap<Locale, String>(), "", new ServiceContext());
         } catch (PortalException e) {
-            LOG.error(String.format("Error while adding vocabulary %s, error is %s", vocabularyName, e.getMessage()));
+            LOG.error(String.format("Error while adding vocabulary %s", vocabularyName), e);
         }
 
     }
@@ -75,8 +75,7 @@ public class VocabularyImpl implements Vocabulary {
             try {
                 vocabularyService.deleteAssetVocabulary(vocabulary.getVocabularyId());
             } catch (PortalException e) {
-                LOG.error(String.format("Error while deleting vocabulary %s, error is %s", vocabularyName,
-                                e.getMessage()));
+                LOG.error(String.format("Error while deleting vocabulary %s", vocabularyName), e);
             }
         } else {
             LOG.debug(String.format("Vocabulary %s with groupId %d does not exist or is not retrievable",
@@ -120,8 +119,7 @@ public class VocabularyImpl implements Vocabulary {
         try {
             vocabulary = vocabularyService.getGroupVocabulary(groupId, vocabularyName);
         } catch (PortalException e) {
-            LOG.error(String.format("Error while retrieving vocabulary %s, error is %s", vocabularyName,
-                            e.getMessage()));
+            LOG.error(String.format("Error while retrieving vocabulary %s", vocabularyName), e);
         }
         return vocabulary;
     }
@@ -132,7 +130,7 @@ public class VocabularyImpl implements Vocabulary {
             try {
                 defaultCompany = companyService.getCompanyByWebId(webId);
             } catch (PortalException e) {
-                LOG.error(String.format("Error while retrieving default company, error is %s", e.getMessage()));
+                LOG.error("Error while retrieving default company", e);
             }
         }
         return defaultCompany;
@@ -144,7 +142,7 @@ public class VocabularyImpl implements Vocabulary {
         try {
             userId = defaultCompany.getDefaultUser().getUserId();
         } catch (PortalException e) {
-            LOG.error(String.format("Error while retrieving default userId, error is %s", e.getMessage()));
+            LOG.error("Error while retrieving default userId", e);
         }
         return userId;
     }
@@ -155,7 +153,7 @@ public class VocabularyImpl implements Vocabulary {
         try {
             groupId = defaultCompany.getGroupId();
         } catch (PortalException e) {
-            LOG.error(String.format("Error while retrieving global groupId, error is %s", e.getMessage()));
+            LOG.error("Error while retrieving global groupId", e);
         }
         return groupId;
     }

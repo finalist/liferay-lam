@@ -1,15 +1,27 @@
-
 create.customField (
 	name: 'fieldTest',
-	type: 'String',
+	type: CustomFieldType.TEXT,
 	defaultValue: 'test',
 	entityName: Entities.user,
 	roles: [Roles.guest, Roles.user]
+)
+create.customField (
+	name: 'fieldGroupTest',
+	type: CustomFieldType.TEXT_GROUP,
+	defaultValue: 'a,b,c',
+	entityName: Entities.user,
+	roles: [Roles.guest, Roles.user],
+	displayType: DisplayType.CHECKBOX
 )
 
 delete.customField(
 	name: 'fieldTest',
 	entityName: Entities.user
+)
+update.portalSettings(
+	virtualHostName: "virtualTestName",
+	portalName: "TestName",
+	availableLanguages: "nl_NL,en_GB"
 )
 
 validate.portalProperties(
@@ -28,29 +40,24 @@ delete.vocabulary(
 	name: "TestVocabulary"
 )
 
-create.site(
-	nameMap: [
-		"en_US": "AutomatedTestSite",
-		"nl_NL": "AutomatedTestSite"
+create.role(
+    name: "SomeRole",
+	type: TypeOfRole.REGULARROLES,
+	titles: [
+		"en_GB": "SomeRole"
 	],
-	descriptionMap: [
-	    "nl_NL": "Description of automated site"
+	descriptions: [
+		"en_GB": "SomeDescription"
 	],
-	friendlyURL: "/automatedTestSite"
+	permissions: [
+		(Entities.webcontent):[ActionKeys.VIEW, ActionKeys.DELETE]
+	]
 )
 
-update.site(
-	siteKey: "AutomatedTestSite",
-	nameMap: [
-		"en_US": "AutomatedTestSite",
-		"nl_NL": "AutomatedTestSiteNL"
-	],
-	descriptionMap: [
-	    "en_US": "Description",
-	    "nl_NL": "Beschrijving"
-	],
-	friendlyURL: "/automatedTestSite"
-)
-delete.site(
-	siteKey: "AutomatedTestSite"
+create.userGroup(
+	name: "usergroup1",
+	description: "SomeUseGroupWeTested",
+	customFields: [
+	    "someField": "another value"
+	]
 )
