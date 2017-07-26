@@ -61,3 +61,30 @@ create.userGroup(
 	    "someField": "another value"
 	]
 )
+
+create.site(
+	nameMap: [
+		"en_US": "AutomatedTestSite",
+		"nl_NL": "AutomatedTestSite"
+	],
+	descriptionMap: [
+	    "nl_NL": "Description of automated site"
+	],
+	friendlyURL: "/automatedTestSite"
+)
+
+update.site(
+	siteKey: "AutomatedTestSite",
+	nameMap: [
+		"en_US": "AutomatedTestSite",
+		"nl_NL": "AutomatedTestSiteNL"
+	],
+	descriptionMap: [
+	    "en_US": "Description",
+	    "nl_NL": "Beschrijving"
+	],
+	friendlyURL: "/automatedTestSite"
+)
+delete.site(
+	siteKey: "AutomatedTestSite"
+)
