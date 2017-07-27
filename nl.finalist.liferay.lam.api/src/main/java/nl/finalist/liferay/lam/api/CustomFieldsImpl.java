@@ -25,13 +25,7 @@ import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringPool;
-
-
-import java.util.Arrays;
-
 import com.liferay.portal.kernel.util.UnicodeProperties;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * Implementation for {@link nl.finalist.liferay.lam.api.CustomFields}
