@@ -87,6 +87,14 @@ create.site(
 			descriptionMap: ["nl_NL": "description of page"],
 			friendlyUrlMap: ["nl_NL": "/pagename"],
 			typeSettings: Templates.one_column
+		],
+		[
+			privatePage: true,
+			nameMap: ["nl_NL": "privatepageNL", "en_US": "privatepageUS"],
+			titleMap: ["nl_NL": "title of private page"],
+			descriptionMap: ["nl_NL": "description of private page"],
+			friendlyUrlMap: ["nl_NL": "/privatepage"],
+			typeSettings: Templates.one_column
 		]
 	]
 )
@@ -104,5 +112,15 @@ update.site(
 	friendlyURL: "/automatedTestSite",
 	customFields: [
 		"automatedField": "automated value"
+	],
+	pages: [
+		[
+			privatePage: false,
+			nameMap: ["nl_NL": "pagenameNL", "en_US": "pagenameUS"],
+			titleMap: ["nl_NL": "title of page"],
+			descriptionMap: ["nl_NL": "description of page"],
+			friendlyUrlMap: ["nl_NL": "/pagename"],
+			typeSettings: Templates.one_column
+		]
 	]
 )

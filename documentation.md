@@ -153,7 +153,17 @@ The following script shows how you can create a vocabulary:
 		friendlyURL: "/automatedTestSite",
 		customFields: [
 		    "automatedField": "value"
+		],
+		pages: [
+		[
+			privatePage: false,
+			nameMap: ["nl_NL": "sitepage", "en_US": "sitepage"],
+			titleMap: ["nl_NL": "title of page"],
+			descriptionMap: ["nl_NL": "description of page"],
+			friendlyUrlMap: ["nl_NL": "/pagename"],
+			typeSettings: Templates.one_column
 		]
+	]
 	)
 
 To create a site, you have to specify a map of names for the available locales. Make sure the default locale is present, as this will be the siteKey that you will later use for updating and deleting. You also have to specify a map of descriptions and a friendlyURL. If you try to add a site that already exists, an error message will be logged.
@@ -178,12 +188,23 @@ The following script shows how you can update a site:
 		friendlyURL: "/automatedTestSite",
 		customFields: [
 			"automatedField": "automated value"
+		],
+		pages: [
+		[
+			privatePage: false,
+			nameMap: ["nl_NL": "sitepageNL", "en_US": "sitepageUS"],
+			titleMap: ["nl_NL": "title of page"],
+			descriptionMap: ["nl_NL": "description of page"],
+			friendlyUrlMap: ["nl_NL": "/pagename"],
+			typeSettings: Templates.one_column
 		]
+	]
 	)
 
 To update a site, you have to specify the siteKey, which is the title associated with the default locale. You will also have to specify a map of names and one of descriptions per locale and a friendlyURL.
 
 It is also possible to add or update the value of a custom field. Of course this custom field has to exist before you can give it a value here. CustomFields is a map where the key is the name of the custom field, and the value is the actual value you want to give it.
+Updating the existing page or adding a page is also possible.
 
 ## Delete
 The following script shows how you can delete a site:

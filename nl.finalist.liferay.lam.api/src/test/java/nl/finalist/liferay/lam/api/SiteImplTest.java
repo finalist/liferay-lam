@@ -165,7 +165,7 @@ public class SiteImplTest {
     	when(siteService.getGroup(COMPANY_ID, siteKey)).thenReturn(mockSite);
         when(mockSite.getGroupId()).thenReturn(SITE_ID);
 
-        siteImpl.updateSite(siteKey, nameMap, descriptionMap, friendlyURL, null);
+        siteImpl.updateSite(siteKey, nameMap, descriptionMap, friendlyURL, null, null);
 
         verify(siteService).updateGroup(SITE_ID, GroupConstants.DEFAULT_PARENT_GROUP_ID, nameMap, descriptionMap, GroupConstants.TYPE_SITE_OPEN, true, GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, friendlyURL, false, true, null);
     }
@@ -180,8 +180,19 @@ public class SiteImplTest {
 
         when(siteService.updateGroup(SITE_ID, GroupConstants.DEFAULT_PARENT_GROUP_ID, nameMap, descriptionMap, GroupConstants.TYPE_SITE_OPEN, true, GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, friendlyURL, false, true, null)).thenReturn(mockSite);
         when(mockSite.getPrimaryKey()).thenReturn(1L);
-
-        siteImpl.updateSite(siteKey, nameMap, descriptionMap, friendlyURL, customFields);
+        
+        List<PageModel> pages = new ArrayList<>();
+    	Map<Locale, String> testMap = new HashMap<>();
+    	testMap.put(Locale.US, "test");
+        PageModel page = new PageModel(true, nameMap, testMap , testMap, testMap, StringPool.BLANK);
+		pages.add(page );
+		
+		 when(companyService.getCompanyByWebId("liferay.com")).thenReturn(mockCompany);
+		   when(mockCompany.getCompanyId()).thenReturn(COMPANY_ID);
+	        when(mockCompany.getDefaultUser()).thenReturn(mockDefaultUser);
+	        when(mockDefaultUser.getUserId()).thenReturn(USER_ID);
+		
+        siteImpl.updateSite(siteKey, nameMap, descriptionMap, friendlyURL, customFields,pages);
 
         verify(siteService).updateGroup(SITE_ID, GroupConstants.DEFAULT_PARENT_GROUP_ID, nameMap, descriptionMap, GroupConstants.TYPE_SITE_OPEN, true, GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, friendlyURL, false, true, null);
         verify(customFieldsService).updateCustomFieldValue(Group.class.getName(), "someField", 1L, "someValue");
