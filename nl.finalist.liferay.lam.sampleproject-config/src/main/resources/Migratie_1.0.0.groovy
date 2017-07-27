@@ -78,6 +78,16 @@ create.site(
 	friendlyURL: "/automatedTestSite",
 	customFields: [
 	    "automatedField": "value"
+	],
+	pages: [
+		[
+			privatePage: false,
+			nameMap: ["nl_NL": "pagename", "en_US": "pagename"],
+			titleMap: ["nl_NL": "title of page"],
+			descriptionMap: ["nl_NL": "description of page"],
+			friendlyUrlMap: ["nl_NL": "/pagename"],
+			typeSettings: Templates.one_column
+		]
 	]
 )
 
@@ -95,7 +105,4 @@ update.site(
 	customFields: [
 		"automatedField": "automated value"
 	]
-)
-delete.site(
-	siteKey: "AutomatedTestSite"
 )

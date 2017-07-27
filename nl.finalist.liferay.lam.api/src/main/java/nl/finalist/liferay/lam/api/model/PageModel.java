@@ -13,7 +13,6 @@ public class PageModel {
 	
 	public PageModel(boolean privatePage, Map<Locale, String> nameMap, Map<Locale, String> titleMap,
 			Map<Locale, String> descriptionMap, Map<Locale, String> friendlyUrlMap, String typeSettings) {
-		super();
 		this.privatePage = privatePage;
 		this.nameMap = nameMap;
 		this.titleMap = titleMap;

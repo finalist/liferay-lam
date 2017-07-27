@@ -16,6 +16,7 @@ import org.osgi.service.component.annotations.Reference;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import nl.finalist.liferay.lam.api.*;
+import nl.finalist.liferay.lam.dslglue.*;
 import nl.finalist.liferay.lam.builder.*;
 
 
@@ -64,8 +65,8 @@ public class DslExecutor implements Executor {
 
         sharedData.setVariable("Roles", new Roles());
         sharedData.setVariable("Entities", new Entities());
-
         sharedData.setVariable("ActionKeys", new ActionKeys());
+        sharedData.setVariable("Templates", new Templates());
 
         CompilerConfiguration conf = new CompilerConfiguration();
         ImportCustomizer imports = new ImportCustomizer();
