@@ -6,6 +6,12 @@ create.customField (
 	roles: [Roles.guest, Roles.user]
 )
 create.customField (
+	name: 'someField',
+	type: CustomFieldType.TEXT,
+	entityName: Entities.usergroup,
+	roles: [Roles.guest, Roles.user]
+)
+create.customField (
 	name: 'fieldGroupTest',
 	type: CustomFieldType.TEXT_GROUP,
 	defaultValue: 'a,b,c',
@@ -89,3 +95,4 @@ create.userGroup(
 	    "someField": "another value"
 	]
 )
+

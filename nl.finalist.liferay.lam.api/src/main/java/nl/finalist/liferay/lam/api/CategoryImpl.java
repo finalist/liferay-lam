@@ -42,8 +42,8 @@ public class CategoryImpl implements Category {
 
 	@Override
 	public void addCategory(String categoryName, String vocabularyName, String title) {
-		LOG.info(String.format(
-				"Starting to add the category with Category name: %s , Vocabulary name: %s and Title: %s ",
+		LOG.debug(String.format(
+				"Starting to add the category %s to vocabulary %s with title %s ",
 				categoryName, vocabularyName, title));
 		try {
 			AssetVocabulary vocabulary = assetVocabularyLocalService.getGroupVocabulary(getGlobalGroupId(),
@@ -56,24 +56,22 @@ public class CategoryImpl implements Category {
 				}
 			}
 			if (addCondition) {
-				AssetCategory newCategory = assetCategoryService.addCategory(getDefaultUserId(), getGlobalGroupId(),
+				assetCategoryService.addCategory(getDefaultUserId(), getGlobalGroupId(),
 						categoryName, vocabulary.getVocabularyId(), new ServiceContext());
-				LOG.info(String.format("Added the categroy with name : %S", newCategory.getName()));
+				LOG.info(String.format("Added category %s to vocabulary %s", categoryName, vocabularyName));
 			} else {
-				LOG.error(String.format("Cannot add the category with category name: %s because it already exists",
-						categoryName));
+				LOG.info(String.format("Cannot add category %s because it already exists", categoryName));
 			}
-			LOG.info(String.format("Added the category with categroy name: %s", categoryName));
 		} catch (PortalException e) {
-			LOG.error(String.format("addition of the category with name %s went wrong ", categoryName, e.getMessage()));
+			LOG.error(String.format("adding category %s failed", categoryName),e);
 		}
 
 	}
 
 	@Override
 	public void updateCategory(String categoryName, String vocabularyName, String updateName) {
-		LOG.info(String.format(
-				"Starting to update the category with name: %s to be updated to name : %s for  vocabulary: %s ",
+		LOG.debug(String.format(
+				"Starting to update category %s in vocabulary %s, the new name will be %s",
 				categoryName, vocabularyName, updateName));
 		try {
 			AssetVocabulary vocabulary = assetVocabularyLocalService.getGroupVocabulary(getGlobalGroupId(),
@@ -81,30 +79,30 @@ public class CategoryImpl implements Category {
 			List<AssetCategory> existingCategories = vocabulary.getCategories();
 			for (AssetCategory existingCategory : existingCategories) {
 				if (existingCategory.getName().equals(categoryName)) {
-					LOG.info(String.format("Found the category with the following details %s", existingCategory));
 					Map<Locale, String> titleMap = new HashMap<Locale, String>();
 					titleMap.put(NL_LOCALE, existingCategory.getName());
 					existingCategory.setTitleMap(titleMap);
 					existingCategory.setName(updateName);
 
-					AssetCategory updatedCategory = assetCategoryService.updateAssetCategory(existingCategory);
-					LOG.info(String.format("Updated the category with name: %s", updatedCategory.getName()));
+					assetCategoryService.updateAssetCategory(existingCategory);
+					LOG.debug(String.format(
+							"Updated category %s in vocabulary %s, the new name is now %s",
+							categoryName, vocabularyName, updateName));
 					return;
-
 				}
 
 			}
-			LOG.info(String.format("Category doesnot exists with name: %s", categoryName));
+			LOG.info(String.format("Category %s doesn't exist", categoryName));
 
 		} catch (PortalException e) {
-			LOG.info(String.format("Update of a category with name: %s went wrong %s", categoryName, e.getMessage()));
+			LOG.error(String.format("Update of category %s failed", categoryName), e);
 		}
 
 	}
 
 	@Override
 	public void deleteCategory(String categoryName, String vocabularyName) {
-		LOG.info(String.format("Starting to delete the category with name: %s for the vocabulary %s", categoryName,
+		LOG.debug(String.format("Starting to delete category %s from vocabulary %s", categoryName,
 				vocabularyName));
 		try {
 			AssetVocabulary vocabulary = assetVocabularyLocalService.getGroupVocabulary(getGlobalGroupId(),
@@ -113,14 +111,14 @@ public class CategoryImpl implements Category {
 			for (AssetCategory existingCategory : existingCategories) {
 				if (existingCategory.getName().equals(categoryName)) {
 					assetCategoryService.deleteCategory(existingCategory);
-					LOG.info(String.format("deletion of  the category with name: %s is successful", existingCategory));
+					LOG.info(String.format("Deleted category %s from vocabulary %s", categoryName, vocabularyName));
 					return;
 				}
 
 			}
-			LOG.info(String.format("Category doesn't exist with name: %s , so deletion is not possible", categoryName));
+			LOG.info(String.format("Category %s doesn't exist", categoryName));
 		} catch (PortalException e) {
-			LOG.info(String.format("Deletion of a category with name: %s went wrong %s", categoryName, e.getMessage()));
+			LOG.error(String.format("Deleting category %s failed", categoryName), e);
 		}
 
 	}
@@ -131,7 +129,7 @@ public class CategoryImpl implements Category {
 		try {
 			groupId = defaultCompany.getGroupId();
 		} catch (PortalException e) {
-			LOG.error(String.format("Error while retrieving global groupId, error is %s", e.getMessage()));
+			LOG.error("Error while retrieving global groupId", e);
 		}
 		return groupId;
 	}
@@ -142,7 +140,7 @@ public class CategoryImpl implements Category {
 		try {
 			userId = defaultCompany.getDefaultUser().getUserId();
 		} catch (PortalException e) {
-			LOG.error(String.format("Error while retrieving default userId, error is %s", e.getMessage()));
+			LOG.error("Error while retrieving default userId", e);
 		}
 		return userId;
 	}
@@ -153,7 +151,7 @@ public class CategoryImpl implements Category {
 			try {
 				defaultCompany = companyService.getCompanyByWebId(webId);
 			} catch (PortalException e) {
-				LOG.error(String.format("Error while retrieving default company, error is %s", e.getMessage()));
+				LOG.error("Error while retrieving default company", e);
 			}
 		}
 		return defaultCompany;
