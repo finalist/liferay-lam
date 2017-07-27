@@ -4,7 +4,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -30,6 +32,9 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.StringPool;
+
+import nl.finalist.liferay.lam.api.model.PageModel;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ LocaleUtil.class, SiteImpl.class, PropsUtil.class, Locale.class, PortalUtil.class })
@@ -58,6 +63,8 @@ public class SiteImplTest {
     private ServiceContext mockServiceContext;
     @Mock
     private CustomFields customFieldsService;
+    @Mock
+    private Page pageService;
     @InjectMocks
     private SiteImpl siteImpl;
 
@@ -93,7 +100,7 @@ public class SiteImplTest {
         PowerMockito.when(LocaleUtil.getSiteDefault()).thenReturn(mockLocale);
         when(mockCompany.getDefaultUser()).thenReturn(mockDefaultUser);
         when(mockDefaultUser.getUserId()).thenReturn(USER_ID);
-        siteImpl.addSite(nameMap, descriptionMap, friendlyURL, null);
+        siteImpl.addSite(nameMap, descriptionMap, friendlyURL, null, null);
 
         verify(siteService).addGroup(USER_ID, GroupConstants.DEFAULT_PARENT_GROUP_ID, Group.class.getName(), 0L, GroupConstants.DEFAULT_LIVE_GROUP_ID, nameMap, descriptionMap, GroupConstants.TYPE_SITE_OPEN, true, GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, friendlyURL, true, false, true, null);
     }
@@ -112,11 +119,35 @@ public class SiteImplTest {
         
         when(siteService.addGroup(USER_ID, GroupConstants.DEFAULT_PARENT_GROUP_ID, Group.class.getName(), 0L, GroupConstants.DEFAULT_LIVE_GROUP_ID, nameMap, descriptionMap, GroupConstants.TYPE_SITE_OPEN, true, GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, friendlyURL, true, false, true, null)).thenReturn(mockSite);
         when(mockSite.getPrimaryKey()).thenReturn(1L);
-
-        siteImpl.addSite(nameMap, descriptionMap, friendlyURL, customFields);
+        
+        siteImpl.addSite(nameMap, descriptionMap, friendlyURL, customFields, null);
 
         verify(siteService).addGroup(USER_ID, GroupConstants.DEFAULT_PARENT_GROUP_ID, Group.class.getName(), 0L, GroupConstants.DEFAULT_LIVE_GROUP_ID, nameMap, descriptionMap, GroupConstants.TYPE_SITE_OPEN, true, GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, friendlyURL, true, false, true, null);
         verify(customFieldsService).addCustomFieldValue(Group.class.getName(), "someField", 1L, "someValue");
+    }
+
+    @Test
+    public void testAddSiteWithPages() throws Exception {
+    	List<PageModel> pages = new ArrayList<>();
+    	Map<Locale, String> testMap = new HashMap<>();
+    	testMap.put(Locale.US, "test");
+		PageModel page = new PageModel(true, nameMap, testMap , testMap, testMap, StringPool.BLANK);
+		pages.add(page );
+        
+        when(companyService.getCompanyByWebId("liferay.com")).thenReturn(mockCompany);
+        when(mockCompany.getCompanyId()).thenReturn(COMPANY_ID);
+        Locale mockLocale = new Locale("en_US");
+        PowerMockito.when(LocaleUtil.getSiteDefault()).thenReturn(mockLocale);
+        when(mockCompany.getDefaultUser()).thenReturn(mockDefaultUser);
+        when(mockDefaultUser.getUserId()).thenReturn(USER_ID);
+        
+        when(siteService.addGroup(USER_ID, GroupConstants.DEFAULT_PARENT_GROUP_ID, Group.class.getName(), 0L, GroupConstants.DEFAULT_LIVE_GROUP_ID, nameMap, descriptionMap, GroupConstants.TYPE_SITE_OPEN, true, GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, friendlyURL, true, false, true, null)).thenReturn(mockSite);
+        when(mockSite.getGroupId()).thenReturn(1L);
+
+        siteImpl.addSite(nameMap, descriptionMap, friendlyURL, null, pages);
+
+        verify(siteService).addGroup(USER_ID, GroupConstants.DEFAULT_PARENT_GROUP_ID, Group.class.getName(), 0L, GroupConstants.DEFAULT_LIVE_GROUP_ID, nameMap, descriptionMap, GroupConstants.TYPE_SITE_OPEN, true, GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, friendlyURL, true, false, true, null);
+        verify(pageService).addPage(USER_ID, 1L, page);
     }
 
     @Test

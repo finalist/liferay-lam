@@ -1,5 +1,6 @@
 package nl.finalist.liferay.lam.api;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -19,6 +20,8 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsUtil;
 
+import nl.finalist.liferay.lam.api.model.PageModel;
+
 @Component(immediate = true, service=Site.class)
 public class SiteImpl implements Site {
 
@@ -28,12 +31,14 @@ public class SiteImpl implements Site {
 	private CompanyLocalService companyService;
 	@Reference
 	CustomFields customFieldsService;
+	@Reference
+	Page pageService;
 
 
 	private static final Log LOG = LogFactoryUtil.getLog(SiteImpl.class);
 
     @Override
-	public void addSite(Map<Locale, String> nameMap, Map<Locale, String> descriptionMap, String friendlyURL, Map<String, String> customFields) {
+	public void addSite(Map<Locale, String> nameMap, Map<Locale, String> descriptionMap, String friendlyURL, Map<String, String> customFields, List<PageModel> pages) {
 		try {
 			Group group = groupService.addGroup(getDefaultUserId(), GroupConstants.DEFAULT_PARENT_GROUP_ID, Group.class.getName(), 0L,
 					GroupConstants.DEFAULT_LIVE_GROUP_ID, nameMap,
@@ -45,6 +50,12 @@ public class SiteImpl implements Site {
 				for (String fieldName : customFields.keySet()) {
 					customFieldsService.addCustomFieldValue(Group.class.getName(), fieldName, group.getPrimaryKey(), customFields.get(fieldName));
 					LOG.info(String.format("Custom field %s now has value %s", fieldName, customFields.get(fieldName)));
+				}
+			}
+			
+			if(pages != null) {
+				for (PageModel page : pages) {
+					pageService.addPage(getDefaultUserId(), group.getGroupId(), page);
 				}
 			}
 		} catch(DuplicateGroupException dge) {
