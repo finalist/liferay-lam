@@ -1,12 +1,19 @@
 package nl.finalist.liferay.lam.api;
 
+import java.util.Arrays;
+
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+
 import com.liferay.expando.kernel.exception.NoSuchTableException;
 import com.liferay.expando.kernel.model.ExpandoColumn;
 import com.liferay.expando.kernel.model.ExpandoColumnConstants;
 import com.liferay.expando.kernel.model.ExpandoTable;
 import com.liferay.expando.kernel.model.ExpandoTableConstants;
 import com.liferay.expando.kernel.service.ExpandoColumnLocalService;
+import com.liferay.expando.kernel.service.ExpandoRowLocalService;
 import com.liferay.expando.kernel.service.ExpandoTableLocalService;
+import com.liferay.expando.kernel.service.ExpandoValueLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
@@ -18,11 +25,7 @@ import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringPool;
-
-import java.util.Arrays;
-
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
+import com.liferay.portal.kernel.util.UnicodeProperties;
 
 /**
  * Implementation for {@link nl.finalist.liferay.lam.api.CustomFields}
@@ -32,9 +35,12 @@ public class CustomFieldsImpl implements CustomFields {
 
     @Reference
     private ExpandoTableLocalService tableService;
-
     @Reference
     private ExpandoColumnLocalService columnService;
+    @Reference
+    private ExpandoRowLocalService rowService;
+    @Reference
+    private ExpandoValueLocalService valueService;
 
     @Reference
     private RoleLocalService roleService;
@@ -47,7 +53,7 @@ public class CustomFieldsImpl implements CustomFields {
 
     
     private void addCustomTextField(long companyId, String entityName, String fieldName, String defaultValue, String [] roles) {
-        LOG.debug(String.format("Start adding custom text field %s for company %d to entity %s with default value %s and roles %s", fieldName, companyId, entityName, defaultValue, Arrays.toString(roles)));
+        LOG.debug(String.format("Start adding custom text field %s to entity %s with default value %s and roles %s", fieldName, entityName, defaultValue, Arrays.toString(roles)));
 
         ExpandoTable expandoTable = getOrAddExpandoTable(companyId, entityName, ExpandoTableConstants.DEFAULT_TABLE_NAME);
         LOG.debug("Expando Table ID : " + expandoTable.getTableId());
@@ -59,8 +65,7 @@ public class CustomFieldsImpl implements CustomFields {
         }
         LOG.debug("Expando Column ID : " + expandoColumn.getColumnId());
 
-        LOG.debug("Done adding text custom field");
-
+        LOG.info(String.format("Added custom text field %s to entity %s with default value %s and roles %s", fieldName, entityName, defaultValue, Arrays.toString(roles)));
     }
 
     @Override
@@ -70,8 +75,8 @@ public class CustomFieldsImpl implements CustomFields {
 
     
     private void addCustomIntegerField(long companyId, String entityName, String fieldName, int defaultValue, String[] roles) {
-        LOG.debug(String.format("Start adding custom integer field %s for company %d to entity %s with default value %s",
-                        fieldName, companyId, entityName, defaultValue));
+        LOG.debug(String.format("Start adding custom integer field %s to entity %s with default value %s",
+                        fieldName, entityName, defaultValue));
 
         ExpandoTable expandoTable = getOrAddExpandoTable(companyId, entityName, ExpandoTableConstants.DEFAULT_TABLE_NAME);
         LOG.debug("Expando Table ID : " + expandoTable.getTableId());
@@ -83,7 +88,7 @@ public class CustomFieldsImpl implements CustomFields {
         }
         LOG.debug("Expando Column ID : " + expandoColumn.getColumnId());
 
-        LOG.debug("Done adding integer custom field");
+        LOG.info(String.format("Added custom integer field %s to entity %s with default value %s and roles %s", fieldName, entityName, defaultValue, Arrays.toString(roles)));
     }
 
     @Override
@@ -91,9 +96,33 @@ public class CustomFieldsImpl implements CustomFields {
         this.addCustomIntegerField(PortalUtil.getDefaultCompanyId(), entityName, fieldName, defaultValue, roles);
     }
 
+    @Override
+    public void addCustomTextArrayField(String entityName, String fieldName, String possibleValues, String[] roles, String displayType) {
+        Long companyId = PortalUtil.getDefaultCompanyId();
+        LOG.debug(String.format("Start adding custom text array field %s to entity %s with default value %s and roles %s", fieldName, entityName, possibleValues, Arrays.toString(roles)));
+
+        ExpandoTable expandoTable = getOrAddExpandoTable(companyId, entityName, ExpandoTableConstants.DEFAULT_TABLE_NAME);
+        LOG.debug("Expando Table ID : " + expandoTable.getTableId());
+
+        ExpandoColumn expandoColumn = getOrAddExpandoTextArrayColumn(companyId, entityName, ExpandoTableConstants.DEFAULT_TABLE_NAME, fieldName, expandoTable);
+        saveDefaultValueForColumn(possibleValues, expandoColumn);
+
+        UnicodeProperties properties = expandoColumn.getTypeSettingsProperties();
+        properties.setProperty("display-type", displayType);
+        columnService.updateExpandoColumn(expandoColumn);
+
+        // possible display-types: checkbox, radio, selection-list, text-box
+        for (String role : roles) {
+            addExpandoPermissions(companyId, expandoColumn, role);
+        }
+        LOG.debug("Expando Column ID : " + expandoColumn.getColumnId());
+
+        LOG.info(String.format("Added custom text array field %s to entity %s with possible values [%s] and roles %s", fieldName, entityName, possibleValues, Arrays.toString(roles)));
+
+    }
   
     private void deleteCustomField(long companyId, String entityName, String fieldName) {
-        LOG.debug(String.format("Start deleting custom field %s for company %d of entity %s ", fieldName, companyId, entityName));
+        LOG.debug(String.format("Start deleting custom field %s of entity %s ", fieldName, entityName));
 
         try {
             ExpandoTable expandoTable = tableService.getDefaultTable(companyId, entityName);
@@ -102,17 +131,17 @@ public class CustomFieldsImpl implements CustomFields {
             if (exandoColumn != null) {
                 columnService.deleteExpandoColumn(exandoColumn);
             } else {
-                LOG.warn("No column to delete");
+                LOG.debug("No column to delete");
             }
 
             tableService.deleteExpandoTable(expandoTable);
         } catch (NoSuchTableException e) {
-            LOG.warn("No table to delete");
+            LOG.debug("No table to delete");
         } catch (PortalException e) {
             LOG.error(e);
         }
 
-        LOG.debug("Done deleting custom field");
+        LOG.info(String.format("Deleted custom field %s of entity %s ", fieldName, entityName));
     }
 
     @Override
@@ -120,13 +149,22 @@ public class CustomFieldsImpl implements CustomFields {
         deleteCustomField(PortalUtil.getDefaultCompanyId(), entityName, fieldName);
     }
 
+    @Override
+    public void addCustomFieldValue(String entityName, String fieldName, long classPK, String content) {
+		try {
+			valueService.addValue(PortalUtil.getDefaultCompanyId(), entityName, ExpandoTableConstants.DEFAULT_TABLE_NAME, fieldName, classPK, content);
+		} catch (PortalException e) {
+			LOG.error(e);
+		}
+		LOG.info(String.format("Adding value %s to custom field %s on entity %s with id %d", content, fieldName, entityName, classPK));
+    }
 
     private ExpandoTable getOrAddExpandoTable(long companyId, String className, String tableName) {
         ExpandoTable expandoTable = null;
         try {
             expandoTable = tableService.getDefaultTable(companyId, className);
         } catch (NoSuchTableException e) {
-            LOG.warn("The table did not yet exist");
+            LOG.debug("The table did not yet exist");
             try {
                 expandoTable = tableService.addTable(companyId, className, tableName);
             } catch (Exception e1) {
@@ -148,6 +186,11 @@ public class CustomFieldsImpl implements CustomFields {
         return getOrAddExpandoColumn(companyId, className, tableName, columnName, expandoTable, ExpandoColumnConstants.STRING);
     }
 
+    private ExpandoColumn getOrAddExpandoTextArrayColumn(long companyId, String className, String tableName, String columnName,
+                                                    ExpandoTable expandoTable) {
+        return getOrAddExpandoColumn(companyId, className, tableName, columnName, expandoTable, ExpandoColumnConstants.STRING_ARRAY);
+    }
+
     private ExpandoColumn getOrAddExpandoIntegerColumn(long companyId, String className, String tableName, String columnName,
                     ExpandoTable expandoTable) {
         return getOrAddExpandoColumn(companyId, className, tableName, columnName, expandoTable, ExpandoColumnConstants.INTEGER);
@@ -160,13 +203,26 @@ public class CustomFieldsImpl implements CustomFields {
             exandoColumn = columnService.getColumn(companyId, className, tableName, columnName);
             if (exandoColumn == null) {
                 exandoColumn = columnService.addColumn(expandoTable.getTableId(), columnName,
-                                columnType, columnType == ExpandoColumnConstants.INTEGER ? Integer.valueOf(0) :  StringPool.BLANK);
+                                columnType, defaultValue(columnType));
             }
         } catch (SystemException | PortalException e) {
             LOG.error(e);
         }
 
         return exandoColumn;
+    }
+
+    private Object defaultValue(int columnType) {
+        switch (columnType) {
+            case ExpandoColumnConstants.INTEGER:
+                return Integer.valueOf(0);
+            case ExpandoColumnConstants.STRING:
+                return StringPool.BLANK;
+            case ExpandoColumnConstants.STRING_ARRAY:
+                return  StringPool.EMPTY_ARRAY;
+            default:
+                return StringPool.BLANK;
+        }
     }
 
     private void addExpandoPermissions(long companyId, ExpandoColumn column, String role) {

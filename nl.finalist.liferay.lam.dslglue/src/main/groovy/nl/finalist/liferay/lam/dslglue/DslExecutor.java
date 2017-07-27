@@ -2,6 +2,7 @@ package nl.finalist.liferay.lam.dslglue;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 
 import java.io.File;
 import java.io.Reader;
@@ -15,18 +16,9 @@ import org.osgi.service.component.annotations.Reference;
 import groovy.lang.Binding;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyShell;
-import nl.finalist.liferay.lam.api.CustomFields;
-import nl.finalist.liferay.lam.api.PortalProperties;
-import nl.finalist.liferay.lam.api.PortalSettings;
-import nl.finalist.liferay.lam.api.Vocabulary;
-import nl.finalist.liferay.lam.api.Category;
-import nl.finalist.liferay.lam.builder.CreateFactoryBuilder;
-import nl.finalist.liferay.lam.builder.DeleteFactoryBuilder;
-import nl.finalist.liferay.lam.builder.UpdateFactoryBuilder;
-import nl.finalist.liferay.lam.builder.ValidateFactoryBuilder;
-import nl.finalist.liferay.lam.dslglue.Executor;
-import nl.finalist.liferay.lam.dslglue.Entities;
-import nl.finalist.liferay.lam.dslglue.Roles;
+import nl.finalist.liferay.lam.api.*;
+import nl.finalist.liferay.lam.builder.*;
+import nl.finalist.liferay.lam.dslglue.*;
 
 /**
  * Executor that evaluates configured scripts using a context containing all
@@ -47,6 +39,10 @@ public class DslExecutor implements Executor {
     private PortalProperties portalPropertiesService;
     @Reference
     private Category categoryService;
+    @Reference
+    private RoleAndPermissions roleAndPermissionsService;
+    @Reference
+    private UserGroups userGroupsService;
 
     @Activate
     public void activate() {
@@ -62,15 +58,21 @@ public class DslExecutor implements Executor {
         // Add all available API classes to the context of the scripts
         sharedData.setVariable("LOG", LOG);
 
-        sharedData.setVariable("create", new CreateFactoryBuilder(customFieldsService, vocabularyService, categoryService));
+        sharedData.setVariable("create", new CreateFactoryBuilder(customFieldsService, vocabularyService, categoryService, userGroupsService, roleAndPermissionsService));
         sharedData.setVariable("update", new UpdateFactoryBuilder(portalSettingsService, vocabularyService, categoryService));
         sharedData.setVariable("validate", new ValidateFactoryBuilder(portalPropertiesService));
         sharedData.setVariable("delete", new DeleteFactoryBuilder(customFieldsService, vocabularyService, categoryService));
 
         sharedData.setVariable("Roles", new Roles());
         sharedData.setVariable("Entities", new Entities());
+        sharedData.setVariable("ActionKeys", new ActionKeys());
+
         CompilerConfiguration conf = new CompilerConfiguration();
         ImportCustomizer imports = new ImportCustomizer();
+
+        imports.addImport("TypeOfRole", "nl.finalist.liferay.lam.api.TypeOfRole");
+        imports.addImport("CustomFieldType", "nl.finalist.liferay.lam.dslglue.CustomFieldType");
+        imports.addImport("DisplayType", "nl.finalist.liferay.lam.dslglue.DisplayType");
 
         // Make these imports available to the scripts
 

@@ -7,5 +7,5 @@ class Entities {
 	static final organization = "com.liferay.portal.kernel.model.Organization"
 	static final role = "com.liferay.portal.kernel.model.Role"
 	static final site = "com.liferay.portal.kernel.model.Group"
-	static final webcontent = "com.liferay.portal.kernel.model.JournalArticle"
+	static final webcontent = "com.liferay.journal.model.JournalArticle"
 }

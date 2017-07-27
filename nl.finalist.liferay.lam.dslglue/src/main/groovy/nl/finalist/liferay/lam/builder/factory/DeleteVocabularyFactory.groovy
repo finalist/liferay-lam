@@ -1,7 +1,7 @@
 package nl.finalist.liferay.lam.builder.factory
 
-import nl.finalist.liferay.lam.api.Vocabulary
-import nl.finalist.liferay.lam.dslglue.VocabularyModel
+import nl.finalist.liferay.lam.api.Vocabulary;
+import nl.finalist.liferay.lam.dslglue.model.VocabularyModel;
 
 class DeleteVocabularyFactory extends AbstractFactory{
 

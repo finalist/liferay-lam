@@ -3,7 +3,9 @@ package nl.finalist.liferay.lam.api;
 import static org.junit.Assert.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -25,6 +27,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.PortalUtil;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({PortalUtil.class})
@@ -36,6 +39,9 @@ public class RoleAndPermissionsImplTest {
 	private RoleLocalService roleLocalService;
 	@Mock
 	private ResourcePermissionLocalService resourcePermissionLocalService;
+	@Mock
+	private UserLocalService userLocalService;
+
 	@InjectMocks
 	private RoleAndPermissionsImpl rolesAndPermission;
 
@@ -45,6 +51,7 @@ public class RoleAndPermissionsImplTest {
 		PowerMockito.mockStatic(PortalUtil.class);
 		PowerMockito.when(PortalUtil.getDefaultCompanyId()).thenReturn(1L);
 		initMocks(this);
+		when(userLocalService.getDefaultUserId(anyLong())).thenReturn(1L);
 	}
 
 	@Test
@@ -53,11 +60,38 @@ public class RoleAndPermissionsImplTest {
 		title.put(Locale.ENGLISH, "title");
 		Mockito.when(roleLocalService.addRole(1L, null, 0L, "MockRole", title, title,
 				TypeOfRole.REGULARROLES.getValue(), null, null)).thenReturn(role);
-		boolean result = rolesAndPermission.addCustomRoleAndPermission("MockRole", 1L, TypeOfRole.REGULARROLES, title,
-				title, new String[] { ActionKeys.ACCESS }, User.class.getName());
+		boolean result = rolesAndPermission.addCustomRoleAndPermission("MockRole", TypeOfRole.REGULARROLES, title,
+				title, getUserAccessPermissions());
 		assertTrue(result);
 	}
 
+	private Map<String, List<String>> getUserAccessPermissions() {
+		Map<String, List<String>> permissions = new HashMap<>();
+		List<String> actionIds = new ArrayList<>();
+		actionIds.add(ActionKeys.ACCESS);
+		
+		permissions.put(User.class.getName(), actionIds);
+		return permissions;
+	}
+	
+	private Map<String, List<String>> getUserAccessAndViewPermissions() {
+		Map<String, List<String>> permissions = new HashMap<>();
+		List<String> actionIds = new ArrayList<>();
+		actionIds.add(ActionKeys.ACCESS);
+		actionIds.add(ActionKeys.VIEW);
+		
+		permissions.put(User.class.getName(), actionIds);
+		return permissions;
+	}
+	
+	private Map<String, List<String>> getUserNoPermissions() {
+		Map<String, List<String>> permissions = new HashMap<>();
+		List<String> actionIds = new ArrayList<>();
+
+		permissions.put(User.class.getName(), actionIds);
+		return permissions;
+	}
+	
 	@Test
 	public void testFailCustomRoleAddition() throws PortalException {
 		Map<Locale, String> title = new HashMap<>();
@@ -65,8 +99,8 @@ public class RoleAndPermissionsImplTest {
 
 		Mockito.when(roleLocalService.addRole(1L, null, 0L, "MockRole", title, title,
 				TypeOfRole.REGULARROLES.getValue(), null, null)).thenThrow(new PortalException());
-		boolean result = rolesAndPermission.addCustomRoleAndPermission("MockRole", 1L, TypeOfRole.REGULARROLES, title,
-				title, new String[] { ActionKeys.ACCESS }, User.class.getName());
+		boolean result = rolesAndPermission.addCustomRoleAndPermission("MockRole", TypeOfRole.REGULARROLES, title,
+				title, getUserAccessPermissions());
 		assertFalse(result);
 	}
 
@@ -79,8 +113,8 @@ public class RoleAndPermissionsImplTest {
 				TypeOfRole.REGULARROLES.getValue(), null, null)).thenReturn(role);
 		doThrow(new PortalException()).when(resourcePermissionLocalService).addResourcePermission(1L,
 				User.class.getName(), ResourceConstants.SCOPE_COMPANY, "1", 0L, ActionKeys.ACCESS);
-		boolean result = rolesAndPermission.addCustomRoleAndPermission("MockRole", 1L, TypeOfRole.REGULARROLES, title,
-				title, new String[] { ActionKeys.ACCESS }, User.class.getName());
+		boolean result = rolesAndPermission.addCustomRoleAndPermission("MockRole", TypeOfRole.REGULARROLES, title,
+				title, getUserAccessPermissions());
 		assertFalse(result);
 	}
 
@@ -95,8 +129,8 @@ public class RoleAndPermissionsImplTest {
 				ResourceConstants.SCOPE_COMPANY, "1", 0L, ActionKeys.ACCESS);
 		doThrow(new PortalException()).when(resourcePermissionLocalService).addResourcePermission(1L,
 				User.class.getName(), ResourceConstants.SCOPE_COMPANY, "1", 0L, ActionKeys.VIEW);
-		boolean result = rolesAndPermission.addCustomRoleAndPermission("MockRole", 1L, TypeOfRole.REGULARROLES, title,
-				title,new String[] { ActionKeys.ACCESS, ActionKeys.VIEW }, User.class.getName());
+		boolean result = rolesAndPermission.addCustomRoleAndPermission("MockRole", TypeOfRole.REGULARROLES, title,
+				title,getUserAccessAndViewPermissions());
 		assertFalse(result);
 	}
 
@@ -107,8 +141,8 @@ public class RoleAndPermissionsImplTest {
 		role.setRoleId(1L);
 		Mockito.when(roleLocalService.addRole(1L, null, 0L, "MockRole", title, title,
 				TypeOfRole.REGULARROLES.getValue(), null, null)).thenReturn(role);
-		boolean result = rolesAndPermission.addCustomRoleAndPermission("MockRole", 1L, TypeOfRole.REGULARROLES, title,
-				title,new String[] {}, User.class.getName());
+		boolean result = rolesAndPermission.addCustomRoleAndPermission("MockRole", TypeOfRole.REGULARROLES, title,
+				title, getUserNoPermissions());
 		assertTrue(result);
 	}
 }

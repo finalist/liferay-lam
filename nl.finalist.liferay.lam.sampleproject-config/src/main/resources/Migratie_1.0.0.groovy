@@ -1,10 +1,17 @@
-
 create.customField (
 	name: 'fieldTest',
-	type: 'String',
+	type: CustomFieldType.TEXT,
 	defaultValue: 'test',
 	entityName: Entities.user,
 	roles: [Roles.guest, Roles.user]
+)
+create.customField (
+	name: 'fieldGroupTest',
+	type: CustomFieldType.TEXT_GROUP,
+	defaultValue: 'a,b,c',
+	entityName: Entities.user,
+	roles: [Roles.guest, Roles.user],
+	displayType: DisplayType.CHECKBOX
 )
 
 delete.customField(
@@ -60,3 +67,25 @@ update.category(
 	updateName:"styleUpdate",
 	vocabularyName: "TestVocab5"
 	)
+
+create.role(
+    name: "SomeRole",
+	type: TypeOfRole.REGULARROLES,
+	titles: [
+		"en_GB": "SomeRole"
+	],
+	descriptions: [
+		"en_GB": "SomeDescription"
+	],
+	permissions: [
+		(Entities.webcontent):[ActionKeys.VIEW, ActionKeys.DELETE]
+	]
+)
+
+create.userGroup(
+	name: "usergroup1",
+	description: "SomeUseGroupWeTested",
+	customFields: [
+	    "someField": "another value"
+	]
+)

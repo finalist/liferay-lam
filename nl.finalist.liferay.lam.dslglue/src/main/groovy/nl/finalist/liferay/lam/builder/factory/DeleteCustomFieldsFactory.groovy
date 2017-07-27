@@ -1,11 +1,7 @@
-package nl.finalist.liferay.lam.builder.factory;
+package nl.finalist.liferay.lam.builder.factory
 
-import java.util.Map;
-
-import groovy.util.AbstractFactory;
-import groovy.util.FactoryBuilderSupport;
 import nl.finalist.liferay.lam.api.CustomFields;
-import nl.finalist.liferay.lam.dslglue.CustomFieldModel;
+import nl.finalist.liferay.lam.dslglue.model.CustomFieldModel;
 
 class DeleteCustomFieldsFactory extends AbstractFactory{
     CustomFields customFieldsService;
