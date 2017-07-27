@@ -51,17 +51,17 @@ public class RoleAndPermissionsImpl implements RoleAndPermissions {
 			Map<Locale, String> titles, Map<Locale, String> descriptions, Map<String, List<String>> permissions) {
 		long companyId = PortalUtil.getDefaultCompanyId();
 
-		LOG.info(String.format("Adding role %s", roleName));
+		LOG.debug(String.format("Adding role %s", roleName));
 		try {
 			Long userId = userLocalService.getDefaultUserId(companyId);
 			
 			if (roleLocalService.fetchRole(companyId, roleName) != null) {
-				LOG.info("This role already exists");
+				LOG.debug("This role already exists");
 				return false;
 			} else {
 				Role role = roleLocalService.addRole(userId, null, 0L, roleName, titles, descriptions,
 						typeOfRole.getValue(), null, null);
-				LOG.info("Added the role");
+				LOG.info(String.format("Added role %s", roleName));
 				addPermission(role.getRoleId(), companyId, permissions);
 				return true;
 			}
@@ -81,7 +81,6 @@ public class RoleAndPermissionsImpl implements RoleAndPermissions {
 	 * @throws PortalException
 	 */
 	private void addPermission(Long roleId, Long companyId, Map<String, List<String>> permissions) throws PortalException {
-
 		Set<String> entityNames = permissions.keySet();
 		for (String entityName : entityNames) {
 			List<String> actionIds = permissions.get(entityName);

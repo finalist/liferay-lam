@@ -25,13 +25,7 @@ import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringPool;
-
-
-import java.util.Arrays;
-
 import com.liferay.portal.kernel.util.UnicodeProperties;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * Implementation for {@link nl.finalist.liferay.lam.api.CustomFields}
@@ -59,7 +53,7 @@ public class CustomFieldsImpl implements CustomFields {
 
     
     private void addCustomTextField(long companyId, String entityName, String fieldName, String defaultValue, String [] roles) {
-        LOG.debug(String.format("Start adding custom text field %s for company %d to entity %s with default value %s and roles %s", fieldName, companyId, entityName, defaultValue, Arrays.toString(roles)));
+        LOG.debug(String.format("Start adding custom text field %s to entity %s with default value %s and roles %s", fieldName, entityName, defaultValue, Arrays.toString(roles)));
 
         ExpandoTable expandoTable = getOrAddExpandoTable(companyId, entityName, ExpandoTableConstants.DEFAULT_TABLE_NAME);
         LOG.debug("Expando Table ID : " + expandoTable.getTableId());
@@ -71,8 +65,7 @@ public class CustomFieldsImpl implements CustomFields {
         }
         LOG.debug("Expando Column ID : " + expandoColumn.getColumnId());
 
-        LOG.debug("Done adding text custom field");
-
+        LOG.info(String.format("Added custom text field %s to entity %s with default value %s and roles %s", fieldName, entityName, defaultValue, Arrays.toString(roles)));
     }
 
     @Override
@@ -82,8 +75,8 @@ public class CustomFieldsImpl implements CustomFields {
 
     
     private void addCustomIntegerField(long companyId, String entityName, String fieldName, int defaultValue, String[] roles) {
-        LOG.debug(String.format("Start adding custom integer field %s for company %d to entity %s with default value %s",
-                        fieldName, companyId, entityName, defaultValue));
+        LOG.debug(String.format("Start adding custom integer field %s to entity %s with default value %s",
+                        fieldName, entityName, defaultValue));
 
         ExpandoTable expandoTable = getOrAddExpandoTable(companyId, entityName, ExpandoTableConstants.DEFAULT_TABLE_NAME);
         LOG.debug("Expando Table ID : " + expandoTable.getTableId());
@@ -95,7 +88,7 @@ public class CustomFieldsImpl implements CustomFields {
         }
         LOG.debug("Expando Column ID : " + expandoColumn.getColumnId());
 
-        LOG.debug("Done adding integer custom field");
+        LOG.info(String.format("Added custom integer field %s to entity %s with default value %s and roles %s", fieldName, entityName, defaultValue, Arrays.toString(roles)));
     }
 
     @Override
@@ -106,7 +99,7 @@ public class CustomFieldsImpl implements CustomFields {
     @Override
     public void addCustomTextArrayField(String entityName, String fieldName, String possibleValues, String[] roles, String displayType) {
         Long companyId = PortalUtil.getDefaultCompanyId();
-        LOG.info(String.format("Start adding custom text array field %s for company %d to entity %s with default value %s and roles %s", fieldName, companyId, entityName, possibleValues, Arrays.toString(roles)));
+        LOG.debug(String.format("Start adding custom text array field %s to entity %s with default value %s and roles %s", fieldName, entityName, possibleValues, Arrays.toString(roles)));
 
         ExpandoTable expandoTable = getOrAddExpandoTable(companyId, entityName, ExpandoTableConstants.DEFAULT_TABLE_NAME);
         LOG.debug("Expando Table ID : " + expandoTable.getTableId());
@@ -124,11 +117,12 @@ public class CustomFieldsImpl implements CustomFields {
         }
         LOG.debug("Expando Column ID : " + expandoColumn.getColumnId());
 
-        LOG.debug("Done adding text custom field");
+        LOG.info(String.format("Added custom text array field %s to entity %s with possible values [%s] and roles %s", fieldName, entityName, possibleValues, Arrays.toString(roles)));
+
     }
   
     private void deleteCustomField(long companyId, String entityName, String fieldName) {
-        LOG.debug(String.format("Start deleting custom field %s for company %d of entity %s ", fieldName, companyId, entityName));
+        LOG.debug(String.format("Start deleting custom field %s of entity %s ", fieldName, entityName));
 
         try {
             ExpandoTable expandoTable = tableService.getDefaultTable(companyId, entityName);
@@ -137,17 +131,17 @@ public class CustomFieldsImpl implements CustomFields {
             if (exandoColumn != null) {
                 columnService.deleteExpandoColumn(exandoColumn);
             } else {
-                LOG.warn("No column to delete");
+                LOG.debug("No column to delete");
             }
 
             tableService.deleteExpandoTable(expandoTable);
         } catch (NoSuchTableException e) {
-            LOG.warn("No table to delete");
+            LOG.debug("No table to delete");
         } catch (PortalException e) {
             LOG.error(e);
         }
 
-        LOG.debug("Done deleting custom field");
+        LOG.info(String.format("Deleted custom field %s of entity %s ", fieldName, entityName));
     }
 
     @Override
@@ -162,6 +156,7 @@ public class CustomFieldsImpl implements CustomFields {
 		} catch (PortalException e) {
 			LOG.error(e);
 		}
+		LOG.info(String.format("Adding value %s to custom field %s on entity %s with id %d", content, fieldName, entityName, classPK));
     }
 
     private ExpandoTable getOrAddExpandoTable(long companyId, String className, String tableName) {
@@ -169,7 +164,7 @@ public class CustomFieldsImpl implements CustomFields {
         try {
             expandoTable = tableService.getDefaultTable(companyId, className);
         } catch (NoSuchTableException e) {
-            LOG.warn("The table did not yet exist");
+            LOG.debug("The table did not yet exist");
             try {
                 expandoTable = tableService.addTable(companyId, className, tableName);
             } catch (Exception e1) {
