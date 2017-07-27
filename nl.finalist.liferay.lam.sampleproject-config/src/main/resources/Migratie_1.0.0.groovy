@@ -17,7 +17,15 @@ create.customField (
 	name: 'automatedField',
 	type: CustomFieldType.TEXT,
 	entityName: Entities.site,
-	roles: [Roles.guest, Roles.user])
+	roles: [Roles.guest, Roles.user]
+)
+
+create.customField (
+	name: 'someField',
+	type: CustomFieldType.TEXT,
+	entityName: Entities.usergroup,
+	roles: [Roles.guest, Roles.user]
+)
 
 delete.customField(
 	name: 'fieldTest',
