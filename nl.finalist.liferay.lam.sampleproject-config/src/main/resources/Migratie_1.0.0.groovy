@@ -13,10 +13,15 @@ create.customField (
 	roles: [Roles.guest, Roles.user],
 	displayType: DisplayType.CHECKBOX
 )
-
 delete.customField(
 	name: 'fieldTest',
 	entityName: Entities.user
+)
+create.customField (
+	name: 'someField',
+	type: CustomFieldType.TEXT,
+	entityName: Entities.usergroup,
+	roles: [Roles.guest, Roles.user]
 )
 update.portalSettings(
 	virtualHostName: "virtualTestName",
