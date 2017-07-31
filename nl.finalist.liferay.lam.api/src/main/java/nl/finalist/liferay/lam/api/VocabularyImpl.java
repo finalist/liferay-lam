@@ -21,18 +21,20 @@ import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-
+/**
+ * Implementation for {@link nl.finalist.liferay.lam.api.Vocabulary}
+ */
 @Component(immediate = true, service = Vocabulary.class)
 public class VocabularyImpl implements Vocabulary {
 
     @Reference
-    AssetVocabularyLocalService vocabularyService;
+    private AssetVocabularyLocalService vocabularyService;
     @Reference
-    CounterLocalService counterService;
+    private CounterLocalService counterService;
     @Reference
-    CompanyLocalService companyService;
+    private CompanyLocalService companyService;
     @Reference
-    UserLocalService userService;
+    private UserLocalService userService;
 
     private Company defaultCompany;
 
@@ -55,8 +57,9 @@ public class VocabularyImpl implements Vocabulary {
             titleMap.put(locale, vocabularyName);
             vocabularyService.addVocabulary(userId, groupId, vocabularyName, titleMap,
                             new HashMap<Locale, String>(), "", new ServiceContext());
+            LOG.info(String.format("Added vocabulary %s to group %d", vocabularyName, groupId));
         } catch (PortalException e) {
-            LOG.error(String.format("Error while adding vocabulary %s, error is %s", vocabularyName, e.getMessage()));
+            LOG.error(String.format("Error while adding vocabulary %s", vocabularyName), e);
         }
 
     }
@@ -65,7 +68,7 @@ public class VocabularyImpl implements Vocabulary {
     public void deleteVocabulary(String vocabularyName) {
         long groupId = getGlobalGroupId();
         deleteVocabulary(vocabularyName, groupId);
-
+        LOG.info(String.format("Deleted vocabulary %s", vocabularyName));
     }
 
     @Override
@@ -74,22 +77,21 @@ public class VocabularyImpl implements Vocabulary {
         if (Validator.isNotNull(vocabulary)) {
             try {
                 vocabularyService.deleteAssetVocabulary(vocabulary.getVocabularyId());
+                LOG.info(String.format("Deleted vocabulary %s from group %d", vocabularyName, groupId));
             } catch (PortalException e) {
-                LOG.error(String.format("Error while deleting vocabulary %s, error is %s", vocabularyName,
-                                e.getMessage()));
+                LOG.error(String.format("Error while deleting vocabulary %s", vocabularyName), e);
             }
         } else {
             LOG.debug(String.format("Vocabulary %s with groupId %d does not exist or is not retrievable",
                             vocabularyName, groupId));
         }
-
     }
 
     @Override
     public void updateVocabularyTranslation(String languageId, String translatedName, String vocabularyName) {
         long groupId = getGlobalGroupId();
         updateVocabularyTranslation(languageId, translatedName, vocabularyName, groupId);
-
+        LOG.info(String.format("Updated vocabulary %s to add translation %s in language %s", vocabularyName, translatedName, languageId));
     }
 
     @Override
@@ -108,6 +110,7 @@ public class VocabularyImpl implements Vocabulary {
             titleMap.put(locale, translatedName);
             vocabulary.setTitleMap(titleMap);
             vocabularyService.updateAssetVocabulary(vocabulary);
+            LOG.info(String.format("Updated vocabulary %s from group %d to add translation %s in language %s", vocabularyName, groupId, translatedName, languageId));
         } else {
             LOG.debug(String.format("Vocabulary %s with groupId %d does not exist or is not retrievable",
                             vocabularyName, groupId));
@@ -120,8 +123,7 @@ public class VocabularyImpl implements Vocabulary {
         try {
             vocabulary = vocabularyService.getGroupVocabulary(groupId, vocabularyName);
         } catch (PortalException e) {
-            LOG.error(String.format("Error while retrieving vocabulary %s, error is %s", vocabularyName,
-                            e.getMessage()));
+            LOG.error(String.format("Error while retrieving vocabulary %s", vocabularyName), e);
         }
         return vocabulary;
     }
@@ -132,7 +134,7 @@ public class VocabularyImpl implements Vocabulary {
             try {
                 defaultCompany = companyService.getCompanyByWebId(webId);
             } catch (PortalException e) {
-                LOG.error(String.format("Error while retrieving default company, error is %s", e.getMessage()));
+                LOG.error("Error while retrieving default company", e);
             }
         }
         return defaultCompany;
@@ -144,7 +146,7 @@ public class VocabularyImpl implements Vocabulary {
         try {
             userId = defaultCompany.getDefaultUser().getUserId();
         } catch (PortalException e) {
-            LOG.error(String.format("Error while retrieving default userId, error is %s", e.getMessage()));
+            LOG.error("Error while retrieving default userId", e);
         }
         return userId;
     }
@@ -155,7 +157,7 @@ public class VocabularyImpl implements Vocabulary {
         try {
             groupId = defaultCompany.getGroupId();
         } catch (PortalException e) {
-            LOG.error(String.format("Error while retrieving global groupId, error is %s", e.getMessage()));
+            LOG.error("Error while retrieving global groupId", e);
         }
         return groupId;
     }

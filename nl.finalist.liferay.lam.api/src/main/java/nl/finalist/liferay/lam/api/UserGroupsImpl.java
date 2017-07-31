@@ -35,6 +35,7 @@ public class UserGroupsImpl implements UserGroups {
         	} else {
 				group = userGroupLocalService.addUserGroup(getDefaultUserId(), getDefaultCompany().getCompanyId(), name, description, new ServiceContext());
         	}
+        	LOG.info(String.format("Added user group %s", name));
 
         	if (customFields != null) {
 	            for (String fieldName : customFields.keySet()) {

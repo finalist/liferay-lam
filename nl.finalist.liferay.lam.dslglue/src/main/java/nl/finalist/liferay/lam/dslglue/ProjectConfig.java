@@ -36,12 +36,12 @@ public abstract class ProjectConfig {
 
     protected void doActivate(BundleContext context) {
 
-        LOG.info("Running project-specific configuration with @Activate");
+        LOG.debug("Running project-specific configuration with @Activate");
 
         Enumeration<URL> entries = context.getBundle().findEntries("/", "*.groovy", true);
         Collections.list(entries).forEach(scriptUrl -> {
 
-            LOG.info("Entry :  " + scriptUrl.getFile());
+            LOG.debug("Entry : " + scriptUrl.getFile());
 
             InputStream input;
             try {

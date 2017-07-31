@@ -6,6 +6,12 @@ create.customField (
 	roles: [Roles.guest, Roles.user]
 )
 create.customField (
+	name: 'someField',
+	type: CustomFieldType.TEXT,
+	entityName: Entities.usergroup,
+	roles: [Roles.guest, Roles.user]
+)
+create.customField (
 	name: 'fieldGroupTest',
 	type: CustomFieldType.TEXT_GROUP,
 	defaultValue: 'a,b,c',
@@ -44,6 +50,34 @@ update.vocabulary(
 delete.vocabulary(
 	name: "TestVocabulary"
 )
+create.vocabulary(
+	name: "TestVocab5"
+)
+update.vocabulary(
+	name: "TestVocab5",
+	forLanguage: "en_GB",
+	translation: "TestVocabularyTranslation"
+)
+create.category(
+	name: "style",
+	vocabularyName: "TestVocab5",
+	title : "Testing it"
+)
+create.category(
+	name: "style2",
+	vocabularyName: "TestVocab5",
+	title : "Testing it2"
+)
+
+delete.category(
+	name: "style2",
+	vocabularyName: "TestVocab5"
+)
+update.category(
+	name: "style",
+	updateName:"styleUpdate",
+	vocabularyName: "TestVocab5"
+	)
 
 create.role(
     name: "SomeRole",
@@ -66,3 +100,4 @@ create.userGroup(
 	    "someField": "another value"
 	]
 )
+
