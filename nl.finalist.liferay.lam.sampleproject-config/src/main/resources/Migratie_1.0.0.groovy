@@ -6,25 +6,18 @@ create.customField (
 	roles: [Roles.guest, Roles.user]
 )
 create.customField (
+	name: 'someField',
+	type: CustomFieldType.TEXT,
+	entityName: Entities.usergroup,
+	roles: [Roles.guest, Roles.user]
+)
+create.customField (
 	name: 'fieldGroupTest',
 	type: CustomFieldType.TEXT_GROUP,
 	defaultValue: 'a,b,c',
 	entityName: Entities.user,
 	roles: [Roles.guest, Roles.user],
 	displayType: DisplayType.CHECKBOX
-)
-create.customField (
-	name: 'automatedField',
-	type: CustomFieldType.TEXT,
-	entityName: Entities.site,
-	roles: [Roles.guest, Roles.user]
-)
-
-create.customField (
-	name: 'someField',
-	type: CustomFieldType.TEXT,
-	entityName: Entities.usergroup,
-	roles: [Roles.guest, Roles.user]
 )
 
 delete.customField(
@@ -46,12 +39,40 @@ create.vocabulary(
 )
 update.vocabulary(
 	name: "TestVocabulary",
-	forLanguage: "nl_NL",
+	forLanguage: "en_GB",
 	translation: "TestVocabularyTranslation"
 )
 delete.vocabulary(
 	name: "TestVocabulary"
 )
+create.vocabulary(
+	name: "TestVocab5"
+)
+update.vocabulary(
+	name: "TestVocab5",
+	forLanguage: "en_GB",
+	translation: "TestVocabularyTranslation"
+)
+create.category(
+	name: "style",
+	vocabularyName: "TestVocab5",
+	title : "Testing it"
+)
+create.category(
+	name: "style2",
+	vocabularyName: "TestVocab5",
+	title : "Testing it2"
+)
+
+delete.category(
+	name: "style2",
+	vocabularyName: "TestVocab5"
+)
+update.category(
+	name: "style",
+	updateName:"styleUpdate",
+	vocabularyName: "TestVocab5"
+	)
 
 create.role(
     name: "SomeRole",
@@ -75,35 +96,3 @@ create.userGroup(
 	]
 )
 
-create.site(
-	nameMap: [
-		"en_US": "AutomatedTestSite",
-		"nl_NL": "AutomatedTestSite"
-	],
-	descriptionMap: [
-	    "nl_NL": "Description of automated site"
-	],
-	friendlyURL: "/automatedTestSite",
-	customFields: [
-	    "automatedField": "value"
-	]
-)
-
-update.site(
-	siteKey: "AutomatedTestSite",
-	nameMap: [
-		"en_US": "AutomatedTestSite",
-		"nl_NL": "AutomatedTestSiteNL"
-	],
-	descriptionMap: [
-	    "en_US": "Description",
-	    "nl_NL": "Beschrijving"
-	],
-	friendlyURL: "/automatedTestSite",
-	customFields: [
-		"automatedField": "automated value"
-	]
-)
-delete.site(
-	siteKey: "AutomatedTestSite"
-)

@@ -136,63 +136,41 @@ The following script shows how you can delete a vocabulary:
 	
 As you can see, all you have to specify is the name of the vocabulary. If the vocabulary doesn't exist in the global scope, an error message will be logged.
 
-# Sites
-You can create, update and delete sites.
+# Category
+You can create, update and delete categories.
 
 ## Create
-The following script shows how you can create a vocabulary:
+The following script shows how you can create a category to a vocabulary:
 
-	create.site(
-		nameMap: [
-			"en_US": "AutomatedTestSite",
-			"nl_NL": "AutomatedTestSite"
-		],
-		descriptionMap: [
-		    "nl_NL": "Description of automated site"
-		],
-		friendlyURL: "/automatedTestSite",
-		customFields: [
-		    "automatedField": "value"
-		]
-	)
+	create.category(
+	name: "categoryName",
+	vocabularyName: "TestVocabulary",
+	title : "Create a new category for TestVocabulary"
+)
 
-To create a site, you have to specify a map of names for the available locales. Make sure the default locale is present, as this will be the siteKey that you will later use for updating and deleting. You also have to specify a map of descriptions and a friendlyURL. If you try to add a site that already exists, an error message will be logged.
 
-It is also possible to give a value to a custom field. Of course this custom field has to exist before you can give it a value here. CustomFields is a map where the key is the name of the custom field, and the value is the actual value you want to give it.
-
-This site will be created at the top level, and will be an open site. It will have the default restrictions on membership, will not inherit content, and will be immediately active.
+As you can see, all you have to do is to specify the name of the vocabulary, name of category and the title to the category. This category will be added to the vocabulary.
 
 ## Update
-The following script shows how you can update a site:
+The following script shows how you can update a category:
 
-	update.site(
-		siteKey: "AutomatedTestSite",
-		nameMap: [
-			"en_US": "AutomatedTestSite",
-			"nl_NL": "AutomatedTestSiteNL"
-		],
-		descriptionMap: [
-		    "en_US": "Description",
-		    "nl_NL": "Beschrijving"
-		],
-		friendlyURL: "/automatedTestSite",
-		customFields: [
-			"automatedField": "automated value"
-		]
+	update.category(
+	name: "categoryName",
+	updateName:"updateCategoryName",
+	vocabularyName: "TestVocabulary"
 	)
 
-To update a site, you have to specify the siteKey, which is the title associated with the default locale. You will also have to specify a map of names and one of descriptions per locale and a friendlyURL.
-
-It is also possible to add or update the value of a custom field. Of course this custom field has to exist before you can give it a value here. CustomFields is a map where the key is the name of the custom field, and the value is the actual value you want to give it.
+To update a category, you have to specify the name of the category, the vocabulary name and the name it should be updated to. If the category doesn't exist in the vocabulary, an error message will be logged.
 
 ## Delete
-The following script shows how you can delete a site:
+The following script shows how you can delete a category:
 
-	delete.site(
-		siteKey: "AutomatedTestSite"
+	delete.category(
+	name: "categoryName",
+	vocabularyName: "TestVocabulary"
 	)
 	
-As you can see, all you have to specify is the siteKey of the site. This is the title associated with the default locale.
+As you can see, all you have to do is to specify the name of the category to be deleted and the vocabulary name where the category exists. If the categroy doesn't exist in the given vocabulary name, an error message will be logged.
 
 # Roles and permissions
 You can add roles with permissions.
