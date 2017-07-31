@@ -55,3 +55,6 @@ See also the module `nl.finalist.liferay.lam.sampleproject-config`, our flagship
 4. Run 'gradle build'
 5. Run unit tests
 6. Deploy modules to Liferay to see it in action: `dslglue`, `api`, and `sampleproject-config`
+
+
+![Image of LAM](sheep.png)
