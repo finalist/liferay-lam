@@ -3,6 +3,7 @@ package nl.finalist.liferay.lam.api;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -14,6 +15,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -81,14 +83,24 @@ public class SiteImpl implements Site {
 				for (String fieldName : customFields.keySet()) {
 					customFieldsService.updateCustomFieldValue(Group.class.getName(), fieldName, group.getPrimaryKey(),
 							customFields.get(fieldName));
-					LOG.debug(String.format("Custom field %s now has value %s", fieldName, customFields.get(fieldName)));
+					LOG.debug(
+							String.format("Custom field %s now has value %s", fieldName, customFields.get(fieldName)));
 				}
 			}
-
-			if (pages != null && !pages.isEmpty()) {
-				for (PageModel page : pages) {
-					pageService.addPage(getDefaultUserId(), group.getGroupId(), page);
+			for (PageModel page : pages) {
+				Set<Locale> locales = page.getFriendlyUrlMap().keySet();
+			for (Locale locale : locales) {
+				Layout existingPage = pageService.fetchLayout(group.getGroupId(), false, page.getFriendlyUrlMap().get(locale));
+				if (existingPage != null) {					
+					pageService.updatePage(existingPage.getLayoutId(), group.getGroupId(), page);
+					LOG.info(String.format("page is updated %s", page.getNameMap().size()));
+					break;
+				} else {
+                    pageService.addPage(getDefaultUserId(), group.getGroupId(), page);
+                    LOG.info(String.format("page doesn't exists so it has been added"));
 				}
+			}
+				
 			}
 		} catch (PortalException e) {
 			LOG.error("The group was not updated.");

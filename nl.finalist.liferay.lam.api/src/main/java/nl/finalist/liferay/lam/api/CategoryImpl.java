@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PropsUtil;
 
 /**
@@ -28,7 +29,6 @@ public class CategoryImpl implements Category {
 
 	private static final Log LOG = LogFactoryUtil.getLog(CategoryImpl.class);
 
-	private static final Locale NL_LOCALE = new Locale("nl", "NL");
 	private Company defaultCompany;
 
 	@Reference
@@ -80,7 +80,7 @@ public class CategoryImpl implements Category {
 			for (AssetCategory existingCategory : existingCategories) {
 				if (existingCategory.getName().equals(categoryName)) {
 					Map<Locale, String> titleMap = new HashMap<Locale, String>();
-					titleMap.put(NL_LOCALE, existingCategory.getName());
+					titleMap.put(LocaleUtil.getDefault(), updateName);
 					existingCategory.setTitleMap(titleMap);
 					existingCategory.setName(updateName);
 

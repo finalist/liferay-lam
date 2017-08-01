@@ -155,6 +155,14 @@ update.site(
 			descriptionMap: ["nl_NL": "description of page"],
 			friendlyUrlMap: ["nl_NL": "/pagename"],
 			typeSettings: Templates.one_column
+		],
+		[
+			privatePage: true,
+			nameMap: ["nl_NL": "pageNL", "en_US": "pageUS"],
+			titleMap: ["nl_NL": "title of pageNL"],
+			descriptionMap: ["nl_NL": "description of page"],
+			friendlyUrlMap: ["nl_NL": "/updateaddpage"],
+			typeSettings: Templates.one_column
 		]
 	]
 )

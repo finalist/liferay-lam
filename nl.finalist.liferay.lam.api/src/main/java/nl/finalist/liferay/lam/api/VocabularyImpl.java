@@ -55,6 +55,7 @@ public class VocabularyImpl implements Vocabulary {
         try {
             locale = LocaleUtil.getSiteDefault();
             titleMap.put(locale, vocabularyName);
+            LOG.debug(String.format("Vocabulary Name to be addded is %s", vocabularyName));
             vocabularyService.addVocabulary(userId, groupId, vocabularyName, titleMap,
                             new HashMap<Locale, String>(), "", new ServiceContext());
             LOG.info(String.format("Added vocabulary %s to group %d", vocabularyName, groupId));
@@ -82,7 +83,7 @@ public class VocabularyImpl implements Vocabulary {
                 LOG.error(String.format("Error while deleting vocabulary %s", vocabularyName), e);
             }
         } else {
-            LOG.debug(String.format("Vocabulary %s with groupId %d does not exist or is not retrievable",
+            LOG.info(String.format("Vocabulary %s with groupId %d does not exist or is not retrievable",
                             vocabularyName, groupId));
         }
     }
