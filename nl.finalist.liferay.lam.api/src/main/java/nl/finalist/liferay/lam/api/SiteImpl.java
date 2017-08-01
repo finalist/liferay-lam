@@ -46,7 +46,7 @@ public class SiteImpl implements Site {
 					Group.class.getName(), 0L, GroupConstants.DEFAULT_LIVE_GROUP_ID, nameMap, descriptionMap,
 					GroupConstants.TYPE_SITE_OPEN, true, GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, friendlyURL,
 					true, false, true, null);
-			LOG.debug(String.format("Group %s was added", LocaleUtil.getDefault()));
+			LOG.info(String.format("Group %s was added", LocaleUtil.getDefault()));
 
 			if (customFields != null) {
 				for (String fieldName : customFields.keySet()) {
@@ -77,7 +77,7 @@ public class SiteImpl implements Site {
 			groupService.updateGroup(group.getGroupId(), GroupConstants.DEFAULT_PARENT_GROUP_ID, nameMap,
 					descriptionMap, GroupConstants.TYPE_SITE_OPEN, true, GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION,
 					friendlyURL, false, true, null);
-			LOG.debug(String.format("Group %s was updated", groupKey));
+			LOG.info(String.format("Group %s was updated", groupKey));
 
 			if (customFields != null) {
 				for (String fieldName : customFields.keySet()) {
@@ -113,7 +113,7 @@ public class SiteImpl implements Site {
 		try {
 			group = groupService.getGroup(PortalUtil.getDefaultCompanyId(), groupKey);
 			groupService.deleteGroup(group.getGroupId());
-			LOG.debug(String.format("Group %s was deleted", groupKey));
+			LOG.info(String.format("Group %s was deleted", groupKey));
 		} catch (PortalException e) {
 			LOG.error("The group was not deleted.");
 		}

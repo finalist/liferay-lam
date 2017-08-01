@@ -209,7 +209,6 @@ public class SiteImplTest {
 				GroupConstants.TYPE_SITE_OPEN, true, GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, friendlyURL, false,
 				true, null);
 		verify(customFieldsService).updateCustomFieldValue(Group.class.getName(), "someField", 1L, "someValue");
-
 	}
 
 	private Map<String, String> createCustomFields() {
