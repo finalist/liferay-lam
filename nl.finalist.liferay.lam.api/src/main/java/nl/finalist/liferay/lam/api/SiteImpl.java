@@ -7,7 +7,6 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 import com.liferay.portal.kernel.exception.DuplicateGroupException;
-import com.liferay.portal.kernel.exception.GroupFriendlyURLException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -39,7 +38,7 @@ public class SiteImpl implements Site {
 					GroupConstants.DEFAULT_LIVE_GROUP_ID, nameMap,
 					descriptionMap, GroupConstants.TYPE_SITE_OPEN, true, GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION,
 					friendlyURL, true, false, true, null);
-			LOG.debug(String.format("Group %s was added", LocaleUtil.getDefault()));
+			LOG.info(String.format("Group %s was added", LocaleUtil.getDefault()));
 		} catch(DuplicateGroupException dge) {
 			LOG.error("The site already exists.");
 		} catch (PortalException e) {
@@ -53,7 +52,7 @@ public class SiteImpl implements Site {
 		try {
 			group = groupService.getGroup(PortalUtil.getDefaultCompanyId(), groupKey);
 			groupService.updateGroup(group.getGroupId(), GroupConstants.DEFAULT_PARENT_GROUP_ID, nameMap, descriptionMap, GroupConstants.TYPE_SITE_OPEN, true, GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, friendlyURL, false, true, null);
-			LOG.debug(String.format("Group %s was updated", groupKey));
+			LOG.info(String.format("Group %s was updated", groupKey));
 		} catch (PortalException e) {
 			LOG.error("The group was not updated.");
 		}
@@ -65,7 +64,7 @@ public class SiteImpl implements Site {
 		try {
 			group = groupService.getGroup(PortalUtil.getDefaultCompanyId(), groupKey);
 			groupService.deleteGroup(group.getGroupId());
-			LOG.debug(String.format("Group %s was deleted", groupKey));
+			LOG.info(String.format("Group %s was deleted", groupKey));
 		} catch (PortalException e) {
 			LOG.error("The group was not deleted.");
 		}

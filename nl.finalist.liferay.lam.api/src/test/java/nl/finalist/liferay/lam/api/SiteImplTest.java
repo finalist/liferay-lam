@@ -112,7 +112,7 @@ public class SiteImplTest {
 
         siteImpl.updateSite(siteKey, nameMap, descriptionMap, friendlyURL);
 
-        verify(siteService).updateGroup(123L, GroupConstants.DEFAULT_PARENT_GROUP_ID, nameMap, descriptionMap, GroupConstants.TYPE_SITE_OPEN, true, GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, friendlyURL, true, true, null);
+        verify(siteService).updateGroup(123L, GroupConstants.DEFAULT_PARENT_GROUP_ID, nameMap, descriptionMap, GroupConstants.TYPE_SITE_OPEN, true, GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, friendlyURL, false, true, null);
     }
 
 }
