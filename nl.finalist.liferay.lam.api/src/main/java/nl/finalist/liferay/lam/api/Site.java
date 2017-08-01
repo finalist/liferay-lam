@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import nl.finalist.liferay.lam.api.model.PageModel;
+
 public interface Site {
 	 /**
      * Adds a site.
