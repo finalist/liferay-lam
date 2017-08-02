@@ -41,12 +41,9 @@ public abstract class ProjectConfig {
      */
     protected abstract void setExecutor(Executor executor);
 
-
     protected void doActivate(BundleContext context) {
 
-
-
-        LOG.info("Running project-specific configuration with @Activate");
+        LOG.debug("Running project-specific configuration with @Activate");
 
         Enumeration<URL> entries = context.getBundle().findEntries("/", "*.groovy", true);
 
@@ -54,7 +51,7 @@ public abstract class ProjectConfig {
         List<Script> scripts = Collections.list(entries).stream()
             .map(scriptUrl -> {
 
-                LOG.info("Entry :  " + scriptUrl.getFile());
+            LOG.debug("Entry : " + scriptUrl.getFile());
 
                 InputStream input;
                 try {

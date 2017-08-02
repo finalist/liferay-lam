@@ -37,24 +37,23 @@ public class PortalPropertiesImpl implements PortalProperties {
                 LOG.debug(String.format("Property %s has expected value", key));
             } else {
                 if (PropsUtil.get(key) == null) {
-                    LOG.warn(String.format("Property %s doesn't exist in portal-ext.properties", key));
+                    LOG.info(String.format("Property %s doesn't exist in portal-ext.properties", key));
                     count++;
                 } else if (propertyValues.get(key) == null) {
-                    LOG.warn(String.format("Property %s was expected not to have a value? Check your configuration", key));
+                    LOG.info(String.format("Property %s was expected not to have a value, check your configuration", key));
                     count++;
                 } else {
-                    LOG.warn(String.format("Property %s should have value %s but value is %s instead", key, propertyValues.get(key),
+                    LOG.info(String.format("Property %s should have value %s but value is %s instead", key, propertyValues.get(key),
                                     PropsUtil.get(key)));
                     count++;
                 }
             }
         }
 
-        if(count >0) {
-            LOG.warn(String.format("Validating the portal properties has completed with %d mismatches", count));
+        if(count > 0) {
             return false;
         } else {
-            LOG.debug("Validating the portal properties has completed successfuly, there were no mismatches");
+            LOG.info("Validating the portal properties has completed successfuly, there were no mismatches");
             return true;
         }
     }

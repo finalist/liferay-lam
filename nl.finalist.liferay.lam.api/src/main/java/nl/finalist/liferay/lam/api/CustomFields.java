@@ -50,4 +50,14 @@ public interface CustomFields {
      * @param content value of the field
      */
 	void addCustomFieldValue(String entityName, String fieldName, long classPK, String content);
+
+	/**
+	 * Update the value of a custom field
+	 * 
+	 * @param entityName entity to which the field applies
+	 * @param fieldName name of the field
+     * @param classPK primary key of the entity that the value belongs to
+     * @param content new value of the field
+	 */
+	void updateCustomFieldValue(String entityName, String fieldName, long classPK, String content);
 }
