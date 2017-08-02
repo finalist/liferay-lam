@@ -12,15 +12,12 @@ import com.liferay.portal.kernel.exception.DuplicateGroupException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
-import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.PropsUtil;
 
 import nl.finalist.liferay.lam.api.model.PageModel;
 
@@ -29,12 +26,11 @@ public class SiteImpl implements Site {
 
 	@Reference
 	private GroupLocalService groupService;
+
 	@Reference
-	private CompanyLocalService companyService;
+	private CustomFields customFieldsService;
 	@Reference
-	CustomFields customFieldsService;
-	@Reference
-	Page pageService;
+	private Page pageService;
 
 	private static final Log LOG = LogFactoryUtil.getLog(SiteImpl.class);
 
@@ -42,7 +38,7 @@ public class SiteImpl implements Site {
 	public void addSite(Map<Locale, String> nameMap, Map<Locale, String> descriptionMap, String friendlyURL,
 			Map<String, String> customFields, List<PageModel> pages) {
 		try {
-			Group group = groupService.addGroup(getDefaultUserId(), GroupConstants.DEFAULT_PARENT_GROUP_ID,
+			Group group = groupService.addGroup(DeafultCompanyUtil.getDefaultUserId(), GroupConstants.DEFAULT_PARENT_GROUP_ID,
 					Group.class.getName(), 0L, GroupConstants.DEFAULT_LIVE_GROUP_ID, nameMap, descriptionMap,
 					GroupConstants.TYPE_SITE_OPEN, true, GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, friendlyURL,
 					true, false, true, null);
@@ -58,7 +54,7 @@ public class SiteImpl implements Site {
 
 			if (pages != null) {
 				for (PageModel page : pages) {
-					pageService.addPage(getDefaultUserId(), group.getGroupId(), page);
+					pageService.addPage(DeafultCompanyUtil.getDefaultUserId(), group.getGroupId(), page);
 				}
 			}
 		} catch (DuplicateGroupException dge) {
@@ -96,7 +92,7 @@ public class SiteImpl implements Site {
 					LOG.info(String.format("page is updated %s", page.getNameMap().size()));
 					break;
 				} else {
-                    pageService.addPage(getDefaultUserId(), group.getGroupId(), page);
+                    pageService.addPage(DeafultCompanyUtil.getDefaultUserId(), group.getGroupId(), page);
                     LOG.info(String.format("page doesn't exists so it has been added"));
 				}
 			}
@@ -119,25 +115,5 @@ public class SiteImpl implements Site {
 		}
 	}
 
-	private long getDefaultUserId() {
-		Company defaultCompany = getDefaultCompany();
-		long userId = 0;
-		try {
-			userId = defaultCompany.getDefaultUser().getUserId();
-		} catch (PortalException e) {
-			LOG.error(String.format("Error while retrieving default userId, error is %s", e.getMessage()));
-		}
-		return userId;
-	}
-
-	private Company getDefaultCompany() {
-		Company defaultCompany = null;
-		String webId = PropsUtil.get("company.default.web.id");
-		try {
-			defaultCompany = companyService.getCompanyByWebId(webId);
-		} catch (PortalException e) {
-			LOG.error(String.format("Error while retrieving default company, error is %s", e.getMessage()));
-		}
-		return defaultCompany;
-	}
+	
 }

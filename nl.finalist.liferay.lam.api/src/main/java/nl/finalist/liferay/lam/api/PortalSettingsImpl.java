@@ -1,5 +1,8 @@
 package nl.finalist.liferay.lam.api;
 
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -9,11 +12,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.AccountLocalService;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
-
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 @Component(immediate = true, service = PortalSettings.class)
 public class PortalSettingsImpl implements PortalSettings {
@@ -31,7 +30,7 @@ public class PortalSettingsImpl implements PortalSettings {
 
     @Override
     public void setPortalName(String portalName) {
-        company = getDefaultCompany();
+        company = DeafultCompanyUtil.getDefaultCompany();
         Account account = null;
         try {
             account = company.getAccount();
@@ -44,14 +43,14 @@ public class PortalSettingsImpl implements PortalSettings {
 
     @Override
     public void setEmailDomain(String emailDomain) {
-        company = getDefaultCompany();
+        company = DeafultCompanyUtil.getDefaultCompany();
         company.setMx(emailDomain);
         companyService.updateCompany(company);
     }
 
     @Override
     public void setVirtualHostName(String virtualHostName) {
-        company = getDefaultCompany();
+        company = DeafultCompanyUtil.getDefaultCompany();
         try {
             companyService.updateCompany(company.getCompanyId(), virtualHostName, company.getMx(),
                             company.getMaxUsers(), company.isActive());
@@ -62,14 +61,14 @@ public class PortalSettingsImpl implements PortalSettings {
 
     @Override
     public void setHomeURL(String homeURL) {
-        company = getDefaultCompany();
+        company = DeafultCompanyUtil.getDefaultCompany();
         company.setHomeURL(homeURL);
         companyService.updateCompany(company);
     }
 
     @Override
     public void setDefaultLandingPage(String defaultLandingPage) {
-        company = getDefaultCompany();
+        company = DeafultCompanyUtil.getDefaultCompany();
         UnicodeProperties properties = new UnicodeProperties();
         properties.setProperty("default.landing.page.path", defaultLandingPage);
         try {
@@ -81,7 +80,7 @@ public class PortalSettingsImpl implements PortalSettings {
 
     @Override
     public void setDefaultLogoutPage(String defaultLogoutPage) {
-        company = getDefaultCompany();
+        company = DeafultCompanyUtil.getDefaultCompany();
         UnicodeProperties properties = new UnicodeProperties();
         properties.setProperty("default.logout.page.path", defaultLogoutPage);
         try {
@@ -93,7 +92,7 @@ public class PortalSettingsImpl implements PortalSettings {
 
     @Override
     public void setTermsOfUseRequired(boolean termsOfUseRequired) {
-        company = getDefaultCompany();
+        company = DeafultCompanyUtil.getDefaultCompany();
         UnicodeProperties properties = new UnicodeProperties();
         properties.setProperty("terms.of.use.required", String.valueOf(termsOfUseRequired));
         try {
@@ -105,7 +104,7 @@ public class PortalSettingsImpl implements PortalSettings {
 
     @Override
     public void setEmailNotificationName(String emailNotificationName) {
-        company = getDefaultCompany();
+        company = DeafultCompanyUtil.getDefaultCompany();
         UnicodeProperties properties = new UnicodeProperties();
         properties.setProperty("admin.email.from.name", emailNotificationName);
         try {
@@ -117,7 +116,7 @@ public class PortalSettingsImpl implements PortalSettings {
 
     @Override
     public void setEmailNotificationAddress(String emailAddress) {
-        company = getDefaultCompany();
+        company = DeafultCompanyUtil.getDefaultCompany();
         UnicodeProperties properties = new UnicodeProperties();
         properties.setProperty("admin.email.from.address", emailAddress);
         try {
@@ -129,7 +128,7 @@ public class PortalSettingsImpl implements PortalSettings {
 
     @Override
     public void setDefaultLanguage(String languageId) {
-        company = getDefaultCompany();
+        company = DeafultCompanyUtil.getDefaultCompany();
         try {
             companyService.updateDisplay(company.getCompanyId(), languageId, company.getTimeZone().getID());
         } catch (PortalException e) {
@@ -139,7 +138,7 @@ public class PortalSettingsImpl implements PortalSettings {
 
     @Override
     public void setAvailableLanguages(String languageIds) {
-        company = getDefaultCompany();
+        company = DeafultCompanyUtil.getDefaultCompany();
         UnicodeProperties properties = new UnicodeProperties();
         properties.setProperty("locales", languageIds);
         try {
@@ -151,7 +150,7 @@ public class PortalSettingsImpl implements PortalSettings {
 
     @Override
     public void setTimeZone(String timezoneId) {
-        company = getDefaultCompany();
+        company = DeafultCompanyUtil.getDefaultCompany();
         User user = null;
         try {
             user = userService.getDefaultUser(company.getCompanyId());
@@ -159,15 +158,5 @@ public class PortalSettingsImpl implements PortalSettings {
         } catch (PortalException e) {
             LOG.error("Error while setting portal timezone", e);
         }
-    }
-
-    private Company getDefaultCompany() {
-        String webId = PropsUtil.get("company.default.web.id");
-        try {
-            company = companyService.getCompanyByWebId(webId);
-        } catch (PortalException e) {
-            LOG.error("Error while retrieving default company", e);
-        }
-        return company;
     }
 }

@@ -1,26 +1,23 @@
 package nl.finalist.liferay.lam.api;
 
-import com.liferay.asset.kernel.model.AssetVocabulary;
-import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
-import com.liferay.counter.kernel.service.CounterLocalService;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.service.CompanyLocalService;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.PropsUtil;
-import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.Validator;
-
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+
+import com.liferay.asset.kernel.model.AssetVocabulary;
+import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
+import com.liferay.counter.kernel.service.CounterLocalService;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 /**
  * Implementation for {@link nl.finalist.liferay.lam.api.Vocabulary}
  */
@@ -31,25 +28,23 @@ public class VocabularyImpl implements Vocabulary {
     private AssetVocabularyLocalService vocabularyService;
     @Reference
     private CounterLocalService counterService;
-    @Reference
-    private CompanyLocalService companyService;
+   
     @Reference
     private UserLocalService userService;
 
-    private Company defaultCompany;
 
     private static final Log LOG = LogFactoryUtil.getLog(VocabularyImpl.class);
 
     @Override
     public void addVocabulary(String vocabularyName) {
-        long groupId = getGlobalGroupId();
+        long groupId = DeafultCompanyUtil.getGlobalGroupId();
         addVocabulary(vocabularyName, groupId);
     }
 
     @Override
     public void addVocabulary(String vocabularyName, long groupId) {
-        defaultCompany = getDefaultCompany();
-        long userId = getDefaultUserId();
+        
+        long userId = DeafultCompanyUtil.getDefaultUserId();
         Locale locale = null;
         Map<Locale, String> titleMap = new HashMap<>();
         try {
@@ -67,7 +62,7 @@ public class VocabularyImpl implements Vocabulary {
 
     @Override
     public void deleteVocabulary(String vocabularyName) {
-        long groupId = getGlobalGroupId();
+        long groupId = DeafultCompanyUtil.getGlobalGroupId();
         deleteVocabulary(vocabularyName, groupId);
         LOG.info(String.format("Deleted vocabulary %s", vocabularyName));
     }
@@ -90,7 +85,7 @@ public class VocabularyImpl implements Vocabulary {
 
     @Override
     public void updateVocabularyTranslation(String languageId, String translatedName, String vocabularyName) {
-        long groupId = getGlobalGroupId();
+        long groupId = DeafultCompanyUtil.getGlobalGroupId();
         updateVocabularyTranslation(languageId, translatedName, vocabularyName, groupId);
         LOG.info(String.format("Updated vocabulary %s to add translation %s in language %s", vocabularyName, translatedName, languageId));
     }
@@ -128,39 +123,4 @@ public class VocabularyImpl implements Vocabulary {
         }
         return vocabulary;
     }
-
-    private Company getDefaultCompany() {
-        if (defaultCompany == null) {
-            String webId = PropsUtil.get("company.default.web.id");
-            try {
-                defaultCompany = companyService.getCompanyByWebId(webId);
-            } catch (PortalException e) {
-                LOG.error("Error while retrieving default company", e);
-            }
-        }
-        return defaultCompany;
-    }
-
-    private long getDefaultUserId() {
-        defaultCompany = getDefaultCompany();
-        long userId = 0;
-        try {
-            userId = defaultCompany.getDefaultUser().getUserId();
-        } catch (PortalException e) {
-            LOG.error("Error while retrieving default userId", e);
-        }
-        return userId;
-    }
-
-    private long getGlobalGroupId() {
-        defaultCompany = getDefaultCompany();
-        long groupId = 0;
-        try {
-            groupId = defaultCompany.getGroupId();
-        } catch (PortalException e) {
-            LOG.error("Error while retrieving global groupId", e);
-        }
-        return groupId;
-    }
-
 }

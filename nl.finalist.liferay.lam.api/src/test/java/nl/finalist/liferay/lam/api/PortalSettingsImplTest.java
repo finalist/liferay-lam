@@ -27,188 +27,196 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ PropsUtil.class, PortalSettingsImpl.class })
+@PrepareForTest({ PropsUtil.class, PortalSettingsImpl.class, DeafultCompanyUtil.class })
 public class PortalSettingsImplTest {
-    @Mock
-    private CompanyLocalService companyService;
-    @Mock
-    private AccountLocalService accountService;
-    @Mock
-    private UserLocalService userService;
+	@Mock
+	private CompanyLocalService companyService;
+	@Mock
+	private AccountLocalService accountService;
+	@Mock
+	private UserLocalService userService;
 
-    @Mock
-    private Company mockCompany;
-    @Mock
-    private Account mockAccount;
-    @Mock
-    private User mockDefaultUser;
-    @Mock
-    private TimeZone mockTimezone;
-    @Mock
-    private UnicodeProperties mockProperties;
+	@Mock
+	private Company mockCompany;
+	@Mock
+	private Account mockAccount;
+	@Mock
+	private User mockDefaultUser;
+	@Mock
+	private TimeZone mockTimezone;
+	@Mock
+	private UnicodeProperties mockProperties;
 
-    @InjectMocks
-    private PortalSettingsImpl portalSettingsImplementation;
+	@InjectMocks
+	private PortalSettingsImpl portalSettingsImplementation;
 
-    @Before
-    public void setUp() {
-        portalSettingsImplementation = new PortalSettingsImpl();
-        PowerMockito.mockStatic(PropsUtil.class);
-        PowerMockito.when(PropsUtil.get("company.default.web.id")).thenReturn("liferay.com");
+	@Before
+	public void setUp() {
+		portalSettingsImplementation = new PortalSettingsImpl();
+		PowerMockito.mockStatic(PropsUtil.class);
+		PowerMockito.mockStatic(DeafultCompanyUtil.class);
+		PowerMockito.when(DeafultCompanyUtil.getDefaultCompany()).thenReturn(mockCompany);
+		initMocks(this);
+	}
 
-        initMocks(this);
-    }
+	@Test
+	public void testSetPortalName() throws PortalException {
+		String testPortalName = "testName";
+		when(mockCompany.getAccount()).thenReturn(mockAccount);
+		PowerMockito.when(DeafultCompanyUtil.getDefaultCompany()).thenReturn(mockCompany);
 
-    @Test
-    public void testSetPortalName() throws PortalException {
-        String testPortalName = "testName";
-        when(mockCompany.getAccount()).thenReturn(mockAccount);
-        when(companyService.getCompanyByWebId("liferay.com")).thenReturn(mockCompany);
+		portalSettingsImplementation.setPortalName(testPortalName);
 
-        portalSettingsImplementation.setPortalName(testPortalName);
+		verify(mockAccount).setName(testPortalName);
+		verify(accountService).updateAccount(mockAccount);
+	}
 
-        verify(mockAccount).setName(testPortalName);
-        verify(accountService).updateAccount(mockAccount);
-    }
+	@Test
+	public void testSetEmailDomain() throws PortalException {
+		String testEmailDomain = "test.com";
+		PowerMockito.when(DeafultCompanyUtil.getDefaultCompany()).thenReturn(mockCompany);
 
-    @Test
-    public void testSetEmailDomain() throws PortalException {
-        String testEmailDomain = "test.com";
-        when(companyService.getCompanyByWebId("liferay.com")).thenReturn(mockCompany);
+		portalSettingsImplementation.setEmailDomain(testEmailDomain);
 
-        portalSettingsImplementation.setEmailDomain(testEmailDomain);
+		verify(mockCompany).setMx(testEmailDomain);
+		verify(companyService).updateCompany(mockCompany);
+	}
 
-        verify(mockCompany).setMx(testEmailDomain);
-        verify(companyService).updateCompany(mockCompany);
-    }
+	@Test
+	public void testSetHomeURL() throws PortalException {
+		String testHomeURL = "/test/home";
+		PowerMockito.when(DeafultCompanyUtil.getDefaultCompany()).thenReturn(mockCompany);
 
-    @Test
-    public void testSetHomeURL() throws PortalException {
-        String testHomeURL = "/test/home";
-        when(companyService.getCompanyByWebId("liferay.com")).thenReturn(mockCompany);
+		portalSettingsImplementation.setHomeURL(testHomeURL);
 
-        portalSettingsImplementation.setHomeURL(testHomeURL);
+		verify(mockCompany).setHomeURL(testHomeURL);
+		verify(companyService).updateCompany(mockCompany);
+	}
 
-        verify(mockCompany).setHomeURL(testHomeURL);
-        verify(companyService).updateCompany(mockCompany);
-    }
+	@Test
+	public void testSetVirtualHostName() throws PortalException {
+		String testVirtualHostName = "testHostName";
+		PowerMockito.when(DeafultCompanyUtil.getDefaultCompany()).thenReturn(mockCompany);
 
-    @Test
-    public void testSetVirtualHostName() throws PortalException {
-        String testVirtualHostName = "testHostName";
-        when(companyService.getCompanyByWebId("liferay.com")).thenReturn(mockCompany);
-        when(mockCompany.getMaxUsers()).thenReturn(10);
-        when(mockCompany.getMx()).thenReturn("TESTMX");
-        when(mockCompany.getCompanyId()).thenReturn(1L);
-        when(mockCompany.isActive()).thenReturn(true);
+		when(mockCompany.getMaxUsers()).thenReturn(10);
+		when(mockCompany.getMx()).thenReturn("TESTMX");
+		when(mockCompany.getCompanyId()).thenReturn(1L);
+		when(mockCompany.isActive()).thenReturn(true);
 
-        portalSettingsImplementation.setVirtualHostName(testVirtualHostName);
+		portalSettingsImplementation.setVirtualHostName(testVirtualHostName);
 
-        verify(companyService).updateCompany(1L, testVirtualHostName, "TESTMX", 10, true);
-    }
+		verify(companyService).updateCompany(1L, testVirtualHostName, "TESTMX", 10, true);
+	}
 
-    @Test
-    public void testSetDefaultLandingPage() throws Exception {
-        String testLandingPage = "/testLandingPage";
-        when(companyService.getCompanyByWebId("liferay.com")).thenReturn(mockCompany);
-        when(mockCompany.getCompanyId()).thenReturn(1L);
-        whenNew(UnicodeProperties.class).withNoArguments().thenReturn(mockProperties);
+	@Test
+	public void testSetDefaultLandingPage() throws Exception {
+		String testLandingPage = "/testLandingPage";
+		PowerMockito.when(DeafultCompanyUtil.getDefaultCompany()).thenReturn(mockCompany);
 
-        portalSettingsImplementation.setDefaultLandingPage(testLandingPage);
+		when(mockCompany.getCompanyId()).thenReturn(1L);
+		whenNew(UnicodeProperties.class).withNoArguments().thenReturn(mockProperties);
 
-        verify(mockProperties).setProperty("default.landing.page.path", testLandingPage);
-        verify(companyService).updatePreferences(1L, mockProperties);
-    }
+		portalSettingsImplementation.setDefaultLandingPage(testLandingPage);
 
-    @Test
-    public void testSetDefaultLogoutPage() throws Exception {
-        String testLogoutPage = "/testLogoutPage";
-        when(companyService.getCompanyByWebId("liferay.com")).thenReturn(mockCompany);
-        when(mockCompany.getCompanyId()).thenReturn(1L);
-        whenNew(UnicodeProperties.class).withNoArguments().thenReturn(mockProperties);
+		verify(mockProperties).setProperty("default.landing.page.path", testLandingPage);
+		verify(companyService).updatePreferences(1L, mockProperties);
+	}
 
-        portalSettingsImplementation.setDefaultLogoutPage(testLogoutPage);
+	@Test
+	public void testSetDefaultLogoutPage() throws Exception {
+		String testLogoutPage = "/testLogoutPage";
+		PowerMockito.when(DeafultCompanyUtil.getDefaultCompany()).thenReturn(mockCompany);
 
-        verify(mockProperties).setProperty("default.logout.page.path", testLogoutPage);
-        verify(companyService).updatePreferences(1L, mockProperties);
-    }
+		when(mockCompany.getCompanyId()).thenReturn(1L);
+		whenNew(UnicodeProperties.class).withNoArguments().thenReturn(mockProperties);
 
-    @Test
-    public void testSetTermsOfUseRequired() throws Exception {
-        boolean testTermsOfUseRequired = false;
-        when(companyService.getCompanyByWebId("liferay.com")).thenReturn(mockCompany);
-        when(mockCompany.getCompanyId()).thenReturn(1L);
-        whenNew(UnicodeProperties.class).withNoArguments().thenReturn(mockProperties);
+		portalSettingsImplementation.setDefaultLogoutPage(testLogoutPage);
 
-        portalSettingsImplementation.setTermsOfUseRequired(testTermsOfUseRequired);
+		verify(mockProperties).setProperty("default.logout.page.path", testLogoutPage);
+		verify(companyService).updatePreferences(1L, mockProperties);
+	}
 
-        verify(mockProperties).setProperty("terms.of.use.required", String.valueOf(testTermsOfUseRequired));
-        verify(companyService).updatePreferences(1L, mockProperties);
-    }
+	@Test
+	public void testSetTermsOfUseRequired() throws Exception {
+		boolean testTermsOfUseRequired = false;
+		PowerMockito.when(DeafultCompanyUtil.getDefaultCompany()).thenReturn(mockCompany);
 
-    @Test
-    public void testSetEmailNotificationName() throws Exception {
-        String testEmailName = "testEmailName";
-        when(companyService.getCompanyByWebId("liferay.com")).thenReturn(mockCompany);
-        when(mockCompany.getCompanyId()).thenReturn(1L);
-        whenNew(UnicodeProperties.class).withNoArguments().thenReturn(mockProperties);
+		when(mockCompany.getCompanyId()).thenReturn(1L);
+		whenNew(UnicodeProperties.class).withNoArguments().thenReturn(mockProperties);
 
-        portalSettingsImplementation.setEmailNotificationName(testEmailName);
+		portalSettingsImplementation.setTermsOfUseRequired(testTermsOfUseRequired);
 
-        verify(mockProperties).setProperty("admin.email.from.name", testEmailName);
-        verify(companyService).updatePreferences(1L, mockProperties);
-    }
+		verify(mockProperties).setProperty("terms.of.use.required", String.valueOf(testTermsOfUseRequired));
+		verify(companyService).updatePreferences(1L, mockProperties);
+	}
 
-    @Test
-    public void testSetEmailNotificationAddress() throws Exception {
-        String testEmailAdress = "test@test.com";
-        when(companyService.getCompanyByWebId("liferay.com")).thenReturn(mockCompany);
-        when(mockCompany.getCompanyId()).thenReturn(1L);
-        whenNew(UnicodeProperties.class).withNoArguments().thenReturn(mockProperties);
+	@Test
+	public void testSetEmailNotificationName() throws Exception {
+		String testEmailName = "testEmailName";
+		PowerMockito.when(DeafultCompanyUtil.getDefaultCompany()).thenReturn(mockCompany);
 
-        portalSettingsImplementation.setEmailNotificationAddress(testEmailAdress);
+		when(mockCompany.getCompanyId()).thenReturn(1L);
+		whenNew(UnicodeProperties.class).withNoArguments().thenReturn(mockProperties);
 
-        verify(mockProperties).setProperty("admin.email.from.address", testEmailAdress);
-        verify(companyService).updatePreferences(1L, mockProperties);
-    }
+		portalSettingsImplementation.setEmailNotificationName(testEmailName);
 
-    @Test
-    public void testSetAvailableLanguages() throws Exception {
-        String testAvailableLanguages = "tst_TST,abc_ABC";
-        when(companyService.getCompanyByWebId("liferay.com")).thenReturn(mockCompany);
-        when(mockCompany.getCompanyId()).thenReturn(1L);
-        whenNew(UnicodeProperties.class).withNoArguments().thenReturn(mockProperties);
+		verify(mockProperties).setProperty("admin.email.from.name", testEmailName);
+		verify(companyService).updatePreferences(1L, mockProperties);
+	}
 
-        portalSettingsImplementation.setAvailableLanguages(testAvailableLanguages);
+	@Test
+	public void testSetEmailNotificationAddress() throws Exception {
+		String testEmailAdress = "test@test.com";
+		PowerMockito.when(DeafultCompanyUtil.getDefaultCompany()).thenReturn(mockCompany);
 
-        verify(mockProperties).setProperty("locales", "tst_TST,abc_ABC");
-        verify(companyService).updatePreferences(1L, mockProperties);
-    }
+		when(mockCompany.getCompanyId()).thenReturn(1L);
+		whenNew(UnicodeProperties.class).withNoArguments().thenReturn(mockProperties);
 
-    @Test
-    public void testSetTimezoneId() throws PortalException {
-        String testTimezoneId = "TST";
-        when(mockCompany.getCompanyId()).thenReturn(1L);
-        when(companyService.getCompanyByWebId("liferay.com")).thenReturn(mockCompany);
-        when(mockDefaultUser.getLanguageId()).thenReturn("tst_TST");
-        when(userService.getDefaultUser(1L)).thenReturn(mockDefaultUser);
+		portalSettingsImplementation.setEmailNotificationAddress(testEmailAdress);
 
-        portalSettingsImplementation.setTimeZone(testTimezoneId);
+		verify(mockProperties).setProperty("admin.email.from.address", testEmailAdress);
+		verify(companyService).updatePreferences(1L, mockProperties);
+	}
 
-        verify(companyService).updateDisplay(1L, "tst_TST", testTimezoneId);
-    }
+	@Test
+	public void testSetAvailableLanguages() throws Exception {
+		String testAvailableLanguages = "tst_TST,abc_ABC";
+		PowerMockito.when(DeafultCompanyUtil.getDefaultCompany()).thenReturn(mockCompany);
 
-    @Test
-    public void testSetDefaultLanguage() throws PortalException {
-        String testLanguageId = "tst_TST";
-        when(mockCompany.getCompanyId()).thenReturn(1L);
-        when(mockCompany.getTimeZone()).thenReturn(mockTimezone);
-        when(mockTimezone.getID()).thenReturn("TST");
-        when(companyService.getCompanyByWebId("liferay.com")).thenReturn(mockCompany);
+		when(mockCompany.getCompanyId()).thenReturn(1L);
+		whenNew(UnicodeProperties.class).withNoArguments().thenReturn(mockProperties);
 
-        portalSettingsImplementation.setDefaultLanguage(testLanguageId);
+		portalSettingsImplementation.setAvailableLanguages(testAvailableLanguages);
 
-        verify(companyService).updateDisplay(1L, testLanguageId, "TST");
-    }
+		verify(mockProperties).setProperty("locales", "tst_TST,abc_ABC");
+		verify(companyService).updatePreferences(1L, mockProperties);
+	}
+
+	@Test
+	public void testSetTimezoneId() throws PortalException {
+		String testTimezoneId = "TST";
+		when(mockCompany.getCompanyId()).thenReturn(1L);
+		PowerMockito.when(DeafultCompanyUtil.getDefaultCompany()).thenReturn(mockCompany);
+
+		when(mockDefaultUser.getLanguageId()).thenReturn("tst_TST");
+		when(userService.getDefaultUser(1L)).thenReturn(mockDefaultUser);
+
+		portalSettingsImplementation.setTimeZone(testTimezoneId);
+
+		verify(companyService).updateDisplay(1L, "tst_TST", testTimezoneId);
+	}
+
+	@Test
+	public void testSetDefaultLanguage() throws PortalException {
+		String testLanguageId = "tst_TST";
+		when(mockCompany.getCompanyId()).thenReturn(1L);
+		when(mockCompany.getTimeZone()).thenReturn(mockTimezone);
+		when(mockTimezone.getID()).thenReturn("TST");
+		PowerMockito.when(DeafultCompanyUtil.getDefaultCompany()).thenReturn(mockCompany);
+
+		portalSettingsImplementation.setDefaultLanguage(testLanguageId);
+
+		verify(companyService).updateDisplay(1L, testLanguageId, "TST");
+	}
 
 }

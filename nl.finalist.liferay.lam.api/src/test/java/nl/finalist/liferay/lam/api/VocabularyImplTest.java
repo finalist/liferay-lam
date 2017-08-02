@@ -31,7 +31,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ LocaleUtil.class, VocabularyImpl.class, PropsUtil.class, Locale.class })
+@PrepareForTest({ LocaleUtil.class, VocabularyImpl.class, PropsUtil.class, Locale.class , DeafultCompanyUtil.class})
 public class VocabularyImplTest {
 
     @Mock
@@ -60,6 +60,7 @@ public class VocabularyImplTest {
         vocabularyImpl = new VocabularyImpl();
         PowerMockito.mockStatic(LocaleUtil.class);
         PowerMockito.mockStatic(PropsUtil.class);
+        PowerMockito.mockStatic(DeafultCompanyUtil.class);
         PowerMockito.when(PropsUtil.get("company.default.web.id")).thenReturn("liferay.com");
         initMocks(this);
     }
@@ -67,12 +68,12 @@ public class VocabularyImplTest {
     @Test
     public void testAddVocabulary() throws Exception {
         String vocabularyName = "testName";
-        when(companyService.getCompanyByWebId("liferay.com")).thenReturn(mockCompany);
-        when(mockCompany.getCompanyId()).thenReturn(1L);
+     
         Locale mockLocale = new Locale("nl_NL");
         PowerMockito.when(LocaleUtil.getSiteDefault()).thenReturn(mockLocale);
-        when(mockCompany.getDefaultUser()).thenReturn(mockDefaultUser);
-        when(mockDefaultUser.getUserId()).thenReturn(10L);
+        PowerMockito.when(DeafultCompanyUtil.getDefaultCompany()).thenReturn(mockCompany);
+       PowerMockito.when(DeafultCompanyUtil.getDefaultUserId()).thenReturn(10L); 
+       
         whenNew(HashMap.class).withAnyArguments().thenReturn(mockTitleMap);
         whenNew(ServiceContext.class).withNoArguments().thenReturn(mockServiceContext);
 

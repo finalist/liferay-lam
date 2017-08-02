@@ -15,11 +15,9 @@ import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.PropsUtil;
 
 /**
  * Implementation for {@link nl.finalist.liferay.lam.api.Category}
@@ -29,7 +27,7 @@ public class CategoryImpl implements Category {
 
 	private static final Log LOG = LogFactoryUtil.getLog(CategoryImpl.class);
 
-	private Company defaultCompany;
+	
 
 	@Reference
 	private CompanyLocalService companyService;
@@ -46,7 +44,7 @@ public class CategoryImpl implements Category {
 				"Starting to add the category %s to vocabulary %s with title %s ",
 				categoryName, vocabularyName, title));
 		try {
-			AssetVocabulary vocabulary = assetVocabularyLocalService.getGroupVocabulary(getGlobalGroupId(),
+			AssetVocabulary vocabulary = assetVocabularyLocalService.getGroupVocabulary(DeafultCompanyUtil.getGlobalGroupId(),
 					vocabularyName);
 			String[] existingCategoriesNames = assetCategoryService.getCategoryNames();
 			boolean addCondition = true;
@@ -56,7 +54,7 @@ public class CategoryImpl implements Category {
 				}
 			}
 			if (addCondition) {
-				assetCategoryService.addCategory(getDefaultUserId(), getGlobalGroupId(),
+				assetCategoryService.addCategory(DeafultCompanyUtil.getDefaultUserId(), DeafultCompanyUtil.getGlobalGroupId(),
 						categoryName, vocabulary.getVocabularyId(), new ServiceContext());
 				LOG.info(String.format("Added category %s to vocabulary %s", categoryName, vocabularyName));
 			} else {
@@ -74,7 +72,7 @@ public class CategoryImpl implements Category {
 				"Starting to update category %s in vocabulary %s, the new name will be %s",
 				categoryName, vocabularyName, updateName));
 		try {
-			AssetVocabulary vocabulary = assetVocabularyLocalService.getGroupVocabulary(getGlobalGroupId(),
+			AssetVocabulary vocabulary = assetVocabularyLocalService.getGroupVocabulary(DeafultCompanyUtil.getGlobalGroupId(),
 					vocabularyName);
 			List<AssetCategory> existingCategories = vocabulary.getCategories();
 			for (AssetCategory existingCategory : existingCategories) {
@@ -105,7 +103,7 @@ public class CategoryImpl implements Category {
 		LOG.debug(String.format("Starting to delete category %s from vocabulary %s", categoryName,
 				vocabularyName));
 		try {
-			AssetVocabulary vocabulary = assetVocabularyLocalService.getGroupVocabulary(getGlobalGroupId(),
+			AssetVocabulary vocabulary = assetVocabularyLocalService.getGroupVocabulary(DeafultCompanyUtil.getGlobalGroupId(),
 					vocabularyName);
 			List<AssetCategory> existingCategories = vocabulary.getCategories();
 			for (AssetCategory existingCategory : existingCategories) {
@@ -122,39 +120,4 @@ public class CategoryImpl implements Category {
 		}
 
 	}
-
-	private long getGlobalGroupId() {
-		defaultCompany = getDefaultCompany();
-		long groupId = 0;
-		try {
-			groupId = defaultCompany.getGroupId();
-		} catch (PortalException e) {
-			LOG.error("Error while retrieving global groupId", e);
-		}
-		return groupId;
-	}
-
-	private long getDefaultUserId() {
-		defaultCompany = getDefaultCompany();
-		long userId = 0;
-		try {
-			userId = defaultCompany.getDefaultUser().getUserId();
-		} catch (PortalException e) {
-			LOG.error("Error while retrieving default userId", e);
-		}
-		return userId;
-	}
-
-	private Company getDefaultCompany() {
-		if (defaultCompany == null) {
-			String webId = PropsUtil.get("company.default.web.id");
-			try {
-				defaultCompany = companyService.getCompanyByWebId(webId);
-			} catch (PortalException e) {
-				LOG.error("Error while retrieving default company", e);
-			}
-		}
-		return defaultCompany;
-	}
-
 }
