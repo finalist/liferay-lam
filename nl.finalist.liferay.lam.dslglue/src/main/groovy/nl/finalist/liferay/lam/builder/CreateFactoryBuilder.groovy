@@ -24,4 +24,5 @@ class CreateFactoryBuilder extends FactoryBuilderSupport {
         registerFactory("userGroup", new CreateUserGroupFactory(userGroupsService));
         registerFactory("role", new CreateRoleAndPermissionsFactory(roleAndPermissionsService));
     }
+   
 }

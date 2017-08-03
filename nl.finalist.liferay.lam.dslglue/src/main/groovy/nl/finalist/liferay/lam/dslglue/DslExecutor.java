@@ -1,10 +1,10 @@
 package nl.finalist.liferay.lam.dslglue;
 
-
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 
+import java.io.File;
 import java.io.Reader;
 
 import org.codehaus.groovy.control.CompilerConfiguration;
@@ -14,11 +14,12 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 import groovy.lang.Binding;
+import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyShell;
 import nl.finalist.liferay.lam.api.*;
 import nl.finalist.liferay.lam.dslglue.*;
 import nl.finalist.liferay.lam.builder.*;
-
+import nl.finalist.liferay.lam.dslglue.*;
 
 /**
  * Executor that evaluates configured scripts using a context containing all
@@ -38,8 +39,11 @@ public class DslExecutor implements Executor {
     @Reference
     private PortalProperties portalPropertiesService;
     @Reference
+<<<<<<< HEAD
     private Site siteService;
     @Reference
+=======
+>>>>>>> master
     private Category categoryService;
     @Reference
     private RoleAndPermissions roleAndPermissionsService;
@@ -60,10 +64,17 @@ public class DslExecutor implements Executor {
         // Add all available API classes to the context of the scripts
         sharedData.setVariable("LOG", LOG);
 
+<<<<<<< HEAD
         sharedData.setVariable("create", new CreateFactoryBuilder(customFieldsService, vocabularyService, siteService, categoryService, userGroupsService, roleAndPermissionsService));
         sharedData.setVariable("update", new UpdateFactoryBuilder(portalSettingsService, vocabularyService, siteService, categoryService));
         sharedData.setVariable("validate", new ValidateFactoryBuilder(portalPropertiesService));
         sharedData.setVariable("delete", new DeleteFactoryBuilder(customFieldsService, vocabularyService, siteService, categoryService));
+=======
+        sharedData.setVariable("create", new CreateFactoryBuilder(customFieldsService, vocabularyService, categoryService, userGroupsService, roleAndPermissionsService));
+        sharedData.setVariable("update", new UpdateFactoryBuilder(portalSettingsService, vocabularyService, categoryService));
+        sharedData.setVariable("validate", new ValidateFactoryBuilder(portalPropertiesService));
+        sharedData.setVariable("delete", new DeleteFactoryBuilder(customFieldsService, vocabularyService, categoryService));
+>>>>>>> master
 
         sharedData.setVariable("Roles", new Roles());
         sharedData.setVariable("Entities", new Entities());

@@ -40,6 +40,7 @@ public class UserGroupsImpl implements UserGroups {
         	if (customFields != null) {
 	            for (String fieldName : customFields.keySet()) {
 	                customFieldsService.addCustomFieldValue(UserGroup.class.getName(), fieldName, group.getPrimaryKey(), customFields.get(fieldName));
+	                LOG.info("Add a custom field was successful");
 	            }
         	}
 		} catch (PortalException e) {

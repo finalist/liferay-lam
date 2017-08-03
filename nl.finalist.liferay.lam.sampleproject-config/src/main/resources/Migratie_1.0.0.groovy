@@ -19,16 +19,23 @@ create.customField (
 	roles: [Roles.guest, Roles.user],
 	displayType: DisplayType.CHECKBOX
 )
-create.customField (
-	name: 'automatedField',
-	type: CustomFieldType.TEXT,
-	entityName: Entities.site,
-	roles: [Roles.guest, Roles.user])
-
 delete.customField(
 	name: 'fieldTest',
 	entityName: Entities.user
 )
+create.customField (
+	name: 'someField',
+	type: CustomFieldType.TEXT,
+	entityName: Entities.usergroup,
+	roles: [Roles.guest, Roles.user]
+)
+create.customField (
+	name: 'automatedField',
+	type: CustomFieldType.TEXT,
+	entityName: Entities.site,
+	roles: [Roles.guest, Roles.user]
+)
+
 update.portalSettings(
 	virtualHostName: "virtualTestName",
 	portalName: "TestName",
@@ -44,7 +51,7 @@ create.vocabulary(
 )
 update.vocabulary(
 	name: "TestVocabulary",
-	forLanguage: "nl_NL",
+	forLanguage: "en_GB",
 	translation: "TestVocabularyTranslation"
 )
 delete.vocabulary(
