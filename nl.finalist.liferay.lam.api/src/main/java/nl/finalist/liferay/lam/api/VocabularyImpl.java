@@ -7,6 +7,7 @@ import java.util.Map;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+import com.liferay.asset.kernel.exception.DuplicateVocabularyException;
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.counter.kernel.service.CounterLocalService;
@@ -56,6 +57,8 @@ public class VocabularyImpl implements Vocabulary {
             vocabularyService.addVocabulary(userId, groupId, vocabularyName, titleMap,
                             new HashMap<Locale, String>(), "", new ServiceContext());
             LOG.info(String.format("Added vocabulary %s to group %d", vocabularyName, groupId));
+        } catch (DuplicateVocabularyException e) {
+        	LOG.info(String.format("Vocabulary %s already exists in group %d", vocabularyName, groupId));
         } catch (PortalException e) {
             LOG.error(String.format("Error while adding vocabulary %s", vocabularyName), e);
         }

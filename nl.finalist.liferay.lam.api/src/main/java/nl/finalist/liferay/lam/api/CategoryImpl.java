@@ -95,7 +95,7 @@ public class CategoryImpl implements Category {
 			}
 			LOG.info(String.format("Category %s doesn't exist", categoryName));
 
-		} catch (PortalException e) {
+		} catch (Exception e) {
 			LOG.error(String.format("Update of category %s failed", categoryName), e);
 		}
 

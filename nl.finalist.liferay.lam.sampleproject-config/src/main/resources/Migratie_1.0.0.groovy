@@ -80,11 +80,18 @@ delete.category(
 	name: "style2",
 	vocabularyName: "TestVocab5"
 )
+
+
 update.category(
 	name: "style",
 	updateName:"styleUpdate",
 	vocabularyName: "TestVocab5"
-	)
+)
+	
+delete.category(
+	name: "styleUpdate",
+	vocabularyName: "TestVocab5"
+)
 
 create.role(
     name: "SomeRole",
