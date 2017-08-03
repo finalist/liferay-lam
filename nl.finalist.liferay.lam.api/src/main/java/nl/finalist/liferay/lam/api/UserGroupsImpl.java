@@ -20,17 +20,20 @@ public class UserGroupsImpl implements UserGroups {
     
     @Reference
     private CustomFields customFieldsService;
+    
+    @Reference
+    private DefaultValue defaultValue;
 
     private static final Log LOG = LogFactoryUtil.getLog(UserGroupsImpl.class);
 
     @Override
     public void addUserGroup(String name, String description, Map<String, String> customFields) {
         try {
-        	UserGroup group = userGroupLocalService.fetchUserGroup(DeafultCompanyUtil.getDefaultCompany().getCompanyId(), name);
+        	UserGroup group = userGroupLocalService.fetchUserGroup(defaultValue.getDefaultCompany().getCompanyId(), name);
         	if (group != null) {
         		LOG.debug("The user group already exists");
         	} else {
-				group = userGroupLocalService.addUserGroup(DeafultCompanyUtil.getDefaultUserId(), DeafultCompanyUtil.getDefaultCompany().getCompanyId(), name, description, new ServiceContext());
+				group = userGroupLocalService.addUserGroup(defaultValue.getDefaultUserId(), defaultValue.getDefaultCompany().getCompanyId(), name, description, new ServiceContext());
         	}
         	LOG.info(String.format("Added user group %s", name));
 

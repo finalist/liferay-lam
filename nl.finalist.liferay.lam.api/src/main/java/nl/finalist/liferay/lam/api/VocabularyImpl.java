@@ -32,19 +32,21 @@ public class VocabularyImpl implements Vocabulary {
     @Reference
     private UserLocalService userService;
 
+    @Reference
+    private DefaultValue defaultValue;
 
     private static final Log LOG = LogFactoryUtil.getLog(VocabularyImpl.class);
 
     @Override
     public void addVocabulary(String vocabularyName) {
-        long groupId = DeafultCompanyUtil.getGlobalGroupId();
+        long groupId = defaultValue.getGlobalGroupId();
         addVocabulary(vocabularyName, groupId);
     }
 
     @Override
     public void addVocabulary(String vocabularyName, long groupId) {
         
-        long userId = DeafultCompanyUtil.getDefaultUserId();
+        long userId = defaultValue.getDefaultUserId();
         Locale locale = null;
         Map<Locale, String> titleMap = new HashMap<>();
         try {
@@ -62,7 +64,7 @@ public class VocabularyImpl implements Vocabulary {
 
     @Override
     public void deleteVocabulary(String vocabularyName) {
-        long groupId = DeafultCompanyUtil.getGlobalGroupId();
+        long groupId = defaultValue.getGlobalGroupId();
         deleteVocabulary(vocabularyName, groupId);
         LOG.info(String.format("Deleted vocabulary %s", vocabularyName));
     }
@@ -85,7 +87,7 @@ public class VocabularyImpl implements Vocabulary {
 
     @Override
     public void updateVocabularyTranslation(String languageId, String translatedName, String vocabularyName) {
-        long groupId = DeafultCompanyUtil.getGlobalGroupId();
+        long groupId = defaultValue.getGlobalGroupId();
         updateVocabularyTranslation(languageId, translatedName, vocabularyName, groupId);
         LOG.info(String.format("Updated vocabulary %s to add translation %s in language %s", vocabularyName, translatedName, languageId));
     }

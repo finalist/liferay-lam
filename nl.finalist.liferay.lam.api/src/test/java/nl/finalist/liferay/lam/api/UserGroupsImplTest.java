@@ -27,7 +27,7 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.PropsUtil;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ UserGroupsImpl.class, PropsUtil.class, DeafultCompanyUtil.class })
+@PrepareForTest({ UserGroupsImpl.class, PropsUtil.class})
 public class UserGroupsImplTest {
 private static final Long USER_ID = 10L;
     @Mock
@@ -46,7 +46,9 @@ private static final Long USER_ID = 10L;
     private CustomFields customFieldsService;
     @Mock
 	private UserGroup mockUserGroup;
-
+	@Mock
+	private DefaultValue defaultValue;
+	
     @InjectMocks
     private UserGroupsImpl userGroupsImpl;
     
@@ -54,7 +56,7 @@ private static final Long USER_ID = 10L;
     public void setUp() {
         userGroupsImpl = new UserGroupsImpl();
         PowerMockito.mockStatic(PropsUtil.class);
-        PowerMockito.mockStatic(DeafultCompanyUtil.class);
+        PowerMockito.mockStatic(DefaultValueImpl.class);
         initMocks(this);
     }
 
@@ -62,9 +64,9 @@ private static final Long USER_ID = 10L;
     public void testAddUserGroupWithoutCustomFields() throws Exception {
         String groupName = "testName";
         String description = "some description";
-        PowerMockito.when(DeafultCompanyUtil.getDefaultCompany()).thenReturn(mockCompany);
+        when(defaultValue.getDefaultCompany()).thenReturn(mockCompany);
         when(mockCompany.getCompanyId()).thenReturn(1L);
-        PowerMockito.when(DeafultCompanyUtil.getDefaultUserId()).thenReturn(USER_ID);
+        when(defaultValue.getDefaultUserId()).thenReturn(USER_ID);
         whenNew(ServiceContext.class).withNoArguments().thenReturn(mockServiceContext);
 
         userGroupsImpl.addUserGroup(groupName, description, null);
@@ -79,9 +81,9 @@ private static final Long USER_ID = 10L;
         Map<String,String> customFields = new HashMap<>();
         customFields.put("someField", "someValue");
        
-        PowerMockito.when(DeafultCompanyUtil.getDefaultCompany()).thenReturn(mockCompany);
+        when(defaultValue.getDefaultCompany()).thenReturn(mockCompany);
         when(mockCompany.getCompanyId()).thenReturn(1L);
-        PowerMockito.when(DeafultCompanyUtil.getDefaultUserId()).thenReturn(USER_ID);
+        when(defaultValue.getDefaultUserId()).thenReturn(USER_ID);
         whenNew(ServiceContext.class).withNoArguments().thenReturn(mockServiceContext);
         
         when(userGroupService.addUserGroup(10L, 1L, groupName, description, mockServiceContext)).thenReturn(mockUserGroup);

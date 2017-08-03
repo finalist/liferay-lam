@@ -27,7 +27,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ PropsUtil.class, PortalSettingsImpl.class, DeafultCompanyUtil.class })
+@PrepareForTest({ PropsUtil.class, PortalSettingsImpl.class})
 public class PortalSettingsImplTest {
 	@Mock
 	private CompanyLocalService companyService;
@@ -46,7 +46,8 @@ public class PortalSettingsImplTest {
 	private TimeZone mockTimezone;
 	@Mock
 	private UnicodeProperties mockProperties;
-
+	@Mock
+	private DefaultValue defaultValue;
 	@InjectMocks
 	private PortalSettingsImpl portalSettingsImplementation;
 
@@ -54,8 +55,8 @@ public class PortalSettingsImplTest {
 	public void setUp() {
 		portalSettingsImplementation = new PortalSettingsImpl();
 		PowerMockito.mockStatic(PropsUtil.class);
-		PowerMockito.mockStatic(DeafultCompanyUtil.class);
-		PowerMockito.when(DeafultCompanyUtil.getDefaultCompany()).thenReturn(mockCompany);
+		PowerMockito.mockStatic(DefaultValueImpl.class);
+		when(defaultValue.getDefaultCompany()).thenReturn(mockCompany);
 		initMocks(this);
 	}
 
@@ -63,7 +64,7 @@ public class PortalSettingsImplTest {
 	public void testSetPortalName() throws PortalException {
 		String testPortalName = "testName";
 		when(mockCompany.getAccount()).thenReturn(mockAccount);
-		PowerMockito.when(DeafultCompanyUtil.getDefaultCompany()).thenReturn(mockCompany);
+		when(defaultValue.getDefaultCompany()).thenReturn(mockCompany);
 
 		portalSettingsImplementation.setPortalName(testPortalName);
 
@@ -74,7 +75,7 @@ public class PortalSettingsImplTest {
 	@Test
 	public void testSetEmailDomain() throws PortalException {
 		String testEmailDomain = "test.com";
-		PowerMockito.when(DeafultCompanyUtil.getDefaultCompany()).thenReturn(mockCompany);
+		when(defaultValue.getDefaultCompany()).thenReturn(mockCompany);
 
 		portalSettingsImplementation.setEmailDomain(testEmailDomain);
 
@@ -85,7 +86,7 @@ public class PortalSettingsImplTest {
 	@Test
 	public void testSetHomeURL() throws PortalException {
 		String testHomeURL = "/test/home";
-		PowerMockito.when(DeafultCompanyUtil.getDefaultCompany()).thenReturn(mockCompany);
+		when(defaultValue.getDefaultCompany()).thenReturn(mockCompany);
 
 		portalSettingsImplementation.setHomeURL(testHomeURL);
 
@@ -96,7 +97,7 @@ public class PortalSettingsImplTest {
 	@Test
 	public void testSetVirtualHostName() throws PortalException {
 		String testVirtualHostName = "testHostName";
-		PowerMockito.when(DeafultCompanyUtil.getDefaultCompany()).thenReturn(mockCompany);
+		when(defaultValue.getDefaultCompany()).thenReturn(mockCompany);
 
 		when(mockCompany.getMaxUsers()).thenReturn(10);
 		when(mockCompany.getMx()).thenReturn("TESTMX");
@@ -111,7 +112,7 @@ public class PortalSettingsImplTest {
 	@Test
 	public void testSetDefaultLandingPage() throws Exception {
 		String testLandingPage = "/testLandingPage";
-		PowerMockito.when(DeafultCompanyUtil.getDefaultCompany()).thenReturn(mockCompany);
+		when(defaultValue.getDefaultCompany()).thenReturn(mockCompany);
 
 		when(mockCompany.getCompanyId()).thenReturn(1L);
 		whenNew(UnicodeProperties.class).withNoArguments().thenReturn(mockProperties);
@@ -125,7 +126,7 @@ public class PortalSettingsImplTest {
 	@Test
 	public void testSetDefaultLogoutPage() throws Exception {
 		String testLogoutPage = "/testLogoutPage";
-		PowerMockito.when(DeafultCompanyUtil.getDefaultCompany()).thenReturn(mockCompany);
+		when(defaultValue.getDefaultCompany()).thenReturn(mockCompany);
 
 		when(mockCompany.getCompanyId()).thenReturn(1L);
 		whenNew(UnicodeProperties.class).withNoArguments().thenReturn(mockProperties);
@@ -139,7 +140,7 @@ public class PortalSettingsImplTest {
 	@Test
 	public void testSetTermsOfUseRequired() throws Exception {
 		boolean testTermsOfUseRequired = false;
-		PowerMockito.when(DeafultCompanyUtil.getDefaultCompany()).thenReturn(mockCompany);
+		when(defaultValue.getDefaultCompany()).thenReturn(mockCompany);
 
 		when(mockCompany.getCompanyId()).thenReturn(1L);
 		whenNew(UnicodeProperties.class).withNoArguments().thenReturn(mockProperties);
@@ -153,7 +154,7 @@ public class PortalSettingsImplTest {
 	@Test
 	public void testSetEmailNotificationName() throws Exception {
 		String testEmailName = "testEmailName";
-		PowerMockito.when(DeafultCompanyUtil.getDefaultCompany()).thenReturn(mockCompany);
+		when(defaultValue.getDefaultCompany()).thenReturn(mockCompany);
 
 		when(mockCompany.getCompanyId()).thenReturn(1L);
 		whenNew(UnicodeProperties.class).withNoArguments().thenReturn(mockProperties);
@@ -167,7 +168,7 @@ public class PortalSettingsImplTest {
 	@Test
 	public void testSetEmailNotificationAddress() throws Exception {
 		String testEmailAdress = "test@test.com";
-		PowerMockito.when(DeafultCompanyUtil.getDefaultCompany()).thenReturn(mockCompany);
+		when(defaultValue.getDefaultCompany()).thenReturn(mockCompany);
 
 		when(mockCompany.getCompanyId()).thenReturn(1L);
 		whenNew(UnicodeProperties.class).withNoArguments().thenReturn(mockProperties);
@@ -181,7 +182,7 @@ public class PortalSettingsImplTest {
 	@Test
 	public void testSetAvailableLanguages() throws Exception {
 		String testAvailableLanguages = "tst_TST,abc_ABC";
-		PowerMockito.when(DeafultCompanyUtil.getDefaultCompany()).thenReturn(mockCompany);
+		when(defaultValue.getDefaultCompany()).thenReturn(mockCompany);
 
 		when(mockCompany.getCompanyId()).thenReturn(1L);
 		whenNew(UnicodeProperties.class).withNoArguments().thenReturn(mockProperties);
@@ -196,7 +197,7 @@ public class PortalSettingsImplTest {
 	public void testSetTimezoneId() throws PortalException {
 		String testTimezoneId = "TST";
 		when(mockCompany.getCompanyId()).thenReturn(1L);
-		PowerMockito.when(DeafultCompanyUtil.getDefaultCompany()).thenReturn(mockCompany);
+		when(defaultValue.getDefaultCompany()).thenReturn(mockCompany);
 
 		when(mockDefaultUser.getLanguageId()).thenReturn("tst_TST");
 		when(userService.getDefaultUser(1L)).thenReturn(mockDefaultUser);
@@ -212,7 +213,7 @@ public class PortalSettingsImplTest {
 		when(mockCompany.getCompanyId()).thenReturn(1L);
 		when(mockCompany.getTimeZone()).thenReturn(mockTimezone);
 		when(mockTimezone.getID()).thenReturn("TST");
-		PowerMockito.when(DeafultCompanyUtil.getDefaultCompany()).thenReturn(mockCompany);
+		when(defaultValue.getDefaultCompany()).thenReturn(mockCompany);
 
 		portalSettingsImplementation.setDefaultLanguage(testLanguageId);
 

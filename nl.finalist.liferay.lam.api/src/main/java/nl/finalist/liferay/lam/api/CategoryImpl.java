@@ -38,13 +38,16 @@ public class CategoryImpl implements Category {
 	@Reference
 	private AssetVocabularyLocalService assetVocabularyLocalService;
 
+    @Reference
+    private DefaultValue defaultValue;
+    
 	@Override
 	public void addCategory(String categoryName, String vocabularyName, String title) {
 		LOG.debug(String.format(
 				"Starting to add the category %s to vocabulary %s with title %s ",
 				categoryName, vocabularyName, title));
 		try {
-			AssetVocabulary vocabulary = assetVocabularyLocalService.getGroupVocabulary(DeafultCompanyUtil.getGlobalGroupId(),
+			AssetVocabulary vocabulary = assetVocabularyLocalService.getGroupVocabulary(defaultValue.getGlobalGroupId(),
 					vocabularyName);
 			String[] existingCategoriesNames = assetCategoryService.getCategoryNames();
 			boolean addCondition = true;
@@ -54,7 +57,7 @@ public class CategoryImpl implements Category {
 				}
 			}
 			if (addCondition) {
-				assetCategoryService.addCategory(DeafultCompanyUtil.getDefaultUserId(), DeafultCompanyUtil.getGlobalGroupId(),
+				assetCategoryService.addCategory(defaultValue.getDefaultUserId(), defaultValue.getGlobalGroupId(),
 						categoryName, vocabulary.getVocabularyId(), new ServiceContext());
 				LOG.info(String.format("Added category %s to vocabulary %s", categoryName, vocabularyName));
 			} else {
@@ -72,7 +75,7 @@ public class CategoryImpl implements Category {
 				"Starting to update category %s in vocabulary %s, the new name will be %s",
 				categoryName, vocabularyName, updateName));
 		try {
-			AssetVocabulary vocabulary = assetVocabularyLocalService.getGroupVocabulary(DeafultCompanyUtil.getGlobalGroupId(),
+			AssetVocabulary vocabulary = assetVocabularyLocalService.getGroupVocabulary(defaultValue.getGlobalGroupId(),
 					vocabularyName);
 			List<AssetCategory> existingCategories = vocabulary.getCategories();
 			for (AssetCategory existingCategory : existingCategories) {
@@ -103,7 +106,7 @@ public class CategoryImpl implements Category {
 		LOG.debug(String.format("Starting to delete category %s from vocabulary %s", categoryName,
 				vocabularyName));
 		try {
-			AssetVocabulary vocabulary = assetVocabularyLocalService.getGroupVocabulary(DeafultCompanyUtil.getGlobalGroupId(),
+			AssetVocabulary vocabulary = assetVocabularyLocalService.getGroupVocabulary(defaultValue.getGlobalGroupId(),
 					vocabularyName);
 			List<AssetCategory> existingCategories = vocabulary.getCategories();
 			for (AssetCategory existingCategory : existingCategories) {

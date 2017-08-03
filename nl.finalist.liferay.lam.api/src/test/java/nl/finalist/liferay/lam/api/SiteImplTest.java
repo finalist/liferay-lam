@@ -38,7 +38,7 @@ import nl.finalist.liferay.lam.api.model.PageModel;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ LocaleUtil.class, SiteImpl.class, PropsUtil.class, Locale.class, PortalUtil.class,
-		DeafultCompanyUtil.class })
+		DefaultValueImpl.class })
 public class SiteImplTest {
 
 	private static final long SITE_ID = 123L;
@@ -55,6 +55,8 @@ public class SiteImplTest {
 	
 	@Mock
 	private Group mockSite;
+	@Mock
+	private DefaultValue defaultValue;
 
 	@Mock
 	private HashMap<Locale, String> mockTitleMap;
@@ -69,6 +71,7 @@ public class SiteImplTest {
 	@InjectMocks
 	private SiteImpl siteImpl;
 
+
 	Map<Locale, String> nameMap;
 	Map<Locale, String> descriptionMap;
 	String friendlyURL;
@@ -80,8 +83,7 @@ public class SiteImplTest {
 		PowerMockito.mockStatic(LocaleUtil.class);
 		PowerMockito.mockStatic(PropsUtil.class);
 		PowerMockito.mockStatic(PortalUtil.class);
-		PowerMockito.mockStatic(DeafultCompanyUtil.class);
-
+	
 		initMocks(this);
 
 		siteKey = "testName";
@@ -98,7 +100,7 @@ public class SiteImplTest {
 	public void testAddSite() throws Exception {
 		Locale mockLocale = new Locale("en_US");
 		PowerMockito.when(LocaleUtil.getSiteDefault()).thenReturn(mockLocale);
-		PowerMockito.when(DeafultCompanyUtil.getDefaultUserId()).thenReturn(USER_ID);
+		when(defaultValue.getDefaultUserId()).thenReturn(USER_ID);
 		siteImpl.addSite(nameMap, descriptionMap, friendlyURL, null, null);
 
 		verify(siteService).addGroup(USER_ID, GroupConstants.DEFAULT_PARENT_GROUP_ID, Group.class.getName(), 0L,
@@ -111,7 +113,7 @@ public class SiteImplTest {
 		Map<String, String> customFields = createCustomFields();
 		Locale mockLocale = new Locale("en_US");
 		PowerMockito.when(LocaleUtil.getSiteDefault()).thenReturn(mockLocale);
-		PowerMockito.when(DeafultCompanyUtil.getDefaultUserId()).thenReturn(USER_ID);
+		when(defaultValue.getDefaultUserId()).thenReturn(USER_ID);
 
 		when(siteService.addGroup(USER_ID, GroupConstants.DEFAULT_PARENT_GROUP_ID, Group.class.getName(), 0L,
 				GroupConstants.DEFAULT_LIVE_GROUP_ID, nameMap, descriptionMap, GroupConstants.TYPE_SITE_OPEN, true,
@@ -133,7 +135,7 @@ public class SiteImplTest {
 
 		Locale mockLocale = new Locale("en_US");
 		PowerMockito.when(LocaleUtil.getSiteDefault()).thenReturn(mockLocale);
-		PowerMockito.when(DeafultCompanyUtil.getDefaultUserId()).thenReturn(USER_ID);
+		when(defaultValue.getDefaultUserId()).thenReturn(USER_ID);
 
 		when(siteService.addGroup(USER_ID, GroupConstants.DEFAULT_PARENT_GROUP_ID, Group.class.getName(), 0L,
 				GroupConstants.DEFAULT_LIVE_GROUP_ID, nameMap, descriptionMap, GroupConstants.TYPE_SITE_OPEN, true,
@@ -151,7 +153,7 @@ public class SiteImplTest {
 	@Test
 	public void testDeleteExistingSite() throws PortalException {
 		when(siteService.getGroup(0L, siteKey)).thenReturn(mockSite);
-		PowerMockito.when(DeafultCompanyUtil.getDefaultUserId()).thenReturn(USER_ID);
+		when(defaultValue.getDefaultUserId()).thenReturn(USER_ID);
 		when(mockSite.getGroupId()).thenReturn(SITE_ID);
 
 		siteImpl.deleteSite(siteKey);
@@ -163,7 +165,7 @@ public class SiteImplTest {
 	public void testUpdateSiteTranslation() throws PortalException {
 		when(siteService.getGroup(0L, siteKey)).thenReturn(mockSite);
 
-		PowerMockito.when(DeafultCompanyUtil.getDefaultUserId()).thenReturn(USER_ID);
+		when(defaultValue.getDefaultUserId()).thenReturn(USER_ID);
 		when(mockSite.getGroupId()).thenReturn(SITE_ID);
 		List<PageModel> pages = createPageModel();
 		siteImpl.updateSite(siteKey, nameMap, descriptionMap, friendlyURL, null, pages);
@@ -177,7 +179,7 @@ public class SiteImplTest {
 	public void testUpdateSiteTranslationWithCustomFields() throws PortalException {
 
 		when(siteService.getGroup(0L, siteKey)).thenReturn(mockSite);
-		PowerMockito.when(DeafultCompanyUtil.getDefaultUserId()).thenReturn(USER_ID);
+		when(defaultValue.getDefaultUserId()).thenReturn(USER_ID);
 		when(mockSite.getGroupId()).thenReturn(SITE_ID);
 
 		when(siteService.updateGroup(SITE_ID, GroupConstants.DEFAULT_PARENT_GROUP_ID, nameMap, descriptionMap,
@@ -202,7 +204,7 @@ public class SiteImplTest {
 	@Test
 	public void updatePageOfSite() throws PortalException {
 		when(siteService.getGroup(0L, siteKey)).thenReturn(mockSite);
-		PowerMockito.when(DeafultCompanyUtil.getDefaultUserId()).thenReturn(USER_ID);
+		when(defaultValue.getDefaultUserId()).thenReturn(USER_ID);
 		when(mockSite.getGroupId()).thenReturn(SITE_ID);
 
 		when(siteService.updateGroup(SITE_ID, GroupConstants.DEFAULT_PARENT_GROUP_ID, nameMap, descriptionMap,
