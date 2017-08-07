@@ -101,3 +101,27 @@ create.userGroup(
 	]
 )
 
+create.webcontent(
+	titleMap: [ 
+		"en_US": "SomeRole"
+			],
+	descriptionMap: [
+	    "en_US": "Description of Helping Webcontent"
+	],
+	content: "Content about the Helping Webcontent",
+	urlTitle: "somerole"
+)
+update.webcontent(
+	titleMap: [ 
+		"en_US": "SomeRoleUpdate"
+	],
+	descriptionMap: [
+	    "en_US": "Description of Helping Webcontent"
+	],
+	content: "Content about the Helping Webcontent",
+	urlTitle: "somerolenew"
+)
+
+delete.webcontent(
+	urlTitle: "some-url-title"
+)
