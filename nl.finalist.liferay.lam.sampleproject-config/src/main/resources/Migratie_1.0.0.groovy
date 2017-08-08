@@ -47,24 +47,38 @@ validate.portalProperties(
 	"auth.token.check.enabled": "true"
 )
 create.vocabulary(
-	name: "TestVocabulary"
+	name: [ "en_US" : "TestVocabulary US",
+			"nl_NL" : "TestVocabulary NL",
+			"en_GB" :"TestVocabulary GB"]
 )
 update.vocabulary(
-	name: "TestVocabulary",
-	forLanguage: "en_GB",
-	translation: "TestVocabularyTranslation"
+	existingName : "TestVocabulary US",
+	name: [ "en_US" : "TestVocabulary US Updated",
+			"nl_NL" : "TestVocabulary NL Updated",
+			"en_GB" :"TestVocabulary GB Updated"]
 )
+
+create.vocabulary(
+	name: [ "en_US" : "Test US",
+			"nl_NL" : "Test NL",
+			"en_GB" :"Test GB"]
+)
+update.vocabulary(
+	existingName : "Test US",
+	name: [ "en_US" : "US Updated",
+			"nl_NL" : "NL Updated",
+			"en_GB" : "GB Updated"]
+)
+
 delete.vocabulary(
-	name: "TestVocabulary"
+	existingName: "US Updated"
 )
 create.vocabulary(
-	name: "TestVocab5"
+name: [ "en_US" : "TestVocab5",
+			"nl_NL" : "TestVocab5 NL",
+			"en_GB" :"TestVocab5 GB"]
 )
-update.vocabulary(
-	name: "TestVocab5",
-	forLanguage: "en_GB",
-	translation: "TestVocabularyTranslation"
-)
+
 create.category(
 	name: "style",
 	vocabularyName: "TestVocab5",

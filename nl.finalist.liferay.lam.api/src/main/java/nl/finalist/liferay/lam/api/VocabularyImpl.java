@@ -16,8 +16,6 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 /**
  * Implementation for {@link nl.finalist.liferay.lam.api.Vocabulary}
@@ -39,22 +37,19 @@ public class VocabularyImpl implements Vocabulary {
     private static final Log LOG = LogFactoryUtil.getLog(VocabularyImpl.class);
 
     @Override
-    public void addVocabulary(String vocabularyName) {
+    public void addVocabulary(Map<Locale, String> vocabularyName) {
         long groupId = defaultValue.getGlobalGroupId();
         addVocabulary(vocabularyName, groupId);
     }
 
-    @Override
-    public void addVocabulary(String vocabularyName, long groupId) {
-        
+    
+    public void addVocabulary(Map<Locale, String>  vocabularyName, long groupId) {
         long userId = defaultValue.getDefaultUserId();
-        Locale locale = null;
-        Map<Locale, String> titleMap = new HashMap<>();
+       
         try {
-            locale = LocaleUtil.getSiteDefault();
-            titleMap.put(locale, vocabularyName);
             LOG.debug(String.format("Vocabulary Name to be addded is %s", vocabularyName));
-            vocabularyService.addVocabulary(userId, groupId, vocabularyName, titleMap,
+           
+            vocabularyService.addVocabulary(userId, groupId, null, vocabularyName,
                             new HashMap<Locale, String>(), "", new ServiceContext());
             LOG.info(String.format("Added vocabulary %s to group %d", vocabularyName, groupId));
         } catch (DuplicateVocabularyException e) {
@@ -72,7 +67,7 @@ public class VocabularyImpl implements Vocabulary {
         LOG.info(String.format("Deleted vocabulary %s", vocabularyName));
     }
 
-    @Override
+    
     public void deleteVocabulary(String vocabularyName, long groupId) {
         AssetVocabulary vocabulary = getAssetVocabulary(vocabularyName, groupId);
         if (Validator.isNotNull(vocabulary)) {
@@ -89,29 +84,21 @@ public class VocabularyImpl implements Vocabulary {
     }
 
     @Override
-    public void updateVocabularyTranslation(String languageId, String translatedName, String vocabularyName) {
+    public void updateVocabularyTranslation(String existingName, Map<Locale, String> vocabularyName) {
         long groupId = defaultValue.getGlobalGroupId();
-        updateVocabularyTranslation(languageId, translatedName, vocabularyName, groupId);
-        LOG.info(String.format("Updated vocabulary %s to add translation %s in language %s", vocabularyName, translatedName, languageId));
+        updateVocabularyTranslation(vocabularyName, groupId, existingName);
+        LOG.info(String.format("Updated vocabulary %s to add translation", vocabularyName));
     }
 
-    @Override
-    public void updateVocabularyTranslation(String languageId, String translatedName, String vocabularyName,
-                    long groupId) {
-        AssetVocabulary vocabulary = getAssetVocabulary(vocabularyName, groupId);
+    
+    public void updateVocabularyTranslation(Map<Locale, String> vocabularyName,
+                    long groupId, String existingName) {
+        AssetVocabulary vocabulary = getAssetVocabulary(existingName, groupId);
         if (Validator.isNotNull(vocabulary)) {
-            String[] languageAndCountry = StringUtil.split(languageId, "_");
-            Locale locale = null;
-            Map<Locale, String> titleMap = vocabulary.getTitleMap();
-            if (languageAndCountry.length > 1) {
-                locale = new Locale(languageAndCountry[0], languageAndCountry[1]);
-            } else {
-                locale = new Locale(languageAndCountry[0]);
-            }
-            titleMap.put(locale, translatedName);
-            vocabulary.setTitleMap(titleMap);
+           
+            vocabulary.setTitleMap(vocabularyName);
             vocabularyService.updateAssetVocabulary(vocabulary);
-            LOG.info(String.format("Updated vocabulary %s from group %d to add translation %s in language %s", vocabularyName, groupId, translatedName, languageId));
+            LOG.info(String.format("Updated vocabulary %s from group %d", vocabularyName, groupId));
         } else {
             LOG.debug(String.format("Vocabulary %s with groupId %d does not exist or is not retrievable",
                             vocabularyName, groupId));
@@ -123,6 +110,7 @@ public class VocabularyImpl implements Vocabulary {
         AssetVocabulary vocabulary = null;
         try {
             vocabulary = vocabularyService.getGroupVocabulary(groupId, vocabularyName);
+          //  vocabulary =  vocabularyService.fetchGroupVocabulary(groupId, vocabularyName);
         } catch (PortalException e) {
             LOG.error(String.format("Error while retrieving vocabulary %s", vocabularyName), e);
         }

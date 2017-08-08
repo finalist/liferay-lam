@@ -14,6 +14,7 @@ import com.liferay.portal.kernel.util.PropsUtil;
 
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -69,19 +70,20 @@ public class VocabularyImplTest {
 
     @Test
     public void testAddVocabulary() throws Exception {
-        String vocabularyName = "testName";
+        Map<Locale,String> vocabularyName = new HashMap<>();
+        vocabularyName.put(Locale.US, "testing");
      
-        Locale mockLocale = new Locale("nl_NL");
+        Locale mockLocale = Locale.US;
         PowerMockito.when(LocaleUtil.getSiteDefault()).thenReturn(mockLocale);
         when(defaultValue.getDefaultCompany()).thenReturn(mockCompany);
        when(defaultValue.getDefaultUserId()).thenReturn(10L); 
-       
+   
         whenNew(HashMap.class).withAnyArguments().thenReturn(mockTitleMap);
         whenNew(ServiceContext.class).withNoArguments().thenReturn(mockServiceContext);
 
         vocabularyImpl.addVocabulary(vocabularyName, 1L);
 
-        verify(vocabularyService).addVocabulary(10L, 1L, vocabularyName, mockTitleMap, mockTitleMap, "", mockServiceContext);
+        verify(vocabularyService).addVocabulary(10L, 1L, null, vocabularyName, mockTitleMap, "", mockServiceContext);
     }
 
     @Test
@@ -107,21 +109,26 @@ public class VocabularyImplTest {
 
     @Test
     public void testUpdateVocabularyTranslation() throws PortalException {
-        String vocabularyName = "testName";
+        String vocabularyName = "Update Default";
+        Map<Locale, String> updateVocabularyName = new HashMap<>();
+        updateVocabularyName.put(Locale.getDefault(), "Update Default");
+        PowerMockito.when(LocaleUtil.getDefault()).thenReturn(Locale.US);
         when(vocabularyService.getGroupVocabulary(1L, vocabularyName)).thenReturn(mockAssetVocabulary);
-        when(mockAssetVocabulary.getTitleMap()).thenReturn(mockTitleMap);
+      
 
-        vocabularyImpl.updateVocabularyTranslation("tst_TST", "translatedName", vocabularyName, 1L);
+        vocabularyImpl.updateVocabularyTranslation(updateVocabularyName, 1L, "Update Default");
 
-        verify(vocabularyService).updateAssetVocabulary(mockAssetVocabulary);
+        verify(vocabularyService).getGroupVocabulary(1L, vocabularyName);
     }
 
     @Test
     public void testUpdateNonExistingVocabularyTranslation() throws PortalException {
         String vocabularyName = "testNonexistingName";
+        Map<Locale, String> updateVocabularyName = new HashMap<>();
+        updateVocabularyName.put(Locale.getDefault(), "Update Default");
         when(vocabularyService.getGroupVocabulary(1L, vocabularyName)).thenReturn(null);
 
-        vocabularyImpl.updateVocabularyTranslation("tst_TST", "translatedName", vocabularyName, 1L);
+        vocabularyImpl.updateVocabularyTranslation(updateVocabularyName, 1L,"Update Default");
 
         verifyNoMoreInteractions(mockAssetVocabulary);
     }
