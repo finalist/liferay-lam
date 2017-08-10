@@ -4,7 +4,6 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 
-import java.io.File;
 import java.io.Reader;
 
 import org.codehaus.groovy.control.CompilerConfiguration;
@@ -14,11 +13,17 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 import groovy.lang.Binding;
-import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyShell;
-import nl.finalist.liferay.lam.api.*;
-import nl.finalist.liferay.lam.builder.*;
-import nl.finalist.liferay.lam.dslglue.*;
+import nl.finalist.liferay.lam.api.Category;
+import nl.finalist.liferay.lam.api.CustomFields;
+import nl.finalist.liferay.lam.api.PortalProperties;
+import nl.finalist.liferay.lam.api.PortalSettings;
+import nl.finalist.liferay.lam.api.RoleAndPermissions;
+import nl.finalist.liferay.lam.api.Site;
+import nl.finalist.liferay.lam.api.UserGroups;
+import nl.finalist.liferay.lam.api.Vocabulary;
+import nl.finalist.liferay.lam.api.WebContent;
+
 
 /**
  * Executor that evaluates configured scripts using a context containing all
@@ -38,13 +43,15 @@ public class DslExecutor implements Executor {
     @Reference
     private PortalProperties portalPropertiesService;
     @Reference
+    private Site siteService;
+    @Reference
+    private WebContent webContentService;
+    @Reference
     private Category categoryService;
     @Reference
     private RoleAndPermissions roleAndPermissionsService;
     @Reference
     private UserGroups userGroupsService;
-    @Reference
-    private WebContent webContentService;
 
     @Activate
     public void activate() {
@@ -56,18 +63,20 @@ public class DslExecutor implements Executor {
         LOG.debug("DSL Executor running the available scripts");
 
         Binding sharedData = new Binding();
-        
+
         // Add all available API classes to the context of the scripts
         sharedData.setVariable("LOG", LOG);
 
-        sharedData.setVariable("create", new CreateFactoryBuilder(customFieldsService, vocabularyService, categoryService, userGroupsService, roleAndPermissionsService, webContentService));
-        sharedData.setVariable("update", new UpdateFactoryBuilder(portalSettingsService, vocabularyService, categoryService, webContentService));
+
+        sharedData.setVariable("create", new CreateFactoryBuilder(customFieldsService, vocabularyService, siteService, categoryService, userGroupsService, roleAndPermissionsService, webContentService));
+        sharedData.setVariable("update", new UpdateFactoryBuilder(portalSettingsService, vocabularyService, siteService, categoryService, webContentService));
         sharedData.setVariable("validate", new ValidateFactoryBuilder(portalPropertiesService));
-        sharedData.setVariable("delete", new DeleteFactoryBuilder(customFieldsService, vocabularyService, categoryService, webContentService));
+        sharedData.setVariable("delete", new DeleteFactoryBuilder(customFieldsService, vocabularyService, siteService, categoryService, webContentService));
 
         sharedData.setVariable("Roles", new Roles());
         sharedData.setVariable("Entities", new Entities());
         sharedData.setVariable("ActionKeys", new ActionKeys());
+        sharedData.setVariable("Templates", new Templates());
 
         CompilerConfiguration conf = new CompilerConfiguration();
         ImportCustomizer imports = new ImportCustomizer();

@@ -29,6 +29,13 @@ create.customField (
 	entityName: Entities.usergroup,
 	roles: [Roles.guest, Roles.user]
 )
+create.customField (
+	name: 'automatedField',
+	type: CustomFieldType.TEXT,
+	entityName: Entities.site,
+	roles: [Roles.guest, Roles.user]
+)
+
 update.portalSettings(
 	virtualHostName: "virtualTestName",
 	portalName: "TestName",
@@ -73,11 +80,18 @@ delete.category(
 	name: "style2",
 	vocabularyName: "TestVocab5"
 )
+
+
 update.category(
 	name: "style",
 	updateName:"styleUpdate",
 	vocabularyName: "TestVocab5"
-	)
+)
+	
+delete.category(
+	name: "styleUpdate",
+	vocabularyName: "TestVocab5"
+)
 
 create.role(
     name: "SomeRole",
@@ -100,6 +114,7 @@ create.userGroup(
 	    "someField": "another value"
 	]
 )
+
 
 create.webcontent(
 	titleMap: [ 
@@ -124,4 +139,69 @@ update.webcontent(
 
 delete.webcontent(
 	urlTitle: "some-url-title"
+)
+create.site(
+	nameMap: [
+		"en_US": "AutomatedTestSite",
+		"nl_NL": "AutomatedTestSite"
+	],
+	descriptionMap: [
+	    "nl_NL": "Description of automated site"
+	],
+	friendlyURL: "/automatedTestSite",
+	customFields: [
+	    "automatedField": "value"
+	],
+	pages: [
+		[
+			privatePage: false,
+			nameMap: ["nl_NL": "pagename", "en_US": "pagename"],
+			titleMap: ["nl_NL": "title of page"],
+			descriptionMap: ["nl_NL": "description of page"],
+			friendlyUrlMap: ["nl_NL": "/pagename"],
+			typeSettings: Templates.one_column
+		],
+		[
+			privatePage: true,
+			nameMap: ["nl_NL": "privatepageNL", "en_US": "privatepageUS"],
+			titleMap: ["nl_NL": "title of private page"],
+			descriptionMap: ["nl_NL": "description of private page"],
+			friendlyUrlMap: ["nl_NL": "/privatepage"],
+			typeSettings: Templates.one_column
+		]
+	]
+)
+
+update.site(
+	siteKey: "AutomatedTestSite",
+	nameMap: [
+		"en_US": "AutomatedTestSite",
+		"nl_NL": "AutomatedTestSiteNL"
+	],
+	descriptionMap: [
+	    "en_US": "Description",
+	    "nl_NL": "Beschrijving"
+	],
+	friendlyURL: "/automatedTestSite",
+	customFields: [
+		"automatedField": "automated value"
+	],
+	pages: [
+		[
+			privatePage: false,
+			nameMap: ["nl_NL": "pagenameNL", "en_US": "pagenameUS"],
+			titleMap: ["nl_NL": "title of page"],
+			descriptionMap: ["nl_NL": "description of page"],
+			friendlyUrlMap: ["nl_NL": "/pagename"],
+			typeSettings: Templates.one_column
+		],
+		[
+			privatePage: true,
+			nameMap: ["nl_NL": "pageNL", "en_US": "pageUS"],
+			titleMap: ["nl_NL": "title of pageNL"],
+			descriptionMap: ["nl_NL": "description of page"],
+			friendlyUrlMap: ["nl_NL": "/updateaddpage"],
+			typeSettings: Templates.one_column
+		]
+	]
 )
