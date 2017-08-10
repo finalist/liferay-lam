@@ -14,15 +14,8 @@ import org.osgi.service.component.annotations.Reference;
 
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
-import nl.finalist.liferay.lam.api.Category;
-import nl.finalist.liferay.lam.api.CustomFields;
-import nl.finalist.liferay.lam.api.PortalProperties;
-import nl.finalist.liferay.lam.api.PortalSettings;
-import nl.finalist.liferay.lam.api.RoleAndPermissions;
-import nl.finalist.liferay.lam.api.Site;
-import nl.finalist.liferay.lam.api.UserGroups;
-import nl.finalist.liferay.lam.api.Vocabulary;
-import nl.finalist.liferay.lam.api.WebContent;
+import nl.finalist.liferay.lam.api.*;
+import nl.finalist.liferay.lam.builder.*;
 
 
 /**
