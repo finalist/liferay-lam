@@ -71,8 +71,9 @@ update.vocabulary(
 )
 
 delete.vocabulary(
-	existingName: "US Updated"
+	existingName: "Test US"
 )
+
 create.vocabulary(
 name: [ "en_US" : "TestVocab5",
 			"nl_NL" : "TestVocab5 NL",

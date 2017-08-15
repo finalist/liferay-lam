@@ -109,8 +109,7 @@ public class VocabularyImpl implements Vocabulary {
     private AssetVocabulary getAssetVocabulary(String vocabularyName, long groupId) {
         AssetVocabulary vocabulary = null;
         try {
-            vocabulary = vocabularyService.getGroupVocabulary(groupId, vocabularyName);
-          //  vocabulary =  vocabularyService.fetchGroupVocabulary(groupId, vocabularyName);
+          vocabulary = vocabularyService.getGroupVocabulary(groupId, vocabularyName);
         } catch (PortalException e) {
             LOG.error(String.format("Error while retrieving vocabulary %s", vocabularyName), e);
         }

@@ -111,27 +111,30 @@ You can create, update and delete vocabularies.
 The following script shows how you can create a vocabulary:
 
 	create.vocabulary(
-		name: "TestVocabulary"
-	)
+				name: [ "en_US" : "TestVocab5",
+							"nl_NL" : "TestVocab5 NL",
+							"en_GB" :"TestVocab5 GB"]
+						)
 
-As you can see, all you have to specify is the name of the vocabulary. This vocabulary will be added to the global scope.
+As you can see, all you have to specify is the map of name of the vocabulary. This vocabulary will be added to the global scope. default Locale vocabulary name should be provided always otherwise it doesn't work as expected.
 
 ## Update
 The following script shows how you can update a vocabulary:
 
 	update.vocabulary(
-		name: "TestVocabulary",
-		forLanguage: "en_GB",
-		translation: "TestVocabularyTranslation"
-	)
+				existingName : "Test US",
+				name: [ "en_US" : "US Updated",
+						  "nl_NL" : "NL Updated",
+						  "en_GB" : "GB Updated"]
+			)
 
-To update a vocabulary, you have to specify the name, the language and the translation of the name. If the vocabulary doesn't exist in the global scope, an error message will be logged.
+To update a vocabulary, you have to specify the map of vocabulary names and the existing name of the vocabulary for which names should be updated. If the vocabulary doesn't exist in the global scope, an error message will be logged.
 
 ## Delete
 The following script shows how you can delete a vocabulary:
 
 	delete.vocabulary(
-		name: "TestVocabulary"
+		existingName: "TestVocabulary"
 	)
 	
 As you can see, all you have to specify is the name of the vocabulary. If the vocabulary doesn't exist in the global scope, an error message will be logged.
