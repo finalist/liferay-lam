@@ -81,33 +81,40 @@ name: [ "en_US" : "TestVocab5",
 )
 
 create.category(
-	name: "style",
+	name: [ "en_US" : "styleUS",
+			"nl_NL" : "styleNL",
+			"en_GB" :"styleGB"],
 	vocabularyName: "TestVocab5",
 	title : "Testing it"
 )
+
 create.category(
-	name: "style2",
+name: [ "en_US" : "style2US",
+			"nl_NL" : "style2NL",
+			"en_GB" :"style2GB"],
 	vocabularyName: "TestVocab5",
 	title : "Testing it2"
 )
 
+
 delete.category(
-	name: "style2",
+	title: "style2US",
 	vocabularyName: "TestVocab5"
 )
-
-
+create.category(
+	name: [ "en_US" : "styleU",
+			"nl_NL" : "styleN",
+			"en_GB" :"styleG"],
+	vocabularyName: "TestVocab5",
+	title : "Testing it"
+)
 update.category(
-	name: "style",
-	updateName:"styleUpdate",
-	vocabularyName: "TestVocab5"
+categoryName: "styleU",
+	vocabularyName: "TestVocab5",
+	updateName: [ "en_US" : "styleUpdate",
+			"nl_NL" : "styleNpdate",
+			"en_GB" :"styleGpdate"]
 )
-	
-delete.category(
-	name: "styleUpdate",
-	vocabularyName: "TestVocab5"
-)
-
 create.role(
     name: "SomeRole",
 	type: TypeOfRole.REGULARROLES,

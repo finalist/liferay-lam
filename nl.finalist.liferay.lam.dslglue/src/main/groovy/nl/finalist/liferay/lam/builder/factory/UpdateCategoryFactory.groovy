@@ -2,6 +2,8 @@ package nl.finalist.liferay.lam.builder.factory
 
 import nl.finalist.liferay.lam.api.Category;
 import nl.finalist.liferay.lam.dslglue.model.CategoryModel;
+import nl.finalist.liferay.lam.dslglue.LocaleMapConverter;
+
 class UpdateCategoryFactory extends AbstractFactory {
 	Category categoryService;
 	
@@ -19,6 +21,6 @@ class UpdateCategoryFactory extends AbstractFactory {
     void onNodeCompleted(FactoryBuilderSupport builder, Object parent, Object node) {
         super.onNodeCompleted(builder, parent, node);
         CategoryModel category = (CategoryModel) node;
-        categoryService.updateCategory(category.name, category.vocabularyName, category.updateName);
+        categoryService.updateCategory(category.categoryName, category.vocabularyName, LocaleMapConverter.convert(category.updateName));
     }
 }

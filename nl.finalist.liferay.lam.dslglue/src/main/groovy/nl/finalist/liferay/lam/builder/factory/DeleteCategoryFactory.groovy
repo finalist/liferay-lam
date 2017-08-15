@@ -3,6 +3,7 @@ package nl.finalist.liferay.lam.builder.factory
 import nl.finalist.liferay.lam.api.Category;
 import nl.finalist.liferay.lam.dslglue.model.CategoryModel;
 
+
 class DeleteCategoryFactory extends AbstractFactory {
 	Category categoryService;
 	
@@ -20,6 +21,6 @@ class DeleteCategoryFactory extends AbstractFactory {
     void onNodeCompleted(FactoryBuilderSupport builder, Object parent, Object node) {
         super.onNodeCompleted(builder, parent, node);
         CategoryModel category = (CategoryModel) node;
-        categoryService.deleteCategory(category.name, category.vocabularyName);
+        categoryService.deleteCategory(category.title, category.vocabularyName);
     }
 }

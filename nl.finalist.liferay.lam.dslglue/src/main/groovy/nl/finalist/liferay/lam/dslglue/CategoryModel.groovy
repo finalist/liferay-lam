@@ -2,9 +2,10 @@ package nl.finalist.liferay.lam.dslglue.model;
 
 class CategoryModel {
 
-    String name;
+    Map<String, String> name;
     String vocabularyName;
-    String updateName;
+    Map<String, String> updateName;
     String title;
+    String categoryName;
 
 }
