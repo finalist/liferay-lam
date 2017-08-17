@@ -2,7 +2,8 @@ package nl.finalist.liferay.lam.builder.factory
 
 import nl.finalist.liferay.lam.api.WebContent;
 import nl.finalist.liferay.lam.dslglue.model.WebContentModel;
-import nl.finalist.liferay.lam.dslglue.LocaleMapConverter;
+import nl.finalist.liferay.lam.util.LocaleMapConverter
+
 class CreateWebContentFactory extends AbstractFactory {
 	WebContent webContentService;
 	

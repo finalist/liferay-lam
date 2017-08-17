@@ -22,6 +22,6 @@ class UpdateFactoryBuilder extends FactoryBuilderSupport {
         registerFactory("vocabulary", new UpdateVocabularyFactory(vocabularyService));
         registerFactory("site", new UpdateSiteFactory(siteService));
         registerFactory("category", new UpdateCategoryFactory(categoryService));
-         registerFactory("webcontent", new UpdateWebContentFactory(webContentService));
+        registerFactory("webcontent", new UpdateWebContentFactory(webContentService));
     }
 }
