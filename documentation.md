@@ -224,35 +224,39 @@ You can create, update and delete categories.
 ## Create
 The following script shows how you can create a category to a vocabulary:
 
-	create.category(
-	name: "categoryName",
-	vocabularyName: "TestVocabulary",
-	title : "Create a new category for TestVocabulary"
-)
+		create.category(
+			name: [ "en_US" : "styleU",
+					"nl_NL" : "styleN",
+					"en_GB" :"styleG"],
+			vocabularyName: "TestVocab5",
+			title : "Testing it"
+		)
 
 
-As you can see, all you have to do is to specify the name of the vocabulary, name of category and the title to the category. This category will be added to the vocabulary.
+As you can see, all you have to do is to specify the name of the vocabulary, name of category along with the locale and the title to the category. This category will be added to the vocabulary.
 
 ## Update
 The following script shows how you can update a category:
 
 	update.category(
-	name: "categoryName",
-	updateName:"updateCategoryName",
-	vocabularyName: "TestVocabulary"
+			categoryName: "styleU",
+			vocabularyName: "TestVocab5",
+			updateName: [ "en_US" : "styleUpdate",
+							 "nl_NL" : "styleNpdate",
+							 "en_GB" :"styleGpdate"]
 	)
 
-To update a category, you have to specify the name of the category, the vocabulary name and the name it should be updated to. If the category doesn't exist in the vocabulary, an error message will be logged.
+To update a category, you have to specify the name of the category, the vocabulary name and the name it should be updated to along with the locale. If the category doesn't exist in the vocabulary, an error message will be logged.
 
 ## Delete
 The following script shows how you can delete a category:
 
 	delete.category(
-	name: "categoryName",
+	title: "categoryName",
 	vocabularyName: "TestVocabulary"
 	)
 	
-As you can see, all you have to do is to specify the name of the category to be deleted and the vocabulary name where the category exists. If the categroy doesn't exist in the given vocabulary name, an error message will be logged.
+As you can see, all you have to do is to specify the title of the default locale  to be deleted and the vocabulary name where the category exists. If the categroy doesn't exist in the given vocabulary name, an error message will be logged.
 
 # Roles and permissions
 You can add roles with permissions.
