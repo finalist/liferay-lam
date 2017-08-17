@@ -217,7 +217,7 @@ public class SiteImplTest {
 
 		siteImpl.updateSite(siteKey, nameMap, descriptionMap, friendlyURL, createCustomFields(), createPageModel());
 
-		verify(pageService).updatePage(anyLong(), anyLong(), any(PageModel.class));
+		verify(pageService).updatePage(anyLong(), anyLong(), anyLong(), any(PageModel.class));
 
 	}
 
@@ -231,7 +231,9 @@ public class SiteImplTest {
 	private PageModel createPage() {
 		Map<Locale, String> testMap = new HashMap<>();
 		testMap.put(Locale.US, friendlyURL);
-		PageModel page = new PageModel(true, nameMap, testMap, testMap, testMap, StringPool.BLANK);
+		Map<String,String> testNameMap  = new HashMap<String, String>();
+		testNameMap.put(Locale.US.toString(), "friendlyName");
+		PageModel page = new PageModel(true, testNameMap, testMap, testMap, testMap, StringPool.BLANK,createCustomFields());
 		return page;
 	}
 }

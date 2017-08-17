@@ -19,7 +19,7 @@ public interface Page {
 	 *            Contains all the information of the page
 	 * @throws PortalException
 	 */
-	void addPage(long userId, long groupId, PageModel page) throws PortalException;
+	void addPage(long userId, long groupId, long groupPrimaryKey, PageModel page) throws PortalException;
 
 	/**
 	 * Update  a page (in Liferay called layout) to a site (in Liferay called
@@ -33,7 +33,7 @@ public interface Page {
 	 *            Contains all the information of the page
 	 * @throws PortalException
 	 */
-	void updatePage(long layoutId, long groupId, PageModel page) throws PortalException;
+	void updatePage(long layoutId, long groupId, long groupPrimaryKey, PageModel page) throws PortalException;
 
 	/**
 	 * fetch a page (in Liferay called layout) to a site (in Liferay called

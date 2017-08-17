@@ -1,7 +1,9 @@
 package nl.finalist.liferay.lam.builder.factory
 
 import nl.finalist.liferay.lam.api.Site
-import nl.finalist.liferay.lam.dslglue.LocaleMapConverter
+import nl.finalist.liferay.lam.util.LocaleMapConverter
+
+//import nl.finalist.liferay.lam.dslglue.LocaleMapConverter
 import nl.finalist.liferay.lam.dslglue.model.SiteModel
 import nl.finalist.liferay.lam.api.model.PageModel
 
@@ -23,6 +25,7 @@ class UpdateSiteFactory extends AbstractFactory {
     void onNodeCompleted(FactoryBuilderSupport builder, Object parent, Object node) {
         super.onNodeCompleted(builder, parent, node);
         SiteModel model = (SiteModel) node;
+        /*
  		List<Map> pageMapList = model.pages;
         List<PageModel> pages = new ArrayList<>();
         for (Map pageMap: pageMapList) {
@@ -34,7 +37,7 @@ class UpdateSiteFactory extends AbstractFactory {
                 LocaleMapConverter.convert(pageMap.get("friendlyUrlMap")),
                 pageMap.get("typeSettings"));
             pages.add(page);
-        }
-        siteService.updateSite(model.siteKey, LocaleMapConverter.convert(model.nameMap), LocaleMapConverter.convert(model.descriptionMap), model.friendlyURL, model.customFields, pages);
+        }*/
+        siteService.updateSite(model.siteKey, LocaleMapConverter.convert(model.nameMap), LocaleMapConverter.convert(model.descriptionMap), model.friendlyURL, model.customFields, model.pages);
     }
 }

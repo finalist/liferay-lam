@@ -12,6 +12,13 @@ create.customField (
 	roles: [Roles.guest, Roles.user]
 )
 create.customField (
+	name: 'customFieldPage',
+	type: CustomFieldType.TEXT,
+	entityName: Entities.page,
+	roles: [Roles.guest, Roles.user]
+)
+
+create.customField (
 	name: 'fieldGroupTest',
 	type: CustomFieldType.TEXT_GROUP,
 	defaultValue: 'a,b,c',
@@ -117,66 +124,40 @@ create.userGroup(
 
 create.site(
 	nameMap: [
-		"en_US": "AutomatedTestSite",
-		"nl_NL": "AutomatedTestSite"
+		"en_US": "AutomatedTestSite_en",
+		"en_GB": "AutomatedTestSite_gb",
+		"nl_NL": "AutomatedTestSite_nl"
 	],
 	descriptionMap: [
-	    "nl_NL": "Description of automated site"
+	    "en_US": "Description of automated site US",
+	    "en_GB": "Description of automated site GB",
+	    "nl_NL": "Omschrijving automated site"
 	],
 	friendlyURL: "/automatedTestSite",
 	customFields: [
 	    "automatedField": "value"
-	],
-	pages: [
-		[
-			privatePage: false,
-			nameMap: ["nl_NL": "pagename", "en_US": "pagename"],
-			titleMap: ["nl_NL": "title of page"],
-			descriptionMap: ["nl_NL": "description of page"],
-			friendlyUrlMap: ["nl_NL": "/pagename"],
-			typeSettings: Templates.one_column
-		],
-		[
-			privatePage: true,
-			nameMap: ["nl_NL": "privatepageNL", "en_US": "privatepageUS"],
-			titleMap: ["nl_NL": "title of private page"],
-			descriptionMap: ["nl_NL": "description of private page"],
-			friendlyUrlMap: ["nl_NL": "/privatepage"],
-			typeSettings: Templates.one_column
-		]
 	]
-)
 
-update.site(
-	siteKey: "AutomatedTestSite",
-	nameMap: [
-		"en_US": "AutomatedTestSite",
-		"nl_NL": "AutomatedTestSiteNL"
-	],
-	descriptionMap: [
-	    "en_US": "Description",
-	    "nl_NL": "Beschrijving"
-	],
-	friendlyURL: "/automatedTestSite",
-	customFields: [
-		"automatedField": "automated value"
-	],
-	pages: [
-		[
-			privatePage: false,
-			nameMap: ["nl_NL": "pagenameNL", "en_US": "pagenameUS"],
-			titleMap: ["nl_NL": "title of page"],
-			descriptionMap: ["nl_NL": "description of page"],
-			friendlyUrlMap: ["nl_NL": "/pagename"],
-			typeSettings: Templates.one_column
-		],
-		[
-			privatePage: true,
-			nameMap: ["nl_NL": "pageNL", "en_US": "pageUS"],
-			titleMap: ["nl_NL": "title of pageNL"],
-			descriptionMap: ["nl_NL": "description of page"],
-			friendlyUrlMap: ["nl_NL": "/updateaddpage"],
-			typeSettings: Templates.one_column
-		]
-	]
-)
+){
+	page( privatePage: false,
+				nameMap: ["nl_NL": "paginanaam", "en_US": "pagenameUS", "en_GB": "pagenameGB"],
+				titleMap: ["nl_NL": "pagina titel", "en_US": "page title US", "en_GB": "page titleGB"],
+				descriptionMap: ["nl_NL": "pagina omschrijving","en_US": "page description US", "en_GB": "page description GB"],
+				friendlyUrlMap: ["nl_NL": "/paginanaam", "en_US": "/pagenameUS", "en_GB": "/pagenameGB"],
+				typeSettings: Templates.one_column,
+				customFields: [
+				    "customFieldPage": "customFieldPageValue"
+				])
+	
+					
+	page( privatePage: true,
+				nameMap: ["nl_NL": "privatepageNL", "en_US": "privatepageUS"],
+				titleMap: ["nl_NL": "titel prive pagina", "en_US": "title private page"],
+				descriptionMap: ["nl_NL": "omschrijving prive pagina", "en_US": "description private page"],
+				friendlyUrlMap: ["nl_NL": "/privepagina", "en_US": "/privatepage"],
+				typeSettings: Templates.one_column,
+				customFields: [
+				    "customFieldPage": "customFieldPageValuePrivate"
+				])
+	 
+}

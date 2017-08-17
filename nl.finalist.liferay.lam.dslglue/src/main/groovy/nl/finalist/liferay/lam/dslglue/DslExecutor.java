@@ -43,6 +43,7 @@ public class DslExecutor implements Executor {
     private RoleAndPermissions roleAndPermissionsService;
     @Reference
     private UserGroups userGroupsService;
+    @Reference Page pageService;
 
     @Activate
     public void activate() {
@@ -58,7 +59,7 @@ public class DslExecutor implements Executor {
         // Add all available API classes to the context of the scripts
         sharedData.setVariable("LOG", LOG);
 
-        sharedData.setVariable("create", new CreateFactoryBuilder(customFieldsService, vocabularyService, siteService, categoryService, userGroupsService, roleAndPermissionsService));
+        sharedData.setVariable("create", new CreateFactoryBuilder(customFieldsService, vocabularyService, siteService, categoryService, userGroupsService, roleAndPermissionsService, pageService));
         sharedData.setVariable("update", new UpdateFactoryBuilder(portalSettingsService, vocabularyService, siteService, categoryService));
         sharedData.setVariable("validate", new ValidateFactoryBuilder(portalPropertiesService));
         sharedData.setVariable("delete", new DeleteFactoryBuilder(customFieldsService, vocabularyService, siteService, categoryService));
