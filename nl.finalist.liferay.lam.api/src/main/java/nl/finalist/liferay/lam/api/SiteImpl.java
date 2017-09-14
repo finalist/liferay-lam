@@ -44,7 +44,7 @@ public class SiteImpl implements Site {
 					Group.class.getName(), 0L, GroupConstants.DEFAULT_LIVE_GROUP_ID, nameMap, descriptionMap,
 					GroupConstants.TYPE_SITE_OPEN, true, GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, friendlyURL,
 					true, false, true, null);
-			LOG.info(String.format("Group %s was added", LocaleUtil.getDefault()));
+			LOG.info(String.format("Group %s was added", LocaleUtil.getSiteDefault()));
 
 			if (customFields != null) {
 				for (String fieldName : customFields.keySet()) {
@@ -54,9 +54,14 @@ public class SiteImpl implements Site {
 				}
 			}
 
+		
 			if (pages != null) {
+				
+				LOG.debug(String.format("Adding pages defaultuser : %d , group : %d" ,defaultValue.getDefaultUserId(), group.getGroupId()));
+
 				for (PageModel page : pages) {
-					pageService.addPage(defaultValue.getDefaultUserId(), group.getGroupId(), page);
+					LOG.debug("Add page : " + page);
+					pageService.addPage(defaultValue.getDefaultUserId(), group.getGroupId(), group.getPrimaryKey(), page);
 				}
 			}
 		} catch (DuplicateGroupException | GroupFriendlyURLException e1) {
@@ -90,18 +95,18 @@ public class SiteImpl implements Site {
 			for (Locale locale : locales) {
 				Layout existingPage = pageService.fetchLayout(group.getGroupId(), false, page.getFriendlyUrlMap().get(locale));
 				if (existingPage != null) {					
-					pageService.updatePage(existingPage.getLayoutId(), group.getGroupId(), page);
+					pageService.updatePage(existingPage.getLayoutId(), group.getGroupId(), group.getPrimaryKey(), page);
 					LOG.info(String.format("page is updated %s", page.getNameMap().size()));
 					break;
 				} else {
-                    pageService.addPage(defaultValue.getDefaultUserId(), group.getGroupId(), page);
+                    pageService.addPage(defaultValue.getDefaultUserId(), group.getGroupId(), group.getPrimaryKey(), page);
                     LOG.info(String.format("page doesn't exists so it has been added"));
 				}
 			}
 				
 			}
 		} catch (PortalException e) {
-			LOG.error("The group was not updated.");
+			LOG.error("The group was not updated.", e);
 		}
 	}
 

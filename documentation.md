@@ -312,3 +312,40 @@ The following script shows how you can delete a vocabulary:
 As you can see, you have to specify the name and the description. It is also possible to give a value to a custom field.
 Of course this custom field has to exist before you can give it a value here. CustomFields is a map where the key is
 the name of the custom field, and the value is the actual value you want to give it.
+# WebContent
+You can create, update and delete webcontent.
+
+## Create
+The following script shows how you can create a category to a vocabulary:
+
+	create.webcontent(
+	titleMap:["en_US": "SomeWebcontent title in locale US english"],
+	descriptionMap: ["en_US": "Description of the webcontent in Locale US english"],
+	content : "Content of the webcontent",
+	urlTitle: "UrlTitle of the webcontent"
+)
+
+
+As you can see, all you have to do is to specify titleMap , descriptionMap, content and urlTitle of the webcontent. Default locale should be present in titleMap and descriptionMap otherwise webcontent is not added.
+
+## Update
+The following script shows how you can update a webcontent:
+
+	update.webcontent(
+	titleMap:["en_US" :"Update the title of the webcontent"],
+	descriptionMap:["en_US":"Update the description of the webcontent"],
+	content: "content of the webcontent to be updated",
+	urlTitle: "Existing urlTitle"
+	)
+
+To update a webcontent, you have to specify the titleMap, the desciprionMap and the contenet which is to be updated to with the  existing urlTitle. If the webcontent with UrlTitle doesn't exist then it is considered to be a new webcontent and added.
+
+## Delete
+The following script shows how you can delete a category:
+
+	delete.webcontent(
+	urlTitle: "some-url-title"
+	)
+	
+	
+As you can see, all you have to do is to specify the Url title of the webcontent to be deleted . If the webcontent doesn't exist, an info message that deletion was not possible will be logged.
