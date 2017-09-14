@@ -41,9 +41,8 @@ public class VocabularyImpl implements Vocabulary {
         long groupId = defaultValue.getGlobalGroupId();
         addVocabulary(vocabularyName, groupId);
     }
-
     
-    public void addVocabulary(Map<Locale, String>  vocabularyName, long groupId) {
+    private void addVocabulary(Map<Locale, String>  vocabularyName, long groupId) {
         long userId = defaultValue.getDefaultUserId();
        
         try {
@@ -57,7 +56,6 @@ public class VocabularyImpl implements Vocabulary {
         } catch (PortalException e) {
             LOG.error(String.format("Error while adding vocabulary %s", vocabularyName), e);
         }
-
     }
 
     @Override
@@ -67,8 +65,7 @@ public class VocabularyImpl implements Vocabulary {
         LOG.info(String.format("Deleted vocabulary %s", vocabularyName));
     }
 
-    
-    public void deleteVocabulary(String vocabularyName, long groupId) {
+    private void deleteVocabulary(String vocabularyName, long groupId) {
         AssetVocabulary vocabulary = getAssetVocabulary(vocabularyName, groupId);
         if (Validator.isNotNull(vocabulary)) {
             try {
@@ -91,7 +88,7 @@ public class VocabularyImpl implements Vocabulary {
     }
 
     
-    public void updateVocabularyTranslation(Map<Locale, String> vocabularyName,
+    private void updateVocabularyTranslation(Map<Locale, String> vocabularyName,
                     long groupId, String existingName) {
         AssetVocabulary vocabulary = getAssetVocabulary(existingName, groupId);
         if (Validator.isNotNull(vocabulary)) {
@@ -103,7 +100,6 @@ public class VocabularyImpl implements Vocabulary {
             LOG.debug(String.format("Vocabulary %s with groupId %d does not exist or is not retrievable",
                             vocabularyName, groupId));
         }
-
     }
 
     private AssetVocabulary getAssetVocabulary(String vocabularyName, long groupId) {
