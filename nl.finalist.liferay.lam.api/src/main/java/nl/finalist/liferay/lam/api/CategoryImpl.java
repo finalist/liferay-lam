@@ -8,6 +8,7 @@ import java.util.Map;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
@@ -65,7 +66,10 @@ public class CategoryImpl implements Category {
 			} else {
 				LOG.info(String.format("Cannot add category %s because it already exists", categoryName));
 			}
-		} catch (PortalException e) {
+		} catch(DuplicateCategoryException e1) {
+			LOG.info(String.format("Cannot add category %s because it already exists", categoryName));
+		}
+		catch (PortalException e) {
 			LOG.error(String.format("adding category %s failed", categoryName),e);
 		}
 

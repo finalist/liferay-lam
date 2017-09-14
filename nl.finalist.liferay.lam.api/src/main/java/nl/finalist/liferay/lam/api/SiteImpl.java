@@ -1,6 +1,7 @@
 package nl.finalist.liferay.lam.api;
 
 import com.liferay.portal.kernel.exception.DuplicateGroupException;
+import com.liferay.portal.kernel.exception.GroupFriendlyURLException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -58,7 +59,7 @@ public class SiteImpl implements Site {
 					pageService.addPage(defaultValue.getDefaultUserId(), group.getGroupId(), page);
 				}
 			}
-		} catch (DuplicateGroupException dge) {
+		} catch (DuplicateGroupException | GroupFriendlyURLException e1) {
 			LOG.error("The site already exists.");
 		} catch (PortalException e) {
 			LOG.error(e);
