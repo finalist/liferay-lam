@@ -205,3 +205,4 @@ update.site(
 		]
 	]
 )
+create.structure(file: 'mystructure.json')
