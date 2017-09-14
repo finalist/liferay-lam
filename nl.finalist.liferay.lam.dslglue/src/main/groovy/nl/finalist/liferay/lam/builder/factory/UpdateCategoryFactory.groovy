@@ -2,7 +2,7 @@ package nl.finalist.liferay.lam.builder.factory
 
 import nl.finalist.liferay.lam.api.Category;
 import nl.finalist.liferay.lam.dslglue.model.CategoryModel;
-import nl.finalist.liferay.lam.dslglue.LocaleMapConverter;
+import nl.finalist.liferay.lam.util.LocaleMapConverter;
 
 class UpdateCategoryFactory extends AbstractFactory {
 	Category categoryService;

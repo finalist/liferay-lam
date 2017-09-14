@@ -76,12 +76,13 @@ public class VocabularyImplTest {
         Locale mockLocale = Locale.US;
         PowerMockito.when(LocaleUtil.getSiteDefault()).thenReturn(mockLocale);
         when(defaultValue.getDefaultCompany()).thenReturn(mockCompany);
-       when(defaultValue.getDefaultUserId()).thenReturn(10L); 
+        when(defaultValue.getDefaultUserId()).thenReturn(10L); 
+        when(defaultValue.getGlobalGroupId()).thenReturn(1L);
    
         whenNew(HashMap.class).withAnyArguments().thenReturn(mockTitleMap);
         whenNew(ServiceContext.class).withNoArguments().thenReturn(mockServiceContext);
 
-        vocabularyImpl.addVocabulary(vocabularyName, 1L);
+        vocabularyImpl.addVocabulary(vocabularyName);
 
         verify(vocabularyService).addVocabulary(10L, 1L, null, vocabularyName, mockTitleMap, "", mockServiceContext);
     }
@@ -91,8 +92,9 @@ public class VocabularyImplTest {
         String vocabularyName = "testName";
         when(vocabularyService.getGroupVocabulary(1L, vocabularyName)).thenReturn(mockAssetVocabulary);
         when(mockAssetVocabulary.getVocabularyId()).thenReturn(123L);
-
-        vocabularyImpl.deleteVocabulary(vocabularyName, 1L);
+        when(defaultValue.getGlobalGroupId()).thenReturn(1L);
+        
+        vocabularyImpl.deleteVocabulary(vocabularyName);
 
         verify(vocabularyService).deleteAssetVocabulary(123L);
     }
@@ -102,7 +104,7 @@ public class VocabularyImplTest {
         String vocabularyName = "testNonexistingName";
         when(vocabularyService.getGroupVocabulary(1L, vocabularyName)).thenReturn(null);
 
-        vocabularyImpl.deleteVocabulary(vocabularyName, 1L);
+        vocabularyImpl.deleteVocabulary(vocabularyName);
 
         verifyNoMoreInteractions(mockAssetVocabulary);
     }
@@ -114,9 +116,10 @@ public class VocabularyImplTest {
         updateVocabularyName.put(Locale.getDefault(), "Update Default");
         PowerMockito.when(LocaleUtil.getDefault()).thenReturn(Locale.US);
         when(vocabularyService.getGroupVocabulary(1L, vocabularyName)).thenReturn(mockAssetVocabulary);
-      
+        when(defaultValue.getGlobalGroupId()).thenReturn(1L);
+        
 
-        vocabularyImpl.updateVocabularyTranslation(updateVocabularyName, 1L, "Update Default");
+        vocabularyImpl.updateVocabularyTranslation("Update Default", updateVocabularyName);
 
         verify(vocabularyService).getGroupVocabulary(1L, vocabularyName);
     }
@@ -128,7 +131,7 @@ public class VocabularyImplTest {
         updateVocabularyName.put(Locale.getDefault(), "Update Default");
         when(vocabularyService.getGroupVocabulary(1L, vocabularyName)).thenReturn(null);
 
-        vocabularyImpl.updateVocabularyTranslation(updateVocabularyName, 1L,"Update Default");
+        vocabularyImpl.updateVocabularyTranslation("Update Default",updateVocabularyName);
 
         verifyNoMoreInteractions(mockAssetVocabulary);
     }

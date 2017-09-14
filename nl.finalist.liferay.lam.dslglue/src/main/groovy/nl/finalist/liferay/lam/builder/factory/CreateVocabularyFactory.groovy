@@ -2,7 +2,7 @@ package nl.finalist.liferay.lam.builder.factory
 
 import nl.finalist.liferay.lam.api.Vocabulary;
 import nl.finalist.liferay.lam.dslglue.model.VocabularyModel;
-import nl.finalist.liferay.lam.dslglue.LocaleMapConverter;
+import nl.finalist.liferay.lam.util.LocaleMapConverter;
 
 class CreateVocabularyFactory extends AbstractFactory  {
     Vocabulary vocabularyService;

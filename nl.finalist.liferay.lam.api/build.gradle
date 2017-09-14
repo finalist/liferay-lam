@@ -23,6 +23,10 @@ dependencies {
     // https://discuss.gradle.org/t/compileonly-dependencies-are-not-available-in-tests/15366/4
     compileOnly "com.liferay.portal:com.liferay.portal.kernel:2.15.0"
     testCompile "com.liferay.portal:com.liferay.portal.kernel:2.15.0"
+    
+    testCompile  'com.liferay:com.liferay.dynamic.data.mapping.api:3.5.5'
+    compile group: "com.liferay", name:"com.liferay.journal.api", version:"2.1.0"
+    
     testCompile "javax.servlet:javax.servlet-api:3.1.0"
     testCompile "javax.portlet:portlet-api:3.0.0"
 
@@ -32,9 +36,6 @@ dependencies {
     testCompile 'org.powermock:powermock-api-mockito:1.6.1'
     testCompile "org.javassist:javassist:3.15.0-GA"
 
-    // https://mvnrepository.com/artifact/com.liferay/com.liferay.dynamic.data.mapping.api
-testCompile  'com.liferay:com.liferay.dynamic.data.mapping.api:3.5.5'
     
  
-	compile group: "com.liferay", name:"com.liferay.journal.api", version:"2.1.0"
 }
