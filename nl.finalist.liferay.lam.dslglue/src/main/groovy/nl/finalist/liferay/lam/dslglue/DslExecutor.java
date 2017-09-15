@@ -11,6 +11,7 @@ import java.util.Map;
 
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
+import org.osgi.framework.Bundle;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -57,34 +58,31 @@ public class DslExecutor implements Executor {
     }
 
     @Override
-    public void runScripts(Map<String, String> structures, Reader... scripts) {
+    public void runScripts(Bundle bundle, Reader... scripts) {
         LOG.debug("DSL Executor running the available scripts");
 
         Binding sharedData = new Binding();
 
         // Add all available API classes to the context of the scripts
         sharedData.setVariable("LOG", LOG);
-       for(Map.Entry<String, String> structure: structures.entrySet()){
-           LOG.info("++ variablename: "+structure.getKey());
-           sharedData.setVariable(structure.getKey(), structure.getValue() );
-       }
-          
+       
 
   
         // Add all available API classes to the context of the scripts
         sharedData.setVariable("LOG", LOG);
 
 
-        sharedData.setVariable("create", new CreateFactoryBuilder(customFieldsService, vocabularyService, siteService, categoryService, userGroupsService, roleAndPermissionsService, webContentService, structureService));
+        sharedData.setVariable("create", new CreateFactoryBuilder(customFieldsService, vocabularyService, siteService, categoryService, userGroupsService, roleAndPermissionsService, webContentService));
         sharedData.setVariable("update", new UpdateFactoryBuilder(portalSettingsService, vocabularyService, siteService, categoryService, webContentService));
         sharedData.setVariable("validate", new ValidateFactoryBuilder(portalPropertiesService));
         sharedData.setVariable("delete", new DeleteFactoryBuilder(customFieldsService, vocabularyService, siteService, categoryService, webContentService));
-
+        sharedData.setVariable("createOrUpdate", new CreateOrUpdateFactoryBuilder( structureService, bundle));
+        
         sharedData.setVariable("Roles", new Roles());
         sharedData.setVariable("Entities", new Entities());
         sharedData.setVariable("ActionKeys", new ActionKeys());
         sharedData.setVariable("Templates", new Templates());
-
+        
         CompilerConfiguration conf = new CompilerConfiguration();
         ImportCustomizer imports = new ImportCustomizer();
 
@@ -95,7 +93,6 @@ public class DslExecutor implements Executor {
         // Make these imports available to the scripts
 
         conf.addCompilationCustomizers(imports);
-
         // Use the classloader of this class
         ClassLoader classLoader = this.getClass().getClassLoader();
 

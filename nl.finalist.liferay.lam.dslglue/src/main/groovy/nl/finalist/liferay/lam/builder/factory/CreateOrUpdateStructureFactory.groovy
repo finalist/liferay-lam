@@ -1,14 +1,18 @@
 package nl.finalist.liferay.lam.builder.factory
 import nl.finalist.liferay.lam.api.Structure;
-import nl.finalist.liferay.lam.dslglue.LocaleMapConverter
-import nl.finalist.liferay.lam.dslglue.model.StructureModel
+import nl.finalist.liferay.lam.dslglue.LocaleMapConverter;
+import nl.finalist.liferay.lam.dslglue.model.StructureModel;
+import org.osgi.framework.Bundle;
 
-class CreateStructureFactory extends AbstractFactory {
+
+class CreateOrUpdateStructureFactory extends AbstractFactory {
 
     Structure structureService;
+    Bundle bundle;
 
-    CreateStructureFactory(Structure structureService) {
+    CreateOrUpdateStructureFactory(Structure structureService, Bundle bundle) {
         this.structureService = structureService;
+        this.bundle = bundle;
     }
 
     @Override
@@ -21,6 +25,8 @@ class CreateStructureFactory extends AbstractFactory {
     void onNodeCompleted(FactoryBuilderSupport builder, Object parent, Object node) {
         super.onNodeCompleted(builder, parent, node);
         StructureModel model = (StructureModel) node;
-        structureService.createStructure(model.content,  LocaleMapConverter.convert(model.nameMap), LocaleMapConverter.convert(model.descriptionMap));
+        
+      
+        structureService.createOrUpdateStructure(model.file, bundle, LocaleMapConverter.convert(model.nameMap), LocaleMapConverter.convert(model.descriptionMap));
     }
 }

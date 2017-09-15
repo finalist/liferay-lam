@@ -2,13 +2,13 @@ package nl.finalist.liferay.lam.dslglue;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.HashMap;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.osgi.framework.Bundle;
 
 import nl.finalist.liferay.lam.api.CustomFields;
 
@@ -16,7 +16,8 @@ public class DslExecutorTest {
 
     @Mock
     private CustomFields customFields;
-
+    @Mock
+    private Bundle bundle;
 
     @InjectMocks
     private DslExecutor dslExecutor;
@@ -32,6 +33,6 @@ public class DslExecutorTest {
     public void testRun() throws FileNotFoundException {
         ClassLoader classLoader = this.getClass().getClassLoader();
         FileReader fileReader = new FileReader(classLoader.getResource("customFields.groovy").getFile());
-        dslExecutor.runScripts(new HashMap<String,String>(), fileReader);
+        dslExecutor.runScripts(bundle, fileReader);
     }
 }
