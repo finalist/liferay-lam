@@ -2,6 +2,7 @@ package nl.finalist.liferay.lam.dslglue;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.HashMap;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -15,6 +16,7 @@ public class DslExecutorTest {
 
     @Mock
     private CustomFields customFields;
+
 
     @InjectMocks
     private DslExecutor dslExecutor;
@@ -30,7 +32,6 @@ public class DslExecutorTest {
     public void testRun() throws FileNotFoundException {
         ClassLoader classLoader = this.getClass().getClassLoader();
         FileReader fileReader = new FileReader(classLoader.getResource("customFields.groovy").getFile());
-
-        dslExecutor.runScripts(fileReader);
+        dslExecutor.runScripts(new HashMap<String,String>(), fileReader);
     }
 }

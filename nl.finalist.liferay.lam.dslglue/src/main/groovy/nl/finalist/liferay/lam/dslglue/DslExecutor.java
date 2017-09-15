@@ -5,6 +5,9 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 
 import java.io.Reader;
+import java.net.URL;
+import java.util.Enumeration;
+import java.util.Map;
 
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
@@ -45,6 +48,8 @@ public class DslExecutor implements Executor {
     private RoleAndPermissions roleAndPermissionsService;
     @Reference
     private UserGroups userGroupsService;
+    @Reference
+    private Structure structureService;
 
     @Activate
     public void activate() {
@@ -52,16 +57,25 @@ public class DslExecutor implements Executor {
     }
 
     @Override
-    public void runScripts(Reader... scripts) {
+    public void runScripts(Map<String, String> structures, Reader... scripts) {
         LOG.debug("DSL Executor running the available scripts");
 
         Binding sharedData = new Binding();
 
         // Add all available API classes to the context of the scripts
         sharedData.setVariable("LOG", LOG);
+       for(Map.Entry<String, String> structure: structures.entrySet()){
+           LOG.info("++ variablename: "+structure.getKey());
+           sharedData.setVariable(structure.getKey(), structure.getValue() );
+       }
+          
+
+  
+        // Add all available API classes to the context of the scripts
+        sharedData.setVariable("LOG", LOG);
 
 
-        sharedData.setVariable("create", new CreateFactoryBuilder(customFieldsService, vocabularyService, siteService, categoryService, userGroupsService, roleAndPermissionsService, webContentService));
+        sharedData.setVariable("create", new CreateFactoryBuilder(customFieldsService, vocabularyService, siteService, categoryService, userGroupsService, roleAndPermissionsService, webContentService, structureService));
         sharedData.setVariable("update", new UpdateFactoryBuilder(portalSettingsService, vocabularyService, siteService, categoryService, webContentService));
         sharedData.setVariable("validate", new ValidateFactoryBuilder(portalPropertiesService));
         sharedData.setVariable("delete", new DeleteFactoryBuilder(customFieldsService, vocabularyService, siteService, categoryService, webContentService));
@@ -91,4 +105,5 @@ public class DslExecutor implements Executor {
             shell.evaluate(script);
         }
     }
+
 }

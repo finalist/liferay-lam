@@ -1,12 +1,9 @@
 package nl.finalist.liferay.lam.api;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
-import org.json.simple.parser.ParseException;
+import java.util.Locale;
+import java.util.Map;
 
 public interface Structure {
 
-	void createStructure(File structureJson) throws FileNotFoundException, IOException, ParseException;
+    void createStructure(String content, Map<Locale, String> nameMap, Map<Locale, String> descriptionMap);
 }

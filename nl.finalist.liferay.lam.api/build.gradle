@@ -23,9 +23,8 @@ dependencies {
     // https://discuss.gradle.org/t/compileonly-dependencies-are-not-available-in-tests/15366/4
     compileOnly "com.liferay.portal:com.liferay.portal.kernel:2.15.0"
     // https://mvnrepository.com/artifact/com.liferay/com.liferay.dynamic.data.mapping.api
-	compileOnly "com.liferay:com.liferay.dynamic.data.mapping.api:3.0.0"
-// https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple
-compileOnly "com.googlecode.json-simple:json-simple:1.1"
+	compileOnly "com.liferay:com.liferay.dynamic.data.mapping.api:3.3.0"
+	compileOnly "javax.portlet:portlet-api:3.0.0"
 
     testCompile "com.liferay.portal:com.liferay.portal.kernel:2.15.0"
     testCompile "javax.servlet:javax.servlet-api:3.1.0"

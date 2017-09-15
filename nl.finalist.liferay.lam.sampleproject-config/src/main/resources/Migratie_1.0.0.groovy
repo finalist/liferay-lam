@@ -205,4 +205,8 @@ update.site(
 		]
 	]
 )
-create.structure(file: 'mystructure.json')
+create.structure(
+content: myStructure,
+descriptionMap: ["nl_NL": "Dit is een test structure", "en_US": "This is a test structure"],
+nameMap: ["nl_NL": "MyStructure"],
+)
