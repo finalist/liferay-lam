@@ -4,6 +4,7 @@ import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.model.DDMTemplate;
 import com.liferay.dynamic.data.mapping.model.DDMTemplateConstants;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
+import com.liferay.dynamic.data.mapping.service.DDMTemplateLinkLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMTemplateLocalService;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -41,6 +42,8 @@ public class TemplateImpl implements Template {
     @Reference
     private DDMTemplateLocalService ddmTemplateLocalService;
     @Reference
+    private DDMTemplateLinkLocalService dDMTemplateLinkLocalService;
+    @Reference
     private Structure structure;
     @Reference
     private DDMStructureLocalService ddmStructureLocalService;
@@ -73,10 +76,12 @@ public class TemplateImpl implements Template {
 
         String scriptLanguage = FilenameUtils.getExtension(fileUrl);
         String script = getContentFromBundle(fileUrl, bundle);
+
         try {
-            ddmTemplateLocalService.addTemplate(defaultValue.getDefaultUserId(), groupId, classNameId,
+            DDMTemplate ddmTemplate = ddmTemplateLocalService.addTemplate(defaultValue.getDefaultUserId(), groupId, classNameId,
                             classPK, resourceClassNameId, nameMap, descriptionMap,
                             DDMTemplateConstants.TEMPLATE_TYPE_DISPLAY, DDMTemplateConstants.TEMPLATE_MODE_CREATE, scriptLanguage, script, new ServiceContext());
+            dDMTemplateLinkLocalService.addTemplateLink(resourceClassNameId, classPK, ddmTemplate.getTemplateId());
             LOG.info(String.format("Template %s succesfully created", name));
         } catch (PortalException e) {
             LOG.error("PortalException while creating template " + name, e);
