@@ -6,11 +6,8 @@ import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 
 import java.util.Locale;
@@ -28,8 +25,7 @@ public class WebContentImpl implements WebContent {
     @Reference
     private JournalArticleLocalService journalArticleService;
     @Reference
-    private CompanyLocalService companyService;
-    private Company defaultCompany;
+    private DefaultValue defaultValue;
 
     private static final Log LOG = LogFactoryUtil.getLog(WebContentImpl.class);
 
@@ -38,15 +34,16 @@ public class WebContentImpl implements WebContent {
                     String urlTitle) {
         try {
             LOG.debug(" Starting to add the article");
-            JournalArticle article = journalArticleService.fetchArticleByUrlTitle(getGlobalGroupId(), urlTitle);
+            JournalArticle article = journalArticleService.fetchArticleByUrlTitle(defaultValue.getGlobalGroupId(), urlTitle);
             if (article == null) {
                 ServiceContext serviceContext = new ServiceContext();
-                serviceContext.setScopeGroupId(getGlobalGroupId());
+                serviceContext.setScopeGroupId(defaultValue.getGlobalGroupId());
                 serviceContext.setCurrentURL(urlTitle);
-                journalArticleService.addArticle(getDefaultUserId(), getGlobalGroupId(),
+                journalArticleService.addArticle(defaultValue.getDefaultUserId(), defaultValue.getGlobalGroupId(),
                                 DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, titleMap, descriptionMap,
                                 processJournalArticleContent(content), "BASIC-WEB-CONTENT", "BASIC-WEB-CONTENT",
                                 serviceContext);
+
                 LOG.info(String.format("Added an article with Title Url as %s", urlTitle));
             } else {
                 LOG.info(String.format("article with the URL Title %s already exists , so addition was not succesful",
@@ -60,7 +57,7 @@ public class WebContentImpl implements WebContent {
     @Override
     public void updateWebContent(Map<Locale, String> newTitleMap, Map<Locale, String> newDescriptionMap, String content,
                     String urlTitle) {
-        JournalArticle article = journalArticleService.fetchArticleByUrlTitle(getGlobalGroupId(), urlTitle);
+        JournalArticle article = journalArticleService.fetchArticleByUrlTitle(defaultValue.getGlobalGroupId(), urlTitle);
         LOG.info(" Starting to update the article");
         if (article == null) {
             addWebContent(newTitleMap, newDescriptionMap, content, urlTitle);
@@ -68,8 +65,8 @@ public class WebContentImpl implements WebContent {
         } else {
             try {
                 ServiceContext serviceContext = new ServiceContext();
-                serviceContext.setScopeGroupId(getGlobalGroupId());
-                journalArticleService.updateArticle(getDefaultUserId(), getGlobalGroupId(), 0, article.getArticleId(),
+                serviceContext.setScopeGroupId(defaultValue.getGlobalGroupId());
+                journalArticleService.updateArticle(defaultValue.getDefaultUserId(), defaultValue.getGlobalGroupId(), 0, article.getArticleId(),
                                 article.getVersion(), newTitleMap, newDescriptionMap,
                                 processJournalArticleContent(content), null, serviceContext);
                 LOG.info("Updated the article");
@@ -82,7 +79,7 @@ public class WebContentImpl implements WebContent {
 
     @Override
     public void deleteWebContent(String urlTitle) {
-        JournalArticle article = journalArticleService.fetchArticleByUrlTitle(getGlobalGroupId(), urlTitle);
+        JournalArticle article = journalArticleService.fetchArticleByUrlTitle(defaultValue.getGlobalGroupId(), urlTitle);
         if (article != null) {
             try {
                 journalArticleService.deleteJournalArticle(article.getId());
@@ -119,38 +116,15 @@ public class WebContentImpl implements WebContent {
 
         return sb.toString();
     }
-
-    private long getDefaultUserId() {
-        Company defaultCompany = getDefaultCompany();
-        long userId = 0;
-        try {
-            userId = defaultCompany.getDefaultUser().getUserId();
-        } catch (PortalException e) {
-            LOG.error("Error while retrieving default userId", e);
-        }
-        return userId;
-    }
-
-    private long getGlobalGroupId() {
-        defaultCompany = getDefaultCompany();
-        long groupId = 0;
-        try {
-            groupId = defaultCompany.getGroupId();
-        } catch (PortalException e) {
-            LOG.error("Error while retrieving global groupId", e);
-        }
-        return groupId;
-    }
-
-    private Company getDefaultCompany() {
-        if (defaultCompany == null) {
-            String webId = PropsUtil.get("company.default.web.id");
-            try {
-                defaultCompany = companyService.getCompanyByWebId(webId);
-            } catch (PortalException e) {
-                LOG.error("Error while retrieving default company", e);
-            }
-        }
-        return defaultCompany;
-    }
+    //
+    //    private DDMStructure getStructure(String name, long groupId, long classNameId){
+    //        List<DDMStructure> structures = ddmStructureLocalService.getStructures(groupId, classNameId);
+    //        DDMStructure ddmStructure = null;
+    //        for(DDMStructure structure: structures){
+    //            if(structure.getNameCurrentValue().equalsIgnoreCase(name)){
+    //                ddmStructure = structure;
+    //            }
+    //        }
+    //        return ddmStructure;
+    //    }
 }

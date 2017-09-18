@@ -134,11 +134,11 @@ update.webcontent(
 	    "en_US": "Description of Helping Webcontent"
 	],
 	content: "Content about the Helping Webcontent",
-	urlTitle: "somerolenew"
+	urlTitle: "somerole"
 )
 
 delete.webcontent(
-	urlTitle: "some-url-title"
+	urlTitle: "somerole"
 )
 create.site(
 	nameMap: [

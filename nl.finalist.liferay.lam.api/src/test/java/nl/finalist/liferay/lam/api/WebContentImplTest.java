@@ -3,9 +3,6 @@ package nl.finalist.liferay.lam.api;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.PropsUtil;
 
@@ -41,16 +38,11 @@ public class WebContentImplTest {
     @InjectMocks
     WebContentImpl webContentImpl;
     @Mock
-    private CompanyLocalService companyService;
-    @Mock
-    private Company mockCompany;
-    @Mock
-    private User mockDefaultUser;
-    @Mock
     private ServiceContext mockServiceContext;
     @Mock
     private JournalArticle journalArticle;
-
+    @Mock
+    private DefaultValue mockDefaultValue;
     @Before
     public void setUp() {
         webContentImpl = new WebContentImpl();
@@ -62,10 +54,8 @@ public class WebContentImplTest {
 
     @Test
     public void testAddNewArticle() throws Exception {
-        when(companyService.getCompanyByWebId("liferay.com")).thenReturn(mockCompany);
-        when(mockCompany.getCompanyId()).thenReturn(1L);
-        when(mockCompany.getDefaultUser()).thenReturn(mockDefaultUser);
-        when(mockDefaultUser.getUserId()).thenReturn(10L);
+        when(mockDefaultValue.getGlobalGroupId()).thenReturn(10L);
+        when(mockDefaultValue.getDefaultUserId()).thenReturn(10L);
         Map<Locale, String> titleMap = new HashMap<>();
         titleMap.put(Locale.US, " Title for US");
 
@@ -82,11 +72,8 @@ public class WebContentImplTest {
 
     @Test
     public void testUpdateArticle() throws PortalException {
-        when(companyService.getCompanyByWebId("liferay.com")).thenReturn(mockCompany);
-        when(mockCompany.getCompanyId()).thenReturn(1L);
-        when(mockCompany.getDefaultUser()).thenReturn(mockDefaultUser);
-        when(mockCompany.getGroupId()).thenReturn(10L);
-        when(mockDefaultUser.getUserId()).thenReturn(10L);
+        when(mockDefaultValue.getGlobalGroupId()).thenReturn(10L);
+        when(mockDefaultValue.getDefaultUserId()).thenReturn(10L);
 
         Map<Locale, String> newTitleMap = new HashMap<>();
         newTitleMap.put(Locale.US, " Title for US");
@@ -107,11 +94,8 @@ public class WebContentImplTest {
 
     @Test
     public void testUpdateAddNewArticle() throws PortalException {
-        when(companyService.getCompanyByWebId("liferay.com")).thenReturn(mockCompany);
-        when(mockCompany.getCompanyId()).thenReturn(1L);
-        when(mockCompany.getDefaultUser()).thenReturn(mockDefaultUser);
-        when(mockCompany.getGroupId()).thenReturn(10L);
-        when(mockDefaultUser.getUserId()).thenReturn(10L);
+        when(mockDefaultValue.getGlobalGroupId()).thenReturn(10L);
+        when(mockDefaultValue.getDefaultUserId()).thenReturn(10L);
 
         Map<Locale, String> newTitleMap = new HashMap<>();
         newTitleMap.put(Locale.US, " Title for US");
@@ -132,8 +116,8 @@ public class WebContentImplTest {
 
     @Test
     public void testDeleteArticle() throws PortalException {
-        when(companyService.getCompanyByWebId("liferay.com")).thenReturn(mockCompany);
-        when(mockCompany.getGroupId()).thenReturn(10L);
+        when(mockDefaultValue.getGlobalGroupId()).thenReturn(10L);
+        when(mockDefaultValue.getDefaultUserId()).thenReturn(10L);
         String urlTitle = "Delete webcontent";
         when(journalArticleLocalService.fetchArticleByUrlTitle(10L, urlTitle)).thenReturn(journalArticle);
         webContentImpl.deleteWebContent(urlTitle);
@@ -143,8 +127,8 @@ public class WebContentImplTest {
 
     @Test
     public void testNotDeleteArticle() throws PortalException {
-        when(companyService.getCompanyByWebId("liferay.com")).thenReturn(mockCompany);
-        when(mockCompany.getGroupId()).thenReturn(10L);
+        when(mockDefaultValue.getGlobalGroupId()).thenReturn(10L);
+        when(mockDefaultValue.getDefaultUserId()).thenReturn(10L);
         String urlTitle = "Delete webcontent";
         when(journalArticleLocalService.fetchArticleByUrlTitle(10L, urlTitle)).thenReturn(null);
         webContentImpl.deleteWebContent(urlTitle);

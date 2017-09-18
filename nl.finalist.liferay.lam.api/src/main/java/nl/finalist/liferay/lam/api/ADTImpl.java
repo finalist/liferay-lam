@@ -44,7 +44,7 @@ public class ADTImpl implements ADT{
         long resourceClassNameId = classNameLocalService.getClassNameId("com.liferay.portlet.display.template.PortletDisplayTemplate");
         long classNameId = classNameLocalService.getClassNameId(className);
         long groupId = defaultValue.getGlobalGroupId();
-        DDMTemplate ADT = getADT(nameMap, groupId, resourceClassNameId);
+        DDMTemplate ADT = getADT(nameMap, groupId, classNameId);
 
         String name = "";
         if (nameMap.entrySet().iterator().hasNext()) {
