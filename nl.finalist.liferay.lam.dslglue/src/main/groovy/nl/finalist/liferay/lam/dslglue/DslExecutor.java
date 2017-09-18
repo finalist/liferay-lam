@@ -5,9 +5,6 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 
 import java.io.Reader;
-import java.net.URL;
-import java.util.Enumeration;
-import java.util.Map;
 
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
@@ -51,7 +48,10 @@ public class DslExecutor implements Executor {
     private UserGroups userGroupsService;
     @Reference
     private Structure structureService;
-
+    @Reference
+    private Template templateService;
+    @Reference
+    private ADT adtService;
     @Activate
     public void activate() {
         LOG.debug("Bundle Activate DslExecutor");
@@ -65,9 +65,9 @@ public class DslExecutor implements Executor {
 
         // Add all available API classes to the context of the scripts
         sharedData.setVariable("LOG", LOG);
-       
 
-  
+
+
         // Add all available API classes to the context of the scripts
         sharedData.setVariable("LOG", LOG);
 
@@ -76,19 +76,21 @@ public class DslExecutor implements Executor {
         sharedData.setVariable("update", new UpdateFactoryBuilder(portalSettingsService, vocabularyService, siteService, categoryService, webContentService));
         sharedData.setVariable("validate", new ValidateFactoryBuilder(portalPropertiesService));
         sharedData.setVariable("delete", new DeleteFactoryBuilder(customFieldsService, vocabularyService, siteService, categoryService, webContentService));
-        sharedData.setVariable("createOrUpdate", new CreateOrUpdateFactoryBuilder( structureService, bundle));
-        
+        sharedData.setVariable("createOrUpdate", new CreateOrUpdateFactoryBuilder(structureService,templateService, adtService, bundle));
+
         sharedData.setVariable("Roles", new Roles());
         sharedData.setVariable("Entities", new Entities());
         sharedData.setVariable("ActionKeys", new ActionKeys());
         sharedData.setVariable("Templates", new Templates());
-        
+        sharedData.setVariable("ADTTypes", new ADTTypes());
+
         CompilerConfiguration conf = new CompilerConfiguration();
         ImportCustomizer imports = new ImportCustomizer();
 
         imports.addImport("TypeOfRole", "nl.finalist.liferay.lam.api.TypeOfRole");
         imports.addImport("CustomFieldType", "nl.finalist.liferay.lam.dslglue.CustomFieldType");
         imports.addImport("DisplayType", "nl.finalist.liferay.lam.dslglue.DisplayType");
+       
 
         // Make these imports available to the scripts
 

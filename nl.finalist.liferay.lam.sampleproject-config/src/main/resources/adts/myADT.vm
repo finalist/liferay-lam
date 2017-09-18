@@ -1,0 +1,5 @@
+#if (!$entries.isEmpty())
+	#foreach ($curEntry in $entries)
+		$curEntry.getTitle($locale)
+	#end
+#end

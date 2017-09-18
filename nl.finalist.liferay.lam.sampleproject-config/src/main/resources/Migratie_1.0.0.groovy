@@ -206,7 +206,21 @@ update.site(
 	]
 )
 createOrUpdate.structure(
-file: "/structures/myStructure.json",
-descriptionMap: ["nl_NL": "Dit is een test structure", "en_US": "This is a test structure"],
-nameMap: ["nl_NL": "MyStructure"],
+	file: "/structures/myStructure.json",
+	descriptionMap: ["nl_NL": "Dit is een test structure", "en_US": "This is a test structure"],
+	nameMap: ["nl_NL": "MyStructure", "en_US": "MyStructure"]
+)
+
+createOrUpdate.template(
+	file: "/templates/myTemplate.vm",
+	forStructure: "MyStructure",
+	descriptionMap: ["nl_NL": "Dit is een test template", "en_US": "This is a test template"],
+	nameMap: ["nl_NL": "MyTemplate", "en_US": "MyTemplate"]
+)
+
+createOrUpdate.adt(
+	file: "/adts/myADT.vm",
+	type: ADTTypes.ASSET_PUBLISHER,
+	descriptionMap: ["nl_NL": "Dit is een test adt", "en_US": "This is a test adt"],
+	nameMap: ["nl_NL": "MyADT", "en_US": "MyADT"]
 )
