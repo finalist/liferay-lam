@@ -91,10 +91,8 @@ public class StructureImpl implements Structure {
         List<DDMStructure> structures = ddmStructureLocalService.getStructures(groupId, classNameId);
         DDMStructure ddmStructure = null;
         for(DDMStructure structure: structures){
-            for(Map.Entry<Locale, String> name: nameMap.entrySet()){
-                if(structure.getNameCurrentValue().equalsIgnoreCase(name.getValue())){
-                    ddmStructure = structure;
-                }
+            if(nameMap.containsValue(structure.getNameCurrentValue())){
+                ddmStructure = structure;
             }
         }
         return ddmStructure;

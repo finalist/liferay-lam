@@ -131,11 +131,8 @@ public class TemplateImpl implements Template {
         List<DDMTemplate> templates = ddmTemplateLocalService.getTemplates(groupId, classNameId);
         DDMTemplate ddmTemplate = null;
         for (DDMTemplate template : templates) {
-            for (Map.Entry<Locale, String> name : nameMap.entrySet()) {
-                if(template.getNameCurrentValue().equalsIgnoreCase(name.getValue())){
-                    ddmTemplate = template;
-                }
-
+            if(nameMap.containsValue(template.getNameCurrentValue())){
+                ddmTemplate = template;
             }
         }
         return ddmTemplate;

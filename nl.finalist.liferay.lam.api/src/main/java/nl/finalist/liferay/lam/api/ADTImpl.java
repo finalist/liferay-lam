@@ -45,7 +45,6 @@ public class ADTImpl implements ADT{
         long classNameId = classNameLocalService.getClassNameId(className);
         long groupId = defaultValue.getGlobalGroupId();
         DDMTemplate ADT = getADT(nameMap, groupId, resourceClassNameId);
-        LOG.info(className + " " +classNameId);
 
         String name = "";
         if (nameMap.entrySet().iterator().hasNext()) {
@@ -94,8 +93,7 @@ public class ADTImpl implements ADT{
         List<DDMTemplate> ADTS = ddmTemplateLocalService.getTemplates(groupId, classNameId);
         DDMTemplate ADT = null;
         for (DDMTemplate template : ADTS) {
-            for (Map.Entry<Locale, String> name : nameMap.entrySet()) {
-                template.getName().equalsIgnoreCase(name.getValue());
+            if(nameMap.containsValue(template.getNameCurrentValue())){
                 ADT = template;
             }
         }
