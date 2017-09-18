@@ -10,8 +10,8 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
-import com.liferay.portal.kernel.service.ClassNameLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.MathUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.BufferedReader;
@@ -41,7 +41,7 @@ public class StructureImpl implements Structure {
 
     @Override
     public void createOrUpdateStructure(String fileUrl, Bundle bundle, Map<Locale, String> nameMap, Map<Locale, String> descriptionMap){
-        long classNameId = ClassNameLocalServiceUtil.getClassNameId(JournalArticle.class.getName());
+        long classNameId = classNameLocalService.getClassNameId(JournalArticle.class.getName());
         long groupId = defaultValue.getGlobalGroupId();
         DDMStructure structure = getStructure(nameMap, groupId, classNameId);
         String name = "";
@@ -77,6 +77,7 @@ public class StructureImpl implements Structure {
         ddmStructure.setNameMap(nameMap);
         ddmStructure.setDescriptionMap(descriptionMap);
         ddmStructure.setDDMForm(ddmForm);
+        ddmStructure.setVersion(String.valueOf(MathUtil.format(Double.valueOf(ddmStructure.getVersion()) + 0.1, 1, 1)));
         ddmStructureLocalService.updateDDMStructure(ddmStructure);
         LOG.info(String.format("Structure %s was updated", name));
     }
@@ -91,8 +92,9 @@ public class StructureImpl implements Structure {
         DDMStructure ddmStructure = null;
         for(DDMStructure structure: structures){
             for(Map.Entry<Locale, String> name: nameMap.entrySet()){
-                structure.getName().equalsIgnoreCase(name.getValue());
-                ddmStructure = structure;
+                if(structure.getNameCurrentValue().equalsIgnoreCase(name.getValue())){
+                    ddmStructure = structure;
+                }
             }
         }
         return ddmStructure;

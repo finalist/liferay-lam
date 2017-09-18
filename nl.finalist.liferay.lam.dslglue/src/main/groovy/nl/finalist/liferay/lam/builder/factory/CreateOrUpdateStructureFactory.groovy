@@ -3,8 +3,6 @@ import nl.finalist.liferay.lam.api.Structure;
 import nl.finalist.liferay.lam.dslglue.LocaleMapConverter;
 import nl.finalist.liferay.lam.dslglue.model.StructureModel;
 import org.osgi.framework.Bundle;
-
-
 class CreateOrUpdateStructureFactory extends AbstractFactory {
 
     Structure structureService;
