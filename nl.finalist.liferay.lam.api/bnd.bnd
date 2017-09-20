@@ -1,7 +1,7 @@
 Bundle-Name: nl.finalist.liferay.lam.api
 Bundle-SymbolicName: nl.finalist.liferay.lam.api
 Bundle-Vendor: Finalist
-Bundle-Version: 0.2.0
+Bundle-Version: 0.2.1
 Export-Package: \
 	nl.finalist.liferay.lam.api,\
 	nl.finalist.liferay.lam.api.model,\
