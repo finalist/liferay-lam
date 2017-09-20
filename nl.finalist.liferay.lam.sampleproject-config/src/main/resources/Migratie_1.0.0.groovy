@@ -1,3 +1,7 @@
+import nl.finalist.liferay.lam.dslglue.CustomFieldType
+import nl.finalist.liferay.lam.dslglue.Entities
+import nl.finalist.liferay.lam.dslglue.Roles
+
 create.customField (
 	name: 'fieldTest',
 	type: CustomFieldType.TEXT,
@@ -44,9 +48,10 @@ create.customField (
 )
 
 update.portalSettings(
-	virtualHostName: "virtualTestName",
-	portalName: "TestName",
-	availableLanguages: "nl_NL,en_GB"
+    virtualHostName: "virtualTestName",
+    portalName: "TestName",
+    availableLanguages: "nl_NL,en_GB",
+    timeZone: "Europe/Paris"
 )
 
 validate.portalProperties(
@@ -146,7 +151,7 @@ create.userGroup(
 
 
 create.webcontent(
-	titleMap: [ 
+	titleMap: [
 		"en_US": "SomeRole"
 			],
 	descriptionMap: [
@@ -156,7 +161,7 @@ create.webcontent(
 	urlTitle: "somerole"
 )
 update.webcontent(
-	titleMap: [ 
+	titleMap: [
 		"en_US": "SomeRoleUpdate"
 	],
 	descriptionMap: [
@@ -195,8 +200,8 @@ create.site(
 				customFields: [
 				    "customFieldPage": "customFieldPageValue"
 				])
-	
-					
+
+
 	page( privatePage: true,
 				nameMap: ["nl_NL": "privatepageNL", "en_US": "privatepageUS"],
 				titleMap: ["nl_NL": "titel prive pagina", "en_US": "title private page"],
@@ -206,5 +211,5 @@ create.site(
 				customFields: [
 				    "customFieldPage": "customFieldPageValuePrivate"
 				])
-	 
+
 }
