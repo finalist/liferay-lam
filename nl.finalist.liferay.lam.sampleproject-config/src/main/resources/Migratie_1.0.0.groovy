@@ -184,7 +184,6 @@ create.site(
 	customFields: [
 	    "automatedField": "value"
 	]
-
 ){
 	page( privatePage: false,
 				nameMap: ["nl_NL": "paginanaam", "en_US": "pagenameUS", "en_GB": "pagenameGB"],
@@ -196,7 +195,6 @@ create.site(
 				    "customFieldPage": "customFieldPageValue"
 				])
 	
-					
 	page( privatePage: true,
 				nameMap: ["nl_NL": "privatepageNL", "en_US": "privatepageUS"],
 				titleMap: ["nl_NL": "titel prive pagina", "en_US": "title private page"],
@@ -206,5 +204,13 @@ create.site(
 				customFields: [
 				    "customFieldPage": "customFieldPageValuePrivate"
 				])
-	 
+				
+	page( privatePage: true,
+				nameMap: ["nl_NL": "privatepageChildNL", "en_US": "private child page"],
+				titleMap: ["nl_NL": "titel prive subpagina", "en_US": "private child page"],
+				descriptionMap: ["nl_NL": "omschrijving prive subpagina", "en_US": "private child page"],
+				friendlyUrlMap: ["nl_NL": "/privesubpagina", "en_US": "/private-child-page"],
+				typeSettings: Templates.one_column,
+				parentUrl: "/privatepageus"
+	) 
 }

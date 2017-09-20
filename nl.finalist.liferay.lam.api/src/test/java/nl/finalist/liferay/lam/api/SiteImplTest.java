@@ -131,7 +131,7 @@ public class SiteImplTest {
 
 	@Test
 	public void testAddSiteWithPages() throws Exception {
-		List<PageModel> pages = createPageModel();
+		List<PageModel> pages = createListWithTwoPages();
 
 		Locale mockLocale = new Locale("en_US");
 		PowerMockito.when(LocaleUtil.getSiteDefault()).thenReturn(mockLocale);
@@ -167,7 +167,7 @@ public class SiteImplTest {
 
 		when(defaultValue.getDefaultUserId()).thenReturn(USER_ID);
 		when(mockSite.getGroupId()).thenReturn(SITE_ID);
-		List<PageModel> pages = createPageModel();
+		List<PageModel> pages = createListWithOnePage();
 		siteImpl.updateSite(siteKey, nameMap, descriptionMap, friendlyURL, null, pages);
 
 		verify(siteService).updateGroup(SITE_ID, GroupConstants.DEFAULT_PARENT_GROUP_ID, nameMap, descriptionMap,
@@ -187,7 +187,7 @@ public class SiteImplTest {
 				true, null)).thenReturn(mockSite);
 		when(mockSite.getPrimaryKey()).thenReturn(1L);
 
-		siteImpl.updateSite(siteKey, nameMap, descriptionMap, friendlyURL, createCustomFields(), createPageModel());
+		siteImpl.updateSite(siteKey, nameMap, descriptionMap, friendlyURL, createCustomFields(), createListWithOnePage());
 
 		verify(siteService).updateGroup(SITE_ID, GroupConstants.DEFAULT_PARENT_GROUP_ID, nameMap, descriptionMap,
 				GroupConstants.TYPE_SITE_OPEN, true, GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, friendlyURL, false,
@@ -215,16 +215,23 @@ public class SiteImplTest {
 		pageLayout.setGroupId(SITE_ID);
 		when(pageService.fetchLayout(SITE_ID, false, friendlyURL)).thenReturn(pageLayout);
 
-		siteImpl.updateSite(siteKey, nameMap, descriptionMap, friendlyURL, createCustomFields(), createPageModel());
+		siteImpl.updateSite(siteKey, nameMap, descriptionMap, friendlyURL, createCustomFields(), createListWithOnePage());
 
+		verify(pageService).updatePage(anyLong(), anyLong(), anyLong(), any(PageModel.class));
 		verify(pageService).updatePage(anyLong(), anyLong(), anyLong(), any(PageModel.class));
 
 	}
 
-	private List<PageModel> createPageModel() {
+	private List<PageModel> createListWithTwoPages() {
 		List<PageModel> pages = new ArrayList<>();
-		PageModel page = createPage();
-		pages.add(page);
+		pages.add(createPage());
+		pages.add(createChildPage());
+		return pages;
+	}
+	
+	private List<PageModel> createListWithOnePage() {
+		List<PageModel> pages = new ArrayList<>();
+		pages.add(createPage());
 		return pages;
 	}
 
@@ -233,7 +240,16 @@ public class SiteImplTest {
 		testMap.put(Locale.US, friendlyURL);
 		Map<String,String> testNameMap  = new HashMap<String, String>();
 		testNameMap.put(Locale.US.toString(), "friendlyName");
-		PageModel page = new PageModel(true, testNameMap, testMap, testMap, testMap, StringPool.BLANK,createCustomFields());
+		PageModel page = new PageModel(true, testNameMap, testMap, testMap, testMap, StringPool.BLANK,createCustomFields(), null);
+		return page;
+	}
+	
+	private PageModel createChildPage() {
+		Map<Locale, String> testMap = new HashMap<>();
+		testMap.put(Locale.US, friendlyURL);
+		Map<String,String> testNameMap  = new HashMap<String, String>();
+		testNameMap.put(Locale.US.toString(), "friendlyChildName");
+		PageModel page = new PageModel(true, testNameMap, testMap, testMap, testMap, StringPool.BLANK,createCustomFields(), "/friendlyNameus");
 		return page;
 	}
 }

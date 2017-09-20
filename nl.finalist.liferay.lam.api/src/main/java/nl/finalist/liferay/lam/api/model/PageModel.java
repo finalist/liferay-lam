@@ -11,9 +11,24 @@ public class PageModel {
 	private Map<Locale, String> friendlyUrlMap;
 	private Map<String, String> customFields;
 	private String typeSettings;
+	private String parentUrl;
 	
 	public PageModel(boolean privatePage, Map<String, String> nameMap, Map<Locale, String> titleMap,
-			Map<Locale, String> descriptionMap, Map<Locale, String> friendlyUrlMap, String typeSettings, Map<String, String> customFields) {
+			Map<Locale, String> descriptionMap, Map<Locale, String> friendlyUrlMap, String typeSettings, 
+			Map<String, String> customFields, String parentUrl) {
+		this.privatePage = privatePage;
+		this.nameMap = nameMap;
+		this.titleMap = titleMap;
+		this.descriptionMap = descriptionMap;
+		this.friendlyUrlMap = friendlyUrlMap;
+		this.typeSettings = typeSettings;
+		this.customFields = customFields;
+		this.parentUrl = parentUrl;
+	}
+	
+	public PageModel(boolean privatePage, Map<String, String> nameMap, Map<Locale, String> titleMap,
+			Map<Locale, String> descriptionMap, Map<Locale, String> friendlyUrlMap, String typeSettings, 
+			Map<String, String> customFields) {
 		this.privatePage = privatePage;
 		this.nameMap = nameMap;
 		this.titleMap = titleMap;
@@ -68,12 +83,20 @@ public class PageModel {
 		this.customFields = customFields;
 	}
 
+	public String getParentUrl() {
+		return parentUrl;
+	}
+
+	public void setParentUrl(String parentUrl) {
+		this.parentUrl = parentUrl;
+	}
+
 	@Override
 	public String toString() {
 		return "PageModel [privatePage=" + privatePage + ", nameMap=" + nameMap + ", titleMap=" + titleMap
 				+ ", descriptionMap=" + descriptionMap + ", friendlyUrlMap=" + friendlyUrlMap + ", typeSettings="
 				+ typeSettings + ", customFields="
-						+ customFields + "]";
+						+ customFields + ", parentUrl="+parentUrl+"]";
 	}
 	
 	

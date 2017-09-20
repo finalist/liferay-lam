@@ -26,9 +26,7 @@ public class PageImpl implements Page {
 	private static final Log LOG = LogFactoryUtil.getLog(PageImpl.class);
 	@Override
 	public void addPage(long userId, long groupId, long groupPrimaryKey, PageModel page) throws PortalException {
-		
-
-		Layout layout = pageService.addLayout(userId, groupId, page.isPrivatePage(), LayoutConstants.DEFAULT_PARENT_LAYOUT_ID,
+		Layout layout = pageService.addLayout(userId, groupId, page.isPrivatePage(), determineParentId(groupId, page),
 				LocaleMapConverter.convert( page.getNameMap()), 
 				page.getTitleMap(), 
 				page.getDescriptionMap(), null, null,
@@ -47,10 +45,23 @@ public class PageImpl implements Page {
 
 	}
 
+	private long determineParentId(long groupId, PageModel page) throws PortalException {
+		long parentId = LayoutConstants.DEFAULT_PARENT_LAYOUT_ID;
+		if (page.getParentUrl() != null) {
+			Layout parent = pageService.getFriendlyURLLayout(groupId, page.isPrivatePage(), page.getParentUrl());
+			if (parent != null) {
+				parentId = parent.getLayoutId();
+			} else {
+				LOG.error("The parent page could not be found, creating page at top level instead.");
+			}
+		}
+		return parentId;
+	}
+
 	@Override
 	public void updatePage(long layoutId, long groupId, long groupPrimaryKey, PageModel page) throws PortalException{
 		byte[] b = new byte[0];
-		pageService.updateLayout(groupId, page.isPrivatePage(), layoutId, LayoutConstants.DEFAULT_PARENT_LAYOUT_ID, 
+		pageService.updateLayout(groupId, page.isPrivatePage(), layoutId, determineParentId(groupId, page), 
 				LocaleMapConverter.convert( page.getNameMap()), page.getTitleMap(),
 				page.getDescriptionMap(), null, null, LayoutConstants.TYPE_PORTLET, false, page.getFriendlyUrlMap(), false, b, new ServiceContext());
 	}
