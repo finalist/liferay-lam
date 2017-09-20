@@ -1,10 +1,4 @@
-
 allprojects {
-
-    apply plugin: 'java'
-    compileJava {
-        sourceCompatibility = 1.8
-    }
 
 	repositories {
 		mavenLocal()
@@ -14,4 +8,19 @@ allprojects {
 			url "https://cdn.lfrs.sl/repository.liferay.com/nexus/content/groups/public"
 		}
 	}
+	
+	buildscript {
+		dependencies {
+			classpath group: "com.liferay", name: "com.liferay.gradle.plugins", version: "3.4.63"
+		}
+	
+		repositories {
+			mavenLocal()
+	
+			maven {
+				url "https://cdn.lfrs.sl/repository.liferay.com/nexus/content/groups/public"
+			}
+		}
+	}
+	
 }

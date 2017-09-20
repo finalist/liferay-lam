@@ -1,16 +1,5 @@
-buildscript {
-	dependencies {
-		classpath group: "com.liferay", name: "com.liferay.gradle.plugins", version: "3.1.3"
-	}
 
-	repositories {
-		mavenLocal()
-
-		maven {
-			url "https://cdn.lfrs.sl/repository.liferay.com/nexus/content/groups/public"
-		}
-	}
-}
+apply plugin: 'java'
 
 apply plugin: "com.liferay.plugin"
 
@@ -26,12 +15,4 @@ dependencies {
     
 	compile project(":nl.finalist.liferay.lam.dslglue")
 	compile project(":nl.finalist.liferay.lam.api")
-}
-
-repositories {
-	mavenLocal()
-
-	maven {
-		url "https://cdn.lfrs.sl/repository.liferay.com/nexus/content/groups/public"
-	}
 }
