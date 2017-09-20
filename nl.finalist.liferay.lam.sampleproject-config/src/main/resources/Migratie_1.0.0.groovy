@@ -186,7 +186,7 @@ create.site(
 	]
 ){
 	page( privatePage: false,
-				nameMap: ["nl_NL": "paginanaam", "en_US": "pagenameUS", "en_GB": "pagenameGB"],
+				nameMap: ["nl_NL": "paginanaam", "en_US": "page name", "en_GB": "pagenameGB"],
 				titleMap: ["nl_NL": "pagina titel", "en_US": "page title US", "en_GB": "page titleGB"],
 				descriptionMap: ["nl_NL": "pagina omschrijving","en_US": "page description US", "en_GB": "page description GB"],
 				friendlyUrlMap: ["nl_NL": "/paginanaam", "en_US": "/pagenameUS", "en_GB": "/pagenameGB"],
@@ -196,7 +196,7 @@ create.site(
 				])
 	
 	page( privatePage: true,
-				nameMap: ["nl_NL": "privatepageNL", "en_US": "privatepageUS"],
+				nameMap: ["nl_NL": "prive pagina", "en_US": "private page"],
 				titleMap: ["nl_NL": "titel prive pagina", "en_US": "title private page"],
 				descriptionMap: ["nl_NL": "omschrijving prive pagina", "en_US": "description private page"],
 				friendlyUrlMap: ["nl_NL": "/privepagina", "en_US": "/privatepage"],
@@ -204,13 +204,13 @@ create.site(
 				customFields: [
 				    "customFieldPage": "customFieldPageValuePrivate"
 				])
-				
+		
 	page( privatePage: true,
 				nameMap: ["nl_NL": "privatepageChildNL", "en_US": "private child page"],
 				titleMap: ["nl_NL": "titel prive subpagina", "en_US": "private child page"],
 				descriptionMap: ["nl_NL": "omschrijving prive subpagina", "en_US": "private child page"],
 				friendlyUrlMap: ["nl_NL": "/privesubpagina", "en_US": "/private-child-page"],
 				typeSettings: Templates.one_column,
-				parentUrl: "/privatepageus"
+				parentUrl: "/private-page"
 	) 
 }

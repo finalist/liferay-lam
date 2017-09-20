@@ -181,7 +181,7 @@ The following script shows how you can create a vocabulary:
 		
 		page( privatePage: true,
 					nameMap: ["nl_NL": "privatepageNL", 
-								"en_US": "privatepageUS"],
+								"en_US": "private page"],
 					titleMap: ["nl_NL": "titel prive pagina", 
 								"en_US": "title private page"],
 					descriptionMap: ["nl_NL": "omschrijving prive pagina", 
@@ -203,7 +203,7 @@ The following script shows how you can create a vocabulary:
 					friendlyUrlMap: ["nl_NL": "/privesubpagina", 
 										"en_US": "/private-child-page"],
 					typeSettings: Templates.one_column,
-					parentUrl: "/privatepageus"
+					parentUrl: "/private-page"
 		) 
 	}
 
@@ -211,7 +211,7 @@ To create a site, you have to specify a map of names for the available locales. 
 
 It is also possible to give a value to a custom field. Of course this custom field has to exist before you can give it a value here. CustomFields is a map where the key is the name of the custom field, and the value is the actual value you want to give it.
 
-Pages can be added to the site, as you can see in the example above. Pages also have a map of names, titles, descriptions and friendly URLS. This last map _always_ needs an "en_US" translation, even if that language is not available on your Liferay instance. (This is due to a bug in Liferay.) You also have to specify what kind of template to use in a field called typeSettings. (This can theoretically also be used to specify what portlets to deploy on the page.) You can also specify a parentURL. This is the friendly URL of the parent page, with "us" postfixed to the name. It is also possible to give a value to a custom field of the page. Of course this custom field has to exist before you can give it a value here. CustomFields is a map where the key is the name of the custom field, and the value is the actual value you want to give it.
+Pages can be added to the site, as you can see in the example above. Pages also have a map of names, titles, descriptions and friendly URLS. This last map _always_ needs an "en_US" translation, even if that language is not available on your Liferay instance. (This is due to a bug in Liferay.) You also have to specify what kind of template to use in a field called typeSettings. (This can theoretically also be used to specify what portlets to deploy on the page.) You can also specify a parentURL. This is the friendly URL of the parent page, but mind you that it uses the "en-US" name translated to a URL here, and not the friendlyURL you specified (once again due to a bug in Liferay). It is also possible to give a value to a custom field of the page. Of course this custom field has to exist before you can give it a value here. CustomFields is a map where the key is the name of the custom field, and the value is the actual value you want to give it.
 
 
 This site will be created at the top level, and will be an open site. It will have the default restrictions on membership, will not inherit content, and will be immediately active.
