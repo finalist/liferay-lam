@@ -1,3 +1,7 @@
+import nl.finalist.liferay.lam.dslglue.CustomFieldType
+import nl.finalist.liferay.lam.dslglue.Entities
+import nl.finalist.liferay.lam.dslglue.Roles
+
 create.customField (
 	name: 'fieldTest',
 	type: CustomFieldType.TEXT,
@@ -11,6 +15,13 @@ create.customField (
 	entityName: Entities.usergroup,
 	roles: [Roles.guest, Roles.user]
 )
+create.customField (
+	name: 'customFieldPage',
+	type: CustomFieldType.TEXT,
+	entityName: Entities.page,
+	roles: [Roles.guest, Roles.user]
+)
+
 create.customField (
 	name: 'fieldGroupTest',
 	type: CustomFieldType.TEXT_GROUP,
@@ -37,9 +48,10 @@ create.customField (
 )
 
 update.portalSettings(
-	virtualHostName: "virtualTestName",
-	portalName: "TestName",
-	availableLanguages: "nl_NL,en_GB"
+    virtualHostName: "virtualTestName",
+    portalName: "TestName",
+    availableLanguages: "nl_NL,en_GB",
+    timeZone: "Europe/Paris"
 )
 
 validate.portalProperties(
@@ -47,52 +59,74 @@ validate.portalProperties(
 	"auth.token.check.enabled": "true"
 )
 create.vocabulary(
-	name: "TestVocabulary"
+	name: [ "en_US" : "TestVocabulary US",
+			"nl_NL" : "TestVocabulary NL",
+			"en_GB" :"TestVocabulary GB"]
 )
 update.vocabulary(
-	name: "TestVocabulary",
-	forLanguage: "en_GB",
-	translation: "TestVocabularyTranslation"
+	existingName : "TestVocabulary US",
+	name: [ "en_US" : "TestVocabulary US Updated",
+			"nl_NL" : "TestVocabulary NL Updated",
+			"en_GB" :"TestVocabulary GB Updated"]
 )
-delete.vocabulary(
-	name: "TestVocabulary"
-)
+
 create.vocabulary(
-	name: "TestVocab5"
+	name: [ "en_US" : "Test US",
+			"nl_NL" : "Test NL",
+			"en_GB" :"Test GB"]
 )
 update.vocabulary(
-	name: "TestVocab5",
-	forLanguage: "en_GB",
-	translation: "TestVocabularyTranslation"
+	existingName : "Test US",
+	name: [ "en_US" : "US Updated",
+			"nl_NL" : "NL Updated",
+			"en_GB" : "GB Updated"]
 )
+
+delete.vocabulary(
+	existingName: "Test US"
+)
+
+create.vocabulary(
+name: [ "en_US" : "TestVocab5",
+			"nl_NL" : "TestVocab5 NL",
+			"en_GB" :"TestVocab5 GB"]
+)
+
 create.category(
-	name: "style",
+	name: [ "en_US" : "styleUS",
+			"nl_NL" : "styleNL",
+			"en_GB" :"styleGB"],
 	vocabularyName: "TestVocab5",
 	title : "Testing it"
 )
+
 create.category(
-	name: "style2",
+name: [ "en_US" : "style2US",
+			"nl_NL" : "style2NL",
+			"en_GB" :"style2GB"],
 	vocabularyName: "TestVocab5",
 	title : "Testing it2"
 )
 
+
 delete.category(
-	name: "style2",
+	title: "style2US",
 	vocabularyName: "TestVocab5"
 )
-
-
+create.category(
+	name: [ "en_US" : "styleU",
+			"nl_NL" : "styleN",
+			"en_GB" :"styleG"],
+	vocabularyName: "TestVocab5",
+	title : "Testing it"
+)
 update.category(
-	name: "style",
-	updateName:"styleUpdate",
-	vocabularyName: "TestVocab5"
+categoryName: "styleU",
+	vocabularyName: "TestVocab5",
+	updateName: [ "en_US" : "styleUpdate",
+			"nl_NL" : "styleNpdate",
+			"en_GB" :"styleGpdate"]
 )
-	
-delete.category(
-	name: "styleUpdate",
-	vocabularyName: "TestVocab5"
-)
-
 create.role(
     name: "SomeRole",
 	type: TypeOfRole.REGULARROLES,
@@ -117,7 +151,7 @@ create.userGroup(
 
 
 create.webcontent(
-	titleMap: [ 
+	titleMap: [
 		"en_US": "SomeRole"
 			],
 	descriptionMap: [
@@ -127,7 +161,7 @@ create.webcontent(
 	urlTitle: "somerole"
 )
 update.webcontent(
-	titleMap: [ 
+	titleMap: [
 		"en_US": "SomeRoleUpdate"
 	],
 	descriptionMap: [
@@ -142,36 +176,42 @@ delete.webcontent(
 )
 create.site(
 	nameMap: [
-		"en_US": "AutomatedTestSite",
-		"nl_NL": "AutomatedTestSite"
+		"en_US": "AutomatedTestSite_en",
+		"en_GB": "AutomatedTestSite_gb",
+		"nl_NL": "AutomatedTestSite_nl"
 	],
 	descriptionMap: [
-	    "nl_NL": "Description of automated site"
+	    "en_US": "Description of automated site US",
+	    "en_GB": "Description of automated site GB",
+	    "nl_NL": "Omschrijving automated site"
 	],
 	friendlyURL: "/automatedTestSite",
 	customFields: [
 	    "automatedField": "value"
-	],
-	pages: [
-		[
-			privatePage: false,
-			nameMap: ["nl_NL": "pagename", "en_US": "pagename"],
-			titleMap: ["nl_NL": "title of page"],
-			descriptionMap: ["nl_NL": "description of page"],
-			friendlyUrlMap: ["nl_NL": "/pagename"],
-			typeSettings: Templates.one_column
-		],
-		[
-			privatePage: true,
-			nameMap: ["nl_NL": "privatepageNL", "en_US": "privatepageUS"],
-			titleMap: ["nl_NL": "title of private page"],
-			descriptionMap: ["nl_NL": "description of private page"],
-			friendlyUrlMap: ["nl_NL": "/privatepage"],
-			typeSettings: Templates.one_column
-		]
 	]
-)
+){
+	page( privatePage: false,
+				nameMap: ["nl_NL": "paginanaam", "en_US": "pagenameUS", "en_GB": "pagenameGB"],
+				titleMap: ["nl_NL": "pagina titel", "en_US": "page title US", "en_GB": "page titleGB"],
+				descriptionMap: ["nl_NL": "pagina omschrijving","en_US": "page description US", "en_GB": "page description GB"],
+				friendlyUrlMap: ["nl_NL": "/paginanaam", "en_US": "/pagenameUS", "en_GB": "/pagenameGB"],
+				typeSettings: Templates.one_column,
+				customFields: [
+				    "customFieldPage": "customFieldPageValue"
+				])
 
+
+	page( privatePage: true,
+				nameMap: ["nl_NL": "privatepageNL", "en_US": "privatepageUS"],
+				titleMap: ["nl_NL": "titel prive pagina", "en_US": "title private page"],
+				descriptionMap: ["nl_NL": "omschrijving prive pagina", "en_US": "description private page"],
+				friendlyUrlMap: ["nl_NL": "/privepagina", "en_US": "/privatepage"],
+				typeSettings: Templates.one_column,
+				customFields: [
+				    "customFieldPage": "customFieldPageValuePrivate"
+				])
+
+}
 update.site(
 	siteKey: "AutomatedTestSite",
 	nameMap: [

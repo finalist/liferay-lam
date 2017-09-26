@@ -8,5 +8,11 @@ class SiteModel {
 	String friendlyURL
 	String siteKey
 	Map<String, String> customFields
-	List<Map> pages
+	List<PageModel> pages = new ArrayList<>();
+	
+	void addPage(PageModel page) {
+        pages += page
+    }
+	
+	
 }

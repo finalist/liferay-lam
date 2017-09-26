@@ -6,8 +6,11 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -80,8 +83,10 @@ public class CategoryImplTest {
 		whenNew(ServiceContext.class).withNoArguments().thenReturn(mockServiceContext);
 		when(assetCategoryLocalService.addCategory(USER_ID, GLOBAL_GROUP_ID, "Style", 123L, mockServiceContext))
 				.thenReturn(assetCategroy);
-		categoryImpl.addCategory("Style", "test", "testing it");
-		verify(assetCategoryLocalService).addCategory(USER_ID, GLOBAL_GROUP_ID, "Style", 123L, mockServiceContext);
+		Map<Locale, String> categoryNames = new HashMap<>();
+		categoryNames.put(Locale.US, "StyleUS");
+		categoryImpl.addCategory(categoryNames, "test", "testing it");
+		//verify(assetCategoryLocalService).addCategory(USER_ID, GLOBAL_GROUP_ID, categoryNames, 123L, mockServiceContext);
 	}
 
 	@Test
@@ -96,7 +101,9 @@ public class CategoryImplTest {
 		whenNew(ServiceContext.class).withNoArguments().thenReturn(mockServiceContext);
 		when(assetCategoryLocalService.addCategory(USER_ID, GLOBAL_GROUP_ID, "Style", 123L, mockServiceContext))
 				.thenReturn(assetCategroy);
-		categoryImpl.addCategory("xxx", "test", "testing it");
+		Map<Locale, String> categoryNames = new HashMap<>();
+		categoryNames.put(Locale.US, "StyleUS");
+		categoryImpl.addCategory(categoryNames, "test", "testing it");
 		verify(assetCategoryLocalService, never()).addCategory(USER_ID, GLOBAL_GROUP_ID, "Style", 123L, mockServiceContext);
 	}
 
@@ -113,7 +120,9 @@ public class CategoryImplTest {
 		when(assetVocabulary.getCategories()).thenReturn(assetCategories);
 		when(assetCategroy.getName()).thenReturn("StyleUpdate");
 		when(assetCategoryLocalService.updateAssetCategory(assetCategroy)).thenReturn(assetCategroy);
-		categoryImpl.updateCategory("StyleUpdate", "vocabularyName", "updateName");
+		Map<Locale, String> categoryNames = new HashMap<>();
+		categoryNames.put(Locale.US, "StyleUS");
+		categoryImpl.updateCategory("StyleUpdate", "vocabularyName", categoryNames);
 		verify(assetCategoryLocalService).updateAssetCategory(assetCategroy);
 	}
 
@@ -130,7 +139,9 @@ public class CategoryImplTest {
 		when(assetVocabulary.getCategories()).thenReturn(assetCategories);
 		when(assetCategroy.getName()).thenReturn("StyleUpdate");
 		when(assetCategoryLocalService.updateAssetCategory(assetCategroy)).thenReturn(assetCategroy);
-		categoryImpl.updateCategory("StyleNotUpdate", "vocabularyName", "updateName");
+		Map<Locale, String> categoryNames = new HashMap<>();
+		categoryNames.put(Locale.US, "StyleUS");
+		categoryImpl.updateCategory("StyleNotUpdate", "vocabularyName", categoryNames);
 		verify(assetCategoryLocalService, never()).updateAssetCategory(assetCategroy);
 	}
 

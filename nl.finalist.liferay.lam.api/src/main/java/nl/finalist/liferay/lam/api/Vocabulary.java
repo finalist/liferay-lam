@@ -1,24 +1,18 @@
 package nl.finalist.liferay.lam.api;
 
+import java.util.Locale;
+import java.util.Map;
+
 public interface Vocabulary {
 
     /**
      * Adds a vocabulary to the Global group/site
      *
      * @param vocabularyName
-     *            The name of the vocabulary
+     *            Map of the names of the vocabulary with the Locale
      */
-    public void addVocabulary(String vocabularyName);
+    public void addVocabulary(Map<Locale, String> vocabularyName);
 
-    /**
-     * Adds a vocabulary to the chosen group/site
-     *
-     * @param vocabularyName
-     *            The name of the vocabulary
-     * @param groupId
-     *            The groupId of the vocabulary
-     */
-    public void addVocabulary(String vocabularyName, long groupId);
 
     /**
      * Deletes a vocabulary if it exists in the Global site
@@ -26,46 +20,14 @@ public interface Vocabulary {
      * @param vocabularyName
      *            The name of the vocabulary
      */
-    public void deleteVocabulary(String vocabularyName);
+    public void deleteVocabulary(String existingName);
+
 
     /**
-     * Deletes a vocabulary if it exists
+     * Updates the name of the Vocabulary created in the Global site
      *
-     * @param vocabularyName
-     *            The name of the vocabulary
-     * @param groupId
-     *            The groupId of the vocabulary
+     * @param updateVocabularyName
+     *            The updated names of the vocabulary
      */
-    public void deleteVocabulary(String vocabularyName, long groupId);
-
-    /**
-     * Updates the name of the Vocabulary created in the Global site in the
-     * chosen locale
-     *
-     * @param languageId
-     *            The languageId of the translation that has to be added (e.g.
-     *            "nl_NL")
-     * @param translatedName
-     *            The translated name that has to be added/ changed
-     * @param vocabularyName
-     *            The name of the vocabulary
-     */
-    public void updateVocabularyTranslation(String languageId, String translatedName, String vocabularyName);
-
-    /**
-     * Updates the name of the Vocabulary in the chosen locale
-     *
-     * @param languageId
-     *            The languageId of the translation that has to be added (e.g.
-     *            "nl_NL")
-     * @param translatedName
-     *            The translated name that has to be added/ changed
-     * @param vocabularyName
-     *            The name of the vocabulary
-     * @param groupId
-     *            The groupId of the vocabulary
-     */
-    public void updateVocabularyTranslation(String languageId, String translatedName, String vocabularyName,
-                    long groupId);
-
+    public void updateVocabularyTranslation(String existingName,Map<Locale, String> updateVocabularyName);
 }

@@ -9,14 +9,13 @@ import java.io.Reader;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
 import org.osgi.framework.Bundle;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.*;
 
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import nl.finalist.liferay.lam.api.*;
 import nl.finalist.liferay.lam.builder.*;
+
 
 
 /**
@@ -39,8 +38,6 @@ public class DslExecutor implements Executor {
     @Reference
     private Site siteService;
     @Reference
-    private WebContent webContentService;
-    @Reference
     private Category categoryService;
     @Reference
     private RoleAndPermissions roleAndPermissionsService;
@@ -52,6 +49,11 @@ public class DslExecutor implements Executor {
     private Template templateService;
     @Reference
     private ADT adtService;
+    @Reference
+    private Page pageService;
+    @Reference
+    private WebContent webContentService;
+
     @Activate
     public void activate() {
         LOG.debug("Bundle Activate DslExecutor");
@@ -66,13 +68,8 @@ public class DslExecutor implements Executor {
         // Add all available API classes to the context of the scripts
         sharedData.setVariable("LOG", LOG);
 
+        sharedData.setVariable("create", new CreateFactoryBuilder(customFieldsService, vocabularyService, siteService, categoryService, userGroupsService, roleAndPermissionsService, pageService, webContentService));
 
-
-        // Add all available API classes to the context of the scripts
-        sharedData.setVariable("LOG", LOG);
-
-
-        sharedData.setVariable("create", new CreateFactoryBuilder(customFieldsService, vocabularyService, siteService, categoryService, userGroupsService, roleAndPermissionsService, webContentService));
         sharedData.setVariable("update", new UpdateFactoryBuilder(portalSettingsService, vocabularyService, siteService, categoryService, webContentService));
         sharedData.setVariable("validate", new ValidateFactoryBuilder(portalPropertiesService));
         sharedData.setVariable("delete", new DeleteFactoryBuilder(customFieldsService, vocabularyService, siteService, categoryService, webContentService));
@@ -90,7 +87,7 @@ public class DslExecutor implements Executor {
         imports.addImport("TypeOfRole", "nl.finalist.liferay.lam.api.TypeOfRole");
         imports.addImport("CustomFieldType", "nl.finalist.liferay.lam.dslglue.CustomFieldType");
         imports.addImport("DisplayType", "nl.finalist.liferay.lam.dslglue.DisplayType");
-       
+
 
         // Make these imports available to the scripts
 

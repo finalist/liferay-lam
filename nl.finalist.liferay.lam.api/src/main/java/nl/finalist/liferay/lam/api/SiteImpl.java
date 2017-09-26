@@ -1,6 +1,7 @@
 package nl.finalist.liferay.lam.api;
 
 import com.liferay.portal.kernel.exception.DuplicateGroupException;
+import com.liferay.portal.kernel.exception.GroupFriendlyURLException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -24,97 +25,102 @@ import nl.finalist.liferay.lam.api.model.PageModel;
 @Component(immediate = true, service = Site.class)
 public class SiteImpl implements Site {
 
-    @Reference
-    private GroupLocalService groupService;
+	@Reference
+	private GroupLocalService groupService;
 
-    @Reference
-    private CustomFields customFieldsService;
-    @Reference
-    private Page pageService;
+	@Reference
+	private CustomFields customFieldsService;
+	@Reference
+	private Page pageService;
     @Reference
     private DefaultValue defaultValue;
-    private static final Log LOG = LogFactoryUtil.getLog(SiteImpl.class);
+	private static final Log LOG = LogFactoryUtil.getLog(SiteImpl.class);
 
-    @Override
-    public void addSite(Map<Locale, String> nameMap, Map<Locale, String> descriptionMap, String friendlyURL,
-                    Map<String, String> customFields, List<PageModel> pages) {
-        try {
-            Group group = groupService.addGroup(defaultValue.getDefaultUserId(), GroupConstants.DEFAULT_PARENT_GROUP_ID,
-                            Group.class.getName(), 0L, GroupConstants.DEFAULT_LIVE_GROUP_ID, nameMap, descriptionMap,
-                            GroupConstants.TYPE_SITE_OPEN, true, GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, friendlyURL,
-                            true, false, true, null);
-            LOG.info(String.format("Group %s was added", LocaleUtil.getDefault()));
+	@Override
+	public void addSite(Map<Locale, String> nameMap, Map<Locale, String> descriptionMap, String friendlyURL,
+			Map<String, String> customFields, List<PageModel> pages) {
+		try {
+			Group group = groupService.addGroup(defaultValue.getDefaultUserId(), GroupConstants.DEFAULT_PARENT_GROUP_ID,
+					Group.class.getName(), 0L, GroupConstants.DEFAULT_LIVE_GROUP_ID, nameMap, descriptionMap,
+					GroupConstants.TYPE_SITE_OPEN, true, GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, friendlyURL,
+					true, false, true, null);
+			LOG.info(String.format("Group %s was added", LocaleUtil.getSiteDefault()));
 
-            if (customFields != null) {
-                for (String fieldName : customFields.keySet()) {
-                    customFieldsService.addCustomFieldValue(Group.class.getName(), fieldName, group.getPrimaryKey(),
-                                    customFields.get(fieldName));
-                    LOG.info(String.format("Custom field %s now has value %s", fieldName, customFields.get(fieldName)));
-                }
-            }
+			if (customFields != null) {
+				for (String fieldName : customFields.keySet()) {
+					customFieldsService.addCustomFieldValue(Group.class.getName(), fieldName, group.getPrimaryKey(),
+							customFields.get(fieldName));
+					LOG.info(String.format("Custom field %s now has value %s", fieldName, customFields.get(fieldName)));
+				}
+			}
 
-            if (pages != null) {
-                for (PageModel page : pages) {
-                    pageService.addPage(defaultValue.getDefaultUserId(), group.getGroupId(), page);
-                }
-            }
-        } catch (DuplicateGroupException dge) {
-            LOG.error("The site already exists.");
-        } catch (PortalException e) {
-            LOG.error(e);
-        }
-    }
+		
+			if (pages != null) {
+				
+				LOG.debug(String.format("Adding pages defaultuser : %d , group : %d" ,defaultValue.getDefaultUserId(), group.getGroupId()));
 
-    @Override
-    public void updateSite(String groupKey, Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
-                    String friendlyURL, Map<String, String> customFields, List<PageModel> pages) {
-        Group group;
-        try {
-            group = groupService.getGroup(PortalUtil.getDefaultCompanyId(), groupKey);
-            groupService.updateGroup(group.getGroupId(), GroupConstants.DEFAULT_PARENT_GROUP_ID, nameMap,
-                            descriptionMap, GroupConstants.TYPE_SITE_OPEN, true, GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION,
-                            friendlyURL, false, true, null);
-            LOG.info(String.format("Group %s was updated", groupKey));
+				for (PageModel page : pages) {
+					LOG.debug("Add page : " + page);
+					pageService.addPage(defaultValue.getDefaultUserId(), group.getGroupId(), group.getPrimaryKey(), page);
+				}
+			}
+		} catch (DuplicateGroupException | GroupFriendlyURLException e1) {
+			LOG.error("The site already exists.");
+		} catch (PortalException e) {
+			LOG.error(e);
+		}
+	}
 
-            if (customFields != null) {
-                for (String fieldName : customFields.keySet()) {
-                    customFieldsService.updateCustomFieldValue(Group.class.getName(), fieldName, group.getPrimaryKey(),
-                                    customFields.get(fieldName));
-                    LOG.debug(
-                                    String.format("Custom field %s now has value %s", fieldName, customFields.get(fieldName)));
-                }
-            }
-            for (PageModel page : pages) {
-                Set<Locale> locales = page.getFriendlyUrlMap().keySet();
-                for (Locale locale : locales) {
-                    Layout existingPage = pageService.fetchLayout(group.getGroupId(), false, page.getFriendlyUrlMap().get(locale));
-                    if (existingPage != null) {
-                        pageService.updatePage(existingPage.getLayoutId(), group.getGroupId(), page);
-                        LOG.info(String.format("page is updated %s", page.getNameMap().size()));
-                        break;
-                    } else {
-                        pageService.addPage(defaultValue.getDefaultUserId(), group.getGroupId(), page);
-                        LOG.info(String.format("page doesn't exists so it has been added"));
-                    }
-                }
+	@Override
+	public void updateSite(String groupKey, Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
+			String friendlyURL, Map<String, String> customFields, List<PageModel> pages) {
+		Group group;
+		try {
+			group = groupService.getGroup(PortalUtil.getDefaultCompanyId(), groupKey);
+			groupService.updateGroup(group.getGroupId(), GroupConstants.DEFAULT_PARENT_GROUP_ID, nameMap,
+					descriptionMap, GroupConstants.TYPE_SITE_OPEN, true, GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION,
+					friendlyURL, false, true, null);
+			LOG.info(String.format("Group %s was updated", groupKey));
 
-            }
-        } catch (PortalException e) {
-            LOG.error("PortalException while updating portal, The group was not updated.", e);
-        }
-    }
+			if (customFields != null) {
+				for (String fieldName : customFields.keySet()) {
+					customFieldsService.updateCustomFieldValue(Group.class.getName(), fieldName, group.getPrimaryKey(),
+							customFields.get(fieldName));
+					LOG.debug(
+							String.format("Custom field %s now has value %s", fieldName, customFields.get(fieldName)));
+				}
+			}
+			for (PageModel page : pages) {
+				Set<Locale> locales = page.getFriendlyUrlMap().keySet();
+			for (Locale locale : locales) {
+				Layout existingPage = pageService.fetchLayout(group.getGroupId(), false, page.getFriendlyUrlMap().get(locale));
+				if (existingPage != null) {					
+					pageService.updatePage(existingPage.getLayoutId(), group.getGroupId(), group.getPrimaryKey(), page);
+					LOG.info(String.format("page is updated %s", page.getNameMap().size()));
+					break;
+				} else {
+                    pageService.addPage(defaultValue.getDefaultUserId(), group.getGroupId(), group.getPrimaryKey(), page);
+                    LOG.info(String.format("page doesn't exists so it has been added"));
+				}
+			}
+				
+			}
+		} catch (PortalException e) {
+			LOG.error("The group was not updated.", e);
+		}
+	}
 
-    @Override
-    public void deleteSite(String groupKey) {
-        Group group;
-        try {
-            group = groupService.getGroup(PortalUtil.getDefaultCompanyId(), groupKey);
-            groupService.deleteGroup(group.getGroupId());
-            LOG.info(String.format("Group %s was deleted", groupKey));
-        } catch (PortalException e) {
-            LOG.error("The group was not deleted.");
-        }
-    }
+	@Override
+	public void deleteSite(String groupKey) {
+		Group group;
+		try {
+			group = groupService.getGroup(PortalUtil.getDefaultCompanyId(), groupKey);
+			groupService.deleteGroup(group.getGroupId());
+			LOG.info(String.format("Group %s was deleted", groupKey));
+		} catch (PortalException e) {
+			LOG.error("The group was not deleted.");
+		}
+	}
 
-
+	
 }

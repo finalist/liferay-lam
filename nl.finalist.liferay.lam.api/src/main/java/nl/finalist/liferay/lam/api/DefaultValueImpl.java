@@ -10,18 +10,16 @@ import com.liferay.portal.kernel.util.PropsUtil;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
-@Component( immediate=true, service=DefaultValue.class)
+
+@Component(immediate = true, service = DefaultValue.class)
 public class DefaultValueImpl implements DefaultValue {
     private static final Log LOG = LogFactoryUtil.getLog(DefaultValueImpl.class);
     @Reference
-    private  CompanyLocalService companyService;
-    private  Company defaultCompany;
+    private CompanyLocalService companyService;
+    private Company defaultCompany;
 
-    /* (non-Javadoc)
-     * @see nl.finalist.liferay.lam.api.DefaultValue#getDefaultUserId()
-     */
     @Override
-    public  long getDefaultUserId() {
+    public long getDefaultUserId() {
         defaultCompany = getDefaultCompany();
         long userId = 0;
         try {
@@ -32,11 +30,9 @@ public class DefaultValueImpl implements DefaultValue {
         return userId;
     }
 
-    /* (non-Javadoc)
-     * @see nl.finalist.liferay.lam.api.DefaultValue#getDefaultCompany()
-     */
+
     @Override
-    public  Company getDefaultCompany() {
+    public Company getDefaultCompany() {
         defaultCompany = null;
         String webId = PropsUtil.get("company.default.web.id");
         try {
@@ -46,11 +42,9 @@ public class DefaultValueImpl implements DefaultValue {
         }
         return defaultCompany;
     }
-    /* (non-Javadoc)
-     * @see nl.finalist.liferay.lam.api.DefaultValue#getGlobalGroupId()
-     */
+
     @Override
-    public   long getGlobalGroupId() {
+    public long getGlobalGroupId() {
         defaultCompany = getDefaultCompany();
         long groupId = 0;
         try {

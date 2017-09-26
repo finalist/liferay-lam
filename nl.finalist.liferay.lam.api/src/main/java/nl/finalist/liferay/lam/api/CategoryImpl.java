@@ -8,6 +8,7 @@ import java.util.Map;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+import com.liferay.asset.kernel.exception.DuplicateCategoryException;
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
@@ -17,7 +18,6 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.LocaleUtil;
 
 /**
  * Implementation for {@link nl.finalist.liferay.lam.api.Category}
@@ -40,9 +40,10 @@ public class CategoryImpl implements Category {
 
     @Reference
     private DefaultValue defaultValue;
+    AssetCategory assetCategory;
     
 	@Override
-	public void addCategory(String categoryName, String vocabularyName, String title) {
+	public void addCategory(Map<Locale, String> categoryName, String vocabularyName, String title) {
 		LOG.debug(String.format(
 				"Starting to add the category %s to vocabulary %s with title %s ",
 				categoryName, vocabularyName, title));
@@ -57,20 +58,25 @@ public class CategoryImpl implements Category {
 				}
 			}
 			if (addCondition) {
-				assetCategoryService.addCategory(defaultValue.getDefaultUserId(), defaultValue.getGlobalGroupId(),
-						categoryName, vocabulary.getVocabularyId(), new ServiceContext());
+				
+				assetCategoryService.addCategory(defaultValue.getDefaultUserId(), defaultValue.getGlobalGroupId(), 
+						0, categoryName, new HashMap<>(), vocabulary.getVocabularyId(), new String[0], new ServiceContext());
+				
 				LOG.info(String.format("Added category %s to vocabulary %s", categoryName, vocabularyName));
 			} else {
 				LOG.info(String.format("Cannot add category %s because it already exists", categoryName));
 			}
-		} catch (PortalException e) {
+		} catch(DuplicateCategoryException e1) {
+			LOG.info(String.format("Cannot add category %s because it already exists", categoryName));
+		}
+		catch (PortalException e) {
 			LOG.error(String.format("adding category %s failed", categoryName),e);
 		}
 
 	}
 
 	@Override
-	public void updateCategory(String categoryName, String vocabularyName, String updateName) {
+	public void updateCategory(String categoryName, String vocabularyName, Map<Locale, String> updateName) {
 		LOG.debug(String.format(
 				"Starting to update category %s in vocabulary %s, the new name will be %s",
 				categoryName, vocabularyName, updateName));
@@ -80,10 +86,9 @@ public class CategoryImpl implements Category {
 			List<AssetCategory> existingCategories = vocabulary.getCategories();
 			for (AssetCategory existingCategory : existingCategories) {
 				if (existingCategory.getName().equals(categoryName)) {
-					Map<Locale, String> titleMap = new HashMap<Locale, String>();
-					titleMap.put(LocaleUtil.getDefault(), updateName);
-					existingCategory.setTitleMap(titleMap);
-					existingCategory.setName(updateName);
+					
+					existingCategory.setTitleMap(updateName);
+					
 
 					assetCategoryService.updateAssetCategory(existingCategory);
 					LOG.debug(String.format(
@@ -109,6 +114,7 @@ public class CategoryImpl implements Category {
 			AssetVocabulary vocabulary = assetVocabularyLocalService.getGroupVocabulary(defaultValue.getGlobalGroupId(),
 					vocabularyName);
 			List<AssetCategory> existingCategories = vocabulary.getCategories();
+			LOG.debug(String.format("number of categories is %d ", existingCategories.size()));
 			for (AssetCategory existingCategory : existingCategories) {
 				if (existingCategory.getName().equals(categoryName)) {
 					assetCategoryService.deleteCategory(existingCategory);
