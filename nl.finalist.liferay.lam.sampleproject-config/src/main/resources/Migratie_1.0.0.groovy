@@ -168,11 +168,11 @@ update.webcontent(
 	    "en_US": "Description of Helping Webcontent"
 	],
 	content: "Content about the Helping Webcontent",
-	urlTitle: "somerole"
+	urlTitle: "somerolenew"
 )
 
 delete.webcontent(
-	urlTitle: "somerole"
+	urlTitle: "some-url-title"
 )
 create.site(
 	nameMap: [
@@ -189,6 +189,7 @@ create.site(
 	customFields: [
 	    "automatedField": "value"
 	]
+
 ){
 	page( privatePage: false,
 				nameMap: ["nl_NL": "paginanaam", "en_US": "pagenameUS", "en_GB": "pagenameGB"],
@@ -212,39 +213,7 @@ create.site(
 				])
 
 }
-update.site(
-	siteKey: "AutomatedTestSite",
-	nameMap: [
-		"en_US": "AutomatedTestSite",
-		"nl_NL": "AutomatedTestSiteNL"
-	],
-	descriptionMap: [
-	    "en_US": "Description",
-	    "nl_NL": "Beschrijving"
-	],
-	friendlyURL: "/automatedTestSite",
-	customFields: [
-		"automatedField": "automated value"
-	],
-	pages: [
-		[
-			privatePage: false,
-			nameMap: ["nl_NL": "pagenameNL", "en_US": "pagenameUS"],
-			titleMap: ["nl_NL": "title of page"],
-			descriptionMap: ["nl_NL": "description of page"],
-			friendlyUrlMap: ["nl_NL": "/pagename"],
-			typeSettings: Templates.one_column
-		],
-		[
-			privatePage: true,
-			nameMap: ["nl_NL": "pageNL", "en_US": "pageUS"],
-			titleMap: ["nl_NL": "title of pageNL"],
-			descriptionMap: ["nl_NL": "description of page"],
-			friendlyUrlMap: ["nl_NL": "/updateaddpage"],
-			typeSettings: Templates.one_column
-		]
-	]
-)
+
 createOrUpdate.structure(
 	file: "/structures/myStructure.json",
 	descriptionMap: ["nl_NL": "Dit is een test structure", "en_US": "This is a test structure"],
