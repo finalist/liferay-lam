@@ -150,26 +150,6 @@ create.userGroup(
 )
 
 
-create.webcontent(
-	titleMap: [
-		"en_US": "SomeRole"
-			],
-	descriptionMap: [
-	    "en_US": "Description of Helping Webcontent"
-	],
-	content: "Content about the Helping Webcontent",
-	urlTitle: "somerole"
-)
-update.webcontent(
-	titleMap: [
-		"en_US": "SomeRoleUpdate"
-	],
-	descriptionMap: [
-	    "en_US": "Description of Helping Webcontent"
-	],
-	content: "Content about the Helping Webcontent",
-	urlTitle: "somerolenew"
-)
 
 delete.webcontent(
 	urlTitle: "some-url-title"
@@ -217,19 +197,39 @@ create.site(
 createOrUpdate.structure(
 	file: "/structures/myStructure.json",
 	descriptionMap: ["nl_NL": "Dit is een test structure", "en_US": "This is a test structure"],
-	nameMap: ["nl_NL": "MyStructure", "en_US": "MyStructure"]
+	nameMap: ["nl_NL": "MyStructure", "en_US": "MyStructure"],
+	structureKey: "MY-STRUCTURE"
 )
 
 createOrUpdate.template(
 	file: "/templates/myTemplate.vm",
-	forStructure: "MyStructure",
+	forStructure: "MY-STRUCTURE",
+	templateKey: "MY-TEMPLATE",
 	descriptionMap: ["nl_NL": "Dit is een test template", "en_US": "This is a test template"],
 	nameMap: ["nl_NL": "MyTemplate", "en_US": "MyTemplate"]
 )
 
 createOrUpdate.adt(
 	file: "/adts/myADT.vm",
+	adtKey: "MY-ADT",
 	type: ADTTypes.ASSET_PUBLISHER,
 	descriptionMap: ["nl_NL": "Dit is een test adt", "en_US": "This is a test adt"],
 	nameMap: ["nl_NL": "MyADT", "en_US": "MyADT"]
+)
+
+
+createOrUpdate.webcontent(
+	titleMap: ["en_US": "TestWebcontent", "nl_NL": "TestWebcontent"],
+	urlTitle: "test-webcontent",
+    file: "/articles/testWebcontent.xml",
+    id: "TSTWBCNT",
+    forSite:"/automatedTestSite",
+    forStructure:"MY-STRUCTURE",
+    forTemplate:"MY-TEMPLATE"
+)
+createOrUpdate.webcontent(
+	titleMap: ["en_US": "TestNOSITE", "nl_NL": "TestNOSITE"],
+	urlTitle: "test-nosite",
+    file: "/articles/testNoSite.xml",
+    id: "TSTNOSITE"
 )

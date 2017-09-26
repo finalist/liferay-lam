@@ -25,6 +25,6 @@ class CreateOrUpdateStructureFactory extends AbstractFactory {
         StructureModel model = (StructureModel) node;
         
       
-        structureService.createOrUpdateStructure(model.file, bundle, LocaleMapConverter.convert(model.nameMap), LocaleMapConverter.convert(model.descriptionMap));
+        structureService.createOrUpdateStructure(model.structureKey, model.file, bundle, LocaleMapConverter.convert(model.nameMap), LocaleMapConverter.convert(model.descriptionMap));
     }
 }

@@ -6,3 +6,5 @@ Export-Package: \
 	nl.finalist.liferay.lam.api,\
 	nl.finalist.liferay.lam.api.model,\
 	nl.finalist.liferay.lam.util
+Include-Resource:\
+@commons-io-2.5.jar

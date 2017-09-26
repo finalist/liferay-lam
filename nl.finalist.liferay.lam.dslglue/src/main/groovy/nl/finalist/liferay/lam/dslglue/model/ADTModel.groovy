@@ -6,4 +6,5 @@ class ADTModel {
 	String type
 	Map<String, String> nameMap
 	Map<String, String> descriptionMap
+	String adtKey
 }

@@ -9,6 +9,7 @@ Include-Resource: \
  @groovy-*.jar,\
  @jansi-*.jar
 Import-Package: \
+nl.finalist.liferay.lam.api.model,\
  !com.thoughtworks.qdox.*,\
  !groovyjarjarasm.asm.tree.analysis.*,\
  !jline.*,\

@@ -6,5 +6,5 @@ import java.util.Map;
 import org.osgi.framework.Bundle;
 
 public interface ADT {
-    void createOrUpdateADT(String fileUrl, Bundle bundle, String className, Map<Locale, String> nameMap, Map<Locale, String> descriptionMap);
+    void createOrUpdateADT(String adtKey,String fileUrl, Bundle bundle, String className, Map<Locale, String> nameMap, Map<Locale, String> descriptionMap);
 }

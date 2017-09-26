@@ -3,4 +3,5 @@ class StructureModel {
 	String file
 	Map<String, String> nameMap
 	Map<String, String> descriptionMap
+	String structureKey
 }

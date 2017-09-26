@@ -4,7 +4,10 @@ class WebContentModel {
 
   
     Map<String, String> titleMap;
-    Map<String, String> descriptionMap;
-    String content;
+    String file;
     String urlTitle;
+    String id;
+    String forSite;
+    String forStructure;
+    String forTemplate;
 }

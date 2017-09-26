@@ -4,4 +4,5 @@ class TemplateModel {
 	String forStructure
 	Map<String, String> nameMap
 	Map<String, String> descriptionMap
+	String templateKey
 }

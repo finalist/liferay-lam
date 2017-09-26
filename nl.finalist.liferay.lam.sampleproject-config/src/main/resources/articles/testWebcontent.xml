@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<root available-locales="nl_NL" default-locale="nl_NL">
+	<dynamic-element name="firstField" type="text" index-type="keyword" instance-id="kldg">
+		<dynamic-content language-id="nl_NL"><![CDATA[testse]]></dynamic-content>
+	</dynamic-element>
+</root>

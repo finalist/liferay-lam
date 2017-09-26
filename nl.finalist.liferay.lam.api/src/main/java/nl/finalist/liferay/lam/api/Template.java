@@ -6,5 +6,5 @@ import java.util.Map;
 import org.osgi.framework.Bundle;
 
 public interface Template {
-    void createOrUpdateTemplate(String fileUrl, Bundle bundle, String forStructure, Map<Locale, String> nameMap, Map<Locale, String> descriptionMap);
+    void createOrUpdateTemplate(String templateKey, String fileUrl, Bundle bundle, String structureKey, Map<Locale, String> nameMap, Map<Locale, String> descriptionMap);
 }
