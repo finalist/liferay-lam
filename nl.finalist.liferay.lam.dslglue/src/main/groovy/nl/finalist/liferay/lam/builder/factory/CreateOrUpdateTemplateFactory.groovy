@@ -1,6 +1,6 @@
 package nl.finalist.liferay.lam.builder.factory
 import nl.finalist.liferay.lam.api.Template;
-import nl.finalist.liferay.lam.dslglue.LocaleMapConverter;
+import nl.finalist.liferay.lam.util.LocaleMapConverter;
 import nl.finalist.liferay.lam.dslglue.model.TemplateModel;
 import org.osgi.framework.Bundle;
 

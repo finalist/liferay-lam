@@ -1,7 +1,7 @@
 package nl.finalist.liferay.lam.builder.factory
 
 import nl.finalist.liferay.lam.api.ADT;
-import nl.finalist.liferay.lam.dslglue.LocaleMapConverter;
+import nl.finalist.liferay.lam.util.LocaleMapConverter;
 import nl.finalist.liferay.lam.dslglue.model.ADTModel;
 import org.osgi.framework.Bundle;
 
