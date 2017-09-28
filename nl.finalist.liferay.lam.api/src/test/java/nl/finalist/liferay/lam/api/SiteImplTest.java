@@ -236,20 +236,27 @@ public class SiteImplTest {
 	}
 
 	private PageModel createPage() {
-		Map<Locale, String> testMap = new HashMap<>();
-		testMap.put(Locale.US, friendlyURL);
-		Map<String,String> testNameMap  = new HashMap<String, String>();
-		testNameMap.put(Locale.US.toString(), "friendlyName");
-		PageModel page = new PageModel(true, testNameMap, testMap, testMap, testMap, StringPool.BLANK,createCustomFields(), null);
+		Map<Locale, String> testLocaleMap = new HashMap<>();
+		testLocaleMap.put(Locale.US, "test");
+		Map<String,String> testStringMap  = new HashMap<String, String>();
+		testStringMap.put(Locale.US.toString(), "friendlyName");
+		PageModel page = new PageModel(true, testStringMap, testLocaleMap, testLocaleMap, createFriendlyUrlMap(), StringPool.BLANK,createCustomFields(), null);
 		return page;
+	}
+
+	private Map<String, String> createFriendlyUrlMap() {
+		Map<String, String> testUrlMap = new HashMap<>();
+		testUrlMap.put(Locale.US.toString(), friendlyURL);
+		return testUrlMap;
 	}
 	
 	private PageModel createChildPage() {
-		Map<Locale, String> testMap = new HashMap<>();
-		testMap.put(Locale.US, friendlyURL);
-		Map<String,String> testNameMap  = new HashMap<String, String>();
-		testNameMap.put(Locale.US.toString(), "friendlyChildName");
-		PageModel page = new PageModel(true, testNameMap, testMap, testMap, testMap, StringPool.BLANK,createCustomFields(), "/friendlyNameus");
+		Map<Locale, String> testLocaleMap = new HashMap<>();
+		testLocaleMap.put(Locale.US, "test");
+		Map<String,String> testStringMap  = new HashMap<String, String>();
+		testStringMap.put(Locale.US.toString(), "friendlyChildName");
+		Map<String, String> testUrlMap = createFriendlyUrlMap();
+		PageModel page = new PageModel(true, testStringMap, testLocaleMap, testLocaleMap, testUrlMap, StringPool.BLANK,createCustomFields(), "/friendlyNameus");
 		return page;
 	}
 }

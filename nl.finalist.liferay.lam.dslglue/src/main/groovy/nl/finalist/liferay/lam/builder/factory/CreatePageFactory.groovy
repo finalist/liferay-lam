@@ -29,7 +29,7 @@ class CreatePageFactory extends AbstractFactory {
                 LocaleMapConverter.convert(attributes.get("nameMap")),
                 LocaleMapConverter.convert(attributes.get("titleMap")),
                 LocaleMapConverter.convert(attributes.get("descriptionMap")),
-                LocaleMapConverter.convert(attributes.get("friendlyUrlMap")),
+                attributes.get("friendlyUrlMap"),
                 attributes.get("typeSettings"),
                 attributes.get("customFields"));
  

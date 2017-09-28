@@ -34,7 +34,7 @@ class UpdateSiteFactory extends AbstractFactory {
                 LocaleMapConverter.convert(pageMap.get("nameMap")),
                 LocaleMapConverter.convert(pageMap.get("titleMap")),
                 LocaleMapConverter.convert(pageMap.get("descriptionMap")),
-                LocaleMapConverter.convert(pageMap.get("friendlyUrlMap")),
+                pageMap.get("friendlyUrlMap"),
                 pageMap.get("typeSettings"));
             pages.add(page);
         }*/

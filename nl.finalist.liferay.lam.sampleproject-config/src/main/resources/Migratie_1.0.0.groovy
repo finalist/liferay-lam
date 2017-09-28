@@ -211,6 +211,6 @@ create.site(
 				descriptionMap: ["nl_NL": "omschrijving prive subpagina", "en_US": "private child page"],
 				friendlyUrlMap: ["nl_NL": "/privesubpagina", "en_US": "/private-child-page"],
 				typeSettings: Templates.one_column,
-				parentUrl: "/private-page"
+				parentUrl: "/privatepage"
 	) 
 }

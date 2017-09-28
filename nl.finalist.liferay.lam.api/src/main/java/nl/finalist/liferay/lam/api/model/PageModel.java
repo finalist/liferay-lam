@@ -8,13 +8,13 @@ public class PageModel {
 	private Map<String, String> nameMap;
 	private Map<Locale, String> titleMap;
 	private Map<Locale, String> descriptionMap;
-	private Map<Locale, String> friendlyUrlMap;
+	private Map<String, String> friendlyUrlMap;
 	private Map<String, String> customFields;
 	private String typeSettings;
 	private String parentUrl;
 	
 	public PageModel(boolean privatePage, Map<String, String> nameMap, Map<Locale, String> titleMap,
-			Map<Locale, String> descriptionMap, Map<Locale, String> friendlyUrlMap, String typeSettings, 
+			Map<Locale, String> descriptionMap, Map<String, String> friendlyUrlMap, String typeSettings, 
 			Map<String, String> customFields, String parentUrl) {
 		this.privatePage = privatePage;
 		this.nameMap = nameMap;
@@ -27,7 +27,7 @@ public class PageModel {
 	}
 	
 	public PageModel(boolean privatePage, Map<String, String> nameMap, Map<Locale, String> titleMap,
-			Map<Locale, String> descriptionMap, Map<Locale, String> friendlyUrlMap, String typeSettings, 
+			Map<Locale, String> descriptionMap, Map<String, String> friendlyUrlMap, String typeSettings, 
 			Map<String, String> customFields) {
 		this.privatePage = privatePage;
 		this.nameMap = nameMap;
@@ -62,10 +62,10 @@ public class PageModel {
 	public void setDescriptionMap(Map<Locale, String> descriptionMap) {
 		this.descriptionMap = descriptionMap;
 	}
-	public Map<Locale, String> getFriendlyUrlMap() {
+	public Map<String, String> getFriendlyUrlMap() {
 		return friendlyUrlMap;
 	}
-	public void setFriendlyUrlMap(Map<Locale, String> friendlyUrlMap) {
+	public void setFriendlyUrlMap(Map<String, String> friendlyUrlMap) {
 		this.friendlyUrlMap = friendlyUrlMap;
 	}
 	public String getTypeSettings() {

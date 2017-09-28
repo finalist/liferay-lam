@@ -26,6 +26,7 @@ public class DefaultValueImpl implements DefaultValue {
 		long userId = 0;
 		try {
 			userId = defaultCompany.getDefaultUser().getUserId();
+			LOG.debug("Fetching default user : " + userId);
 		} catch (PortalException e) {
 			LOG.error(String.format("Error while retrieving default userId, error is %s", e.getMessage()));
 		}
@@ -40,8 +41,8 @@ public class DefaultValueImpl implements DefaultValue {
 		 defaultCompany = null;
 		String webId = PropsUtil.get("company.default.web.id");
 		try {
-			LOG.info("companyService : " + companyService);
 			defaultCompany = companyService.getCompanyByWebId(webId);
+			LOG.debug("Fetching default company : " + defaultCompany.getName());
 		} catch (PortalException e) {
 			LOG.error(String.format("Error while retrieving default company, error is %s", e.getMessage()));
 		}
@@ -56,6 +57,7 @@ public class DefaultValueImpl implements DefaultValue {
 		long groupId = 0;
 		try {
 			groupId = defaultCompany.getGroupId();
+			LOG.debug("Fetching global group id : " + groupId);
 		} catch (PortalException e) {
 			LOG.error("Error while retrieving global groupId", e);
 		}
