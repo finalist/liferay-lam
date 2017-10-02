@@ -209,15 +209,13 @@ createOrUpdate.template(
 	nameMap: ["nl_NL": "MyTemplate", "en_US": "MyTemplate"]
 )
 
-createOrUpdate.adt(
+createOrUpdate.ADT(
 	file: "/adts/myADT.vm",
 	adtKey: "MY-ADT",
 	type: ADTTypes.ASSET_PUBLISHER,
 	descriptionMap: ["nl_NL": "Dit is een test adt", "en_US": "This is a test adt"],
 	nameMap: ["nl_NL": "MyADT", "en_US": "MyADT"]
 )
-
-
 createOrUpdate.webcontent(
 	titleMap: ["en_US": "TestWebcontent", "nl_NL": "TestWebcontent"],
 	urlTitle: "test-webcontent",

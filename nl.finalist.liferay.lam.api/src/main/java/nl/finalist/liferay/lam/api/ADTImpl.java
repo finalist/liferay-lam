@@ -76,13 +76,15 @@ public class ADTImpl implements ADT{
                     Map<Locale, String> descriptionMap, DDMTemplate adt,String adtKey) {
         String scriptLanguage = FilenameUtils.getExtension(fileUrl);
         String script = getContentFromBundle(fileUrl, bundle);
+        String newVersion = String.valueOf(MathUtil.format(Double.valueOf(adt.getVersion()) + 0.1, 1, 1));
 
         adt.setScript(script);
         adt.setLanguage(scriptLanguage);
         adt.setNameMap(nameMap);
         adt.setDescriptionMap(descriptionMap);
-        String newVersion = String.valueOf(MathUtil.format(Double.valueOf(adt.getVersion()) + 0.1, 1, 1));
+
         DDMTemplateVersion  adtVersion = null;
+
         try {
             adtVersion = adt.getLatestTemplateVersion();
             if(Validator.isNotNull(adtVersion)){
