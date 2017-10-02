@@ -21,18 +21,17 @@ class CreatePageFactory extends AbstractFactory {
     @Override
     Object newInstance(FactoryBuilderSupport builder, Object objectName, Object value, Map attributes)
                     throws InstantiationException, IllegalAccessException {                    
-
-
         new PageModel(
-
-                attributes.get("privatePage"),
-                LocaleMapConverter.convert(attributes.get("nameMap")),
-                LocaleMapConverter.convert(attributes.get("titleMap")),
-                LocaleMapConverter.convert(attributes.get("descriptionMap")),
-                attributes.get("friendlyUrlMap"),
-                attributes.get("typeSettings"),
-                attributes.get("customFields"));
- 
+            attributes.get("privatePage"),
+            LocaleMapConverter.convert(attributes.get("nameMap")),
+            LocaleMapConverter.convert(attributes.get("titleMap")),
+            LocaleMapConverter.convert(attributes.get("descriptionMap")),
+            attributes.get("friendlyUrlMap"),
+            attributes.get("typeSettings"),
+            attributes.get("customFields"),
+            attributes.get("parentUrl"),
+            attributes.get("type")
+    	);
     }
 
     @Override

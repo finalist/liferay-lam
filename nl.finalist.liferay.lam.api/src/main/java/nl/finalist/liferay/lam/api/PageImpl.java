@@ -28,11 +28,14 @@ public class PageImpl implements Page {
 	private static final Log LOG = LogFactoryUtil.getLog(PageImpl.class);
 	@Override
 	public void addPage(long userId, long groupId, long groupPrimaryKey, PageModel page) throws PortalException {
+		if(page.getType() == null || page.getType().isEmpty()) {
+			page.setType("portlet");
+		}
 		Layout layout = pageService.addLayout(userId, groupId, page.isPrivatePage(), determineParentId(groupId, page),
 				LocaleMapConverter.convert(page.getNameMap()), 
 				page.getTitleMap(), 
 				page.getDescriptionMap(), null, null,
-				LayoutConstants.TYPE_PORTLET, page.getTypeSettings(), false, 
+				page.getType(), page.getTypeSettings(), false, 
 				LocaleMapConverter.convert(page.getFriendlyUrlMap()),
 				new ServiceContext());
 		
@@ -63,10 +66,14 @@ public class PageImpl implements Page {
 
 	@Override
 	public void updatePage(long layoutId, long groupId, long groupPrimaryKey, PageModel page) throws PortalException{
+		if(page.getType() == null || page.getType().isEmpty()) {
+			page.setType("portlet");
+		}
+		
 		byte[] b = new byte[0];
 		pageService.updateLayout(groupId, page.isPrivatePage(), layoutId, determineParentId(groupId, page), 
 				LocaleMapConverter.convert( page.getNameMap()), page.getTitleMap(),
-				page.getDescriptionMap(), null, null, LayoutConstants.TYPE_PORTLET, false, LocaleMapConverter.convert(page.getFriendlyUrlMap()), false, b, new ServiceContext());
+				page.getDescriptionMap(), null, null, page.getType(), false, LocaleMapConverter.convert(page.getFriendlyUrlMap()), false, b, new ServiceContext());
 		LOG.info(String.format("Page %s updated", page.getNameMap().get(LocaleUtil.getSiteDefault())));
 	}
 	

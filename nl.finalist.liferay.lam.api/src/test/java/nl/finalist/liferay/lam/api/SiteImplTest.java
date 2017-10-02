@@ -240,7 +240,7 @@ public class SiteImplTest {
 		testLocaleMap.put(Locale.US, "test");
 		Map<String,String> testStringMap  = new HashMap<String, String>();
 		testStringMap.put(Locale.US.toString(), "friendlyName");
-		PageModel page = new PageModel(true, testStringMap, testLocaleMap, testLocaleMap, createFriendlyUrlMap(), StringPool.BLANK,createCustomFields(), null);
+		PageModel page = new PageModel(true, testStringMap, testLocaleMap, testLocaleMap, createFriendlyUrlMap(), StringPool.BLANK,createCustomFields(), null, "portlet");
 		return page;
 	}
 
@@ -256,7 +256,7 @@ public class SiteImplTest {
 		Map<String,String> testStringMap  = new HashMap<String, String>();
 		testStringMap.put(Locale.US.toString(), "friendlyChildName");
 		Map<String, String> testUrlMap = createFriendlyUrlMap();
-		PageModel page = new PageModel(true, testStringMap, testLocaleMap, testLocaleMap, testUrlMap, StringPool.BLANK,createCustomFields(), "/friendlyNameus");
+		PageModel page = new PageModel(true, testStringMap, testLocaleMap, testLocaleMap, testUrlMap, StringPool.BLANK,createCustomFields(), "/friendlyNameus", "portlet");
 		return page;
 	}
 }

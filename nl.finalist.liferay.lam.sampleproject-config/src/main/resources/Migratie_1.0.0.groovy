@@ -213,4 +213,12 @@ create.site(
 				typeSettings: Templates.one_column,
 				parentUrl: "/privatepage"
 	) 
+	page( privatePage: true,
+				nameMap: ["nl_NL": "url pagina", "en_US": "url page"],
+				titleMap: ["nl_NL": "titel url pagina"],
+				descriptionMap: ["nl_NL": "omschrijving url pagina"],
+				friendlyUrlMap: ["nl_NL": "/urlpagina", "en_US": "/urlpage"],
+				typeSettings: "url=http://www.nu.nl",
+				type: "url"
+	)	
 }
