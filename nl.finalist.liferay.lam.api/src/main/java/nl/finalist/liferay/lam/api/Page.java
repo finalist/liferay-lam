@@ -8,7 +8,7 @@ import nl.finalist.liferay.lam.api.model.PageModel;
 public interface Page {
 
 	/**
-	 * Add  a page (in Liferay called layout) to a site (in Liferay called
+	 * Add a page (in Liferay called layout) of type 'portlet' to a site (in Liferay called
 	 * group)
 	 * 
 	 * @param userId
@@ -22,7 +22,7 @@ public interface Page {
 	void addPage(long userId, long groupId, long groupPrimaryKey, PageModel page) throws PortalException;
 
 	/**
-	 * Update  a page (in Liferay called layout) to a site (in Liferay called
+	 * Update a page (in Liferay called layout) of type 'portlet' to a site (in Liferay called
 	 * group)
 	 * 
 	 * @param layoutId
@@ -34,7 +34,7 @@ public interface Page {
 	 * @throws PortalException
 	 */
 	void updatePage(long layoutId, long groupId, long groupPrimaryKey, PageModel page) throws PortalException;
-
+	
 	/**
 	 * fetch a page (in Liferay called layout) to a site (in Liferay called
 	 * group)
@@ -48,5 +48,4 @@ public interface Page {
 	 * @throws PortalException
 	 */
 	Layout fetchLayout(long groupId, boolean privateLayout, String friendlyURL);
-
 }

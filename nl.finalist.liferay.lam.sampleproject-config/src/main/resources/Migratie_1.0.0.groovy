@@ -1,7 +1,3 @@
-import nl.finalist.liferay.lam.dslglue.CustomFieldType
-import nl.finalist.liferay.lam.dslglue.Entities
-import nl.finalist.liferay.lam.dslglue.Roles
-
 create.customField (
 	name: 'fieldTest',
 	type: CustomFieldType.TEXT,
@@ -150,6 +146,26 @@ create.userGroup(
 )
 
 
+create.webcontent(
+	titleMap: [ 
+		"en_US": "SomeRole"
+			],
+	descriptionMap: [
+	    "en_US": "Description of Helping Webcontent"
+	],
+	content: "Content about the Helping Webcontent",
+	urlTitle: "somerole"
+)
+update.webcontent(
+	titleMap: [ 
+		"en_US": "SomeRoleUpdate"
+	],
+	descriptionMap: [
+	    "en_US": "Description of Helping Webcontent"
+	],
+	content: "Content about the Helping Webcontent",
+	urlTitle: "somerolenew"
+)
 
 delete.webcontent(
 	urlTitle: "some-url-title"
@@ -172,7 +188,7 @@ create.site(
 
 ){
 	page( privatePage: false,
-				nameMap: ["nl_NL": "paginanaam", "en_US": "pagenameUS", "en_GB": "pagenameGB"],
+				nameMap: ["nl_NL": "paginanaam", "en_US": "page name", "en_GB": "pagenameGB"],
 				titleMap: ["nl_NL": "pagina titel", "en_US": "page title US", "en_GB": "page titleGB"],
 				descriptionMap: ["nl_NL": "pagina omschrijving","en_US": "page description US", "en_GB": "page description GB"],
 				friendlyUrlMap: ["nl_NL": "/paginanaam", "en_US": "/pagenameUS", "en_GB": "/pagenameGB"],
@@ -181,9 +197,8 @@ create.site(
 				    "customFieldPage": "customFieldPageValue"
 				])
 
-
 	page( privatePage: true,
-				nameMap: ["nl_NL": "privatepageNL", "en_US": "privatepageUS"],
+				nameMap: ["nl_NL": "prive pagina", "en_US": "private page"],
 				titleMap: ["nl_NL": "titel prive pagina", "en_US": "title private page"],
 				descriptionMap: ["nl_NL": "omschrijving prive pagina", "en_US": "description private page"],
 				friendlyUrlMap: ["nl_NL": "/privepagina", "en_US": "/privatepage"],
@@ -192,6 +207,22 @@ create.site(
 				    "customFieldPage": "customFieldPageValuePrivate"
 				])
 
+	page( privatePage: true,
+				nameMap: ["nl_NL": "privatepageChildNL", "en_US": "private child page"],
+				titleMap: ["nl_NL": "titel prive subpagina", "en_US": "private child page"],
+				descriptionMap: ["nl_NL": "omschrijving prive subpagina", "en_US": "private child page"],
+				friendlyUrlMap: ["nl_NL": "/privesubpagina", "en_US": "/private-child-page"],
+				typeSettings: Templates.one_column,
+				parentUrl: "/privatepage"
+	)
+	page( privatePage: true,
+				nameMap: ["nl_NL": "url pagina", "en_US": "url page"],
+				titleMap: ["nl_NL": "titel url pagina"],
+				descriptionMap: ["nl_NL": "omschrijving url pagina"],
+				friendlyUrlMap: ["nl_NL": "/urlpagina", "en_US": "/urlpage"],
+				typeSettings: "url=http://www.nu.nl",
+				type: "url"
+	)
 }
 
 createOrUpdate.structure(

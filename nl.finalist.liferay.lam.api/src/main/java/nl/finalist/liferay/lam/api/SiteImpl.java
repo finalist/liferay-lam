@@ -11,6 +11,7 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 
 import java.util.List;
 import java.util.Locale;
@@ -44,7 +45,7 @@ public class SiteImpl implements Site {
 					Group.class.getName(), 0L, GroupConstants.DEFAULT_LIVE_GROUP_ID, nameMap, descriptionMap,
 					GroupConstants.TYPE_SITE_OPEN, true, GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, friendlyURL,
 					true, false, true, null);
-			LOG.info(String.format("Group %s was added", LocaleUtil.getSiteDefault()));
+			LOG.info(String.format("Group (aka site) %s was added", nameMap.get(LocaleUtil.getSiteDefault())));
 
 			if (customFields != null) {
 				for (String fieldName : customFields.keySet()) {
@@ -57,15 +58,15 @@ public class SiteImpl implements Site {
 		
 			if (pages != null) {
 				
-				LOG.debug(String.format("Adding pages defaultuser : %d , group : %d" ,defaultValue.getDefaultUserId(), group.getGroupId()));
+				LOG.debug(String.format("Adding pages defaultuser : %d , group : %d", defaultValue.getDefaultUserId(), group.getGroupId()));
 
 				for (PageModel page : pages) {
-					LOG.debug("Add page : " + page);
+					LOG.debug("Add page : " + page.getNameMap().get(LocaleUtil.getSiteDefault()));
 					pageService.addPage(defaultValue.getDefaultUserId(), group.getGroupId(), group.getPrimaryKey(), page);
 				}
 			}
 		} catch (DuplicateGroupException | GroupFriendlyURLException e1) {
-			LOG.warn("The site already exists, will do nothing.");
+			LOG.warn(String.format("The site %s already exists.", nameMap.get(LocaleUtil.getSiteDefault())));
 		} catch (PortalException e) {
 			LOG.error(e);
 		}
@@ -80,7 +81,7 @@ public class SiteImpl implements Site {
 			groupService.updateGroup(group.getGroupId(), GroupConstants.DEFAULT_PARENT_GROUP_ID, nameMap,
 					descriptionMap, GroupConstants.TYPE_SITE_OPEN, true, GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION,
 					friendlyURL, false, true, null);
-			LOG.info(String.format("Group %s was updated", groupKey));
+			LOG.info(String.format("Group (aka site) %s was updated", nameMap.get(LocaleUtil.getSiteDefault())));
 
 			if (customFields != null) {
 				for (String fieldName : customFields.keySet()) {
@@ -91,16 +92,16 @@ public class SiteImpl implements Site {
 				}
 			}
 			for (PageModel page : pages) {
-				Set<Locale> locales = page.getFriendlyUrlMap().keySet();
-			for (Locale locale : locales) {
+				Set<String> locales = page.getFriendlyUrlMap().keySet();
+			for (String locale : locales) {
 				Layout existingPage = pageService.fetchLayout(group.getGroupId(), false, page.getFriendlyUrlMap().get(locale));
 				if (existingPage != null) {					
 					pageService.updatePage(existingPage.getLayoutId(), group.getGroupId(), group.getPrimaryKey(), page);
-					LOG.info(String.format("page is updated %s", page.getNameMap().size()));
+					LOG.info(String.format("page %s is updated ", page.getNameMap().get(locale)));
 					break;
 				} else {
                     pageService.addPage(defaultValue.getDefaultUserId(), group.getGroupId(), group.getPrimaryKey(), page);
-                    LOG.info(String.format("page doesn't exists so it has been added"));
+                    LOG.info(String.format("page doesn't exists so it has been added: %s", page.getNameMap().get(locale)));
 				}
 			}
 				

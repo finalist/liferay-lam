@@ -34,8 +34,10 @@ class UpdateSiteFactory extends AbstractFactory {
                 LocaleMapConverter.convert(pageMap.get("nameMap")),
                 LocaleMapConverter.convert(pageMap.get("titleMap")),
                 LocaleMapConverter.convert(pageMap.get("descriptionMap")),
-                LocaleMapConverter.convert(pageMap.get("friendlyUrlMap")),
-                pageMap.get("typeSettings"));
+                pageMap.get("friendlyUrlMap"),
+                pageMap.get("typeSettings"),
+                pageMap.get("type")
+            );
             pages.add(page);
         }*/
         siteService.updateSite(model.siteKey, LocaleMapConverter.convert(model.nameMap), LocaleMapConverter.convert(model.descriptionMap), model.friendlyURL, model.customFields, model.pages);

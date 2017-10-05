@@ -8,12 +8,15 @@ public class PageModel {
 	private Map<String, String> nameMap;
 	private Map<Locale, String> titleMap;
 	private Map<Locale, String> descriptionMap;
-	private Map<Locale, String> friendlyUrlMap;
+	private Map<String, String> friendlyUrlMap;
 	private Map<String, String> customFields;
 	private String typeSettings;
+	private String parentUrl;
+	private String type;
 	
 	public PageModel(boolean privatePage, Map<String, String> nameMap, Map<Locale, String> titleMap,
-			Map<Locale, String> descriptionMap, Map<Locale, String> friendlyUrlMap, String typeSettings, Map<String, String> customFields) {
+			Map<Locale, String> descriptionMap, Map<String, String> friendlyUrlMap, String typeSettings, 
+			Map<String, String> customFields, String parentUrl, String type) {
 		this.privatePage = privatePage;
 		this.nameMap = nameMap;
 		this.titleMap = titleMap;
@@ -21,6 +24,8 @@ public class PageModel {
 		this.friendlyUrlMap = friendlyUrlMap;
 		this.typeSettings = typeSettings;
 		this.customFields = customFields;
+		this.parentUrl = parentUrl;
+		this.setType(type);
 	}
 	
 	public boolean isPrivatePage() {
@@ -47,10 +52,10 @@ public class PageModel {
 	public void setDescriptionMap(Map<Locale, String> descriptionMap) {
 		this.descriptionMap = descriptionMap;
 	}
-	public Map<Locale, String> getFriendlyUrlMap() {
+	public Map<String, String> getFriendlyUrlMap() {
 		return friendlyUrlMap;
 	}
-	public void setFriendlyUrlMap(Map<Locale, String> friendlyUrlMap) {
+	public void setFriendlyUrlMap(Map<String, String> friendlyUrlMap) {
 		this.friendlyUrlMap = friendlyUrlMap;
 	}
 	public String getTypeSettings() {
@@ -68,13 +73,27 @@ public class PageModel {
 		this.customFields = customFields;
 	}
 
+	public String getParentUrl() {
+		return parentUrl;
+	}
+
+	public void setParentUrl(String parentUrl) {
+		this.parentUrl = parentUrl;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
 	@Override
 	public String toString() {
 		return "PageModel [privatePage=" + privatePage + ", nameMap=" + nameMap + ", titleMap=" + titleMap
 				+ ", descriptionMap=" + descriptionMap + ", friendlyUrlMap=" + friendlyUrlMap + ", typeSettings="
-				+ typeSettings + ", customFields="
-						+ customFields + "]";
+				+ typeSettings + ", customFields=" + customFields + ", parentUrl="+parentUrl+", type ="
+				+ type + "]";
 	}
-	
-	
 }
