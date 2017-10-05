@@ -65,7 +65,7 @@ public class SiteImpl implements Site {
 				}
 			}
 		} catch (DuplicateGroupException | GroupFriendlyURLException e1) {
-			LOG.error("The site already exists.");
+			LOG.warn("The site already exists, will do nothing.");
 		} catch (PortalException e) {
 			LOG.error(e);
 		}

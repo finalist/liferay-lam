@@ -1,6 +1,7 @@
 package nl.finalist.liferay.lam.api;
 
 import com.liferay.counter.kernel.service.CounterLocalService;
+import com.liferay.dynamic.data.mapping.exception.NoSuchStructureException;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormLayout;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
@@ -94,7 +95,7 @@ public class StructureImpl implements Structure {
                 LOG.error("DDMStructureversion for structure is null, structure is not updated");
             }
         } catch (PortalException e) {
-            LOG.error("PortalException while retrieving ddmstructureversion, structure not updated" + e);
+            LOG.error("PortalException while retrieving ddmstructureversion, structure not updated", e);
         }
 
     }
@@ -108,8 +109,10 @@ public class StructureImpl implements Structure {
         DDMStructure ddmStructure = null;
         try {
             ddmStructure = ddmStructureLocalService.getStructure(groupId, classNameId, structureKey);
+        } catch (NoSuchStructureException e) {
+            LOG.debug(String.format("Structure with key %s does not yet exist", structureKey));
         } catch (PortalException e) {
-            LOG.error(String.format("PortalException while retrieving %s ", structureKey) + e);
+            LOG.error(String.format("PortalException while retrieving %s ", structureKey), e);
         }
         return ddmStructure;
     }

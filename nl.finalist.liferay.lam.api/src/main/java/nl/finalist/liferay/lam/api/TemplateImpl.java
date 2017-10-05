@@ -1,5 +1,7 @@
 package nl.finalist.liferay.lam.api;
 
+import com.liferay.dynamic.data.mapping.exception.NoSuchStructureException;
+import com.liferay.dynamic.data.mapping.exception.NoSuchTemplateException;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.model.DDMTemplate;
 import com.liferay.dynamic.data.mapping.model.DDMTemplateConstants;
@@ -134,8 +136,10 @@ public class TemplateImpl implements Template {
         DDMStructure ddmStructure = null;
         try {
             ddmStructure = ddmStructureLocalService.getStructure(groupId, classNameId, structureKey);
+        } catch (NoSuchStructureException e) {
+            LOG.debug(String.format("Structure with key %s does not yet exist", structureKey));
         } catch (PortalException e) {
-            LOG.error(String.format("PortalException while retrieving structure %s ", structureKey) + e);
+            LOG.error(String.format("PortalException while retrieving %s ", structureKey), e);
         }
         return ddmStructure;
     }
@@ -144,9 +148,10 @@ public class TemplateImpl implements Template {
         DDMTemplate ddmTemplate = null;
         try{
             ddmTemplate = ddmTemplateLocalService.getTemplate(groupId, classNameId, templateKey);
-        }
-        catch(PortalException e){
-            LOG.error(String.format("PortalException while retrieving template %s ", templateKey) + e);
+        } catch (NoSuchTemplateException e) {
+            LOG.debug(String.format("Template with key %s does not yet exist", templateKey));
+        } catch (PortalException e) {
+            LOG.error(String.format("PortalException while retrieving %s ", templateKey), e);
         }
         return ddmTemplate;
     }
