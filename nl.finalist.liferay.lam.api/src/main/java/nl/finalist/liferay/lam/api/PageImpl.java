@@ -8,6 +8,7 @@ import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Map;
 
@@ -29,7 +30,7 @@ public class PageImpl implements Page {
     @Override
     public void addPage(long userId, long groupId, long groupPrimaryKey, PageModel page) throws PortalException {
 
-        if (page.getType() == null || page.getType().isEmpty()) {
+        if (Validator.isNull(page.getType())) {
             page.setType("portlet");
         }
         Layout layout = pageService.addLayout(userId, groupId, page.isPrivatePage(), determineParentId(groupId, page),
@@ -71,10 +72,10 @@ public class PageImpl implements Page {
             page.setType("portlet");
         }
 
-        byte[] b = new byte[0];
+        byte[] iconBytes = new byte[0];
         pageService.updateLayout(groupId, page.isPrivatePage(), layoutId, determineParentId(groupId, page),
             LocaleMapConverter.convert(page.getNameMap()), page.getTitleMap(),
-            page.getDescriptionMap(), null, null, page.getType(), false, LocaleMapConverter.convert(page.getFriendlyUrlMap()), false, b, new ServiceContext());
+            page.getDescriptionMap(), null, null, page.getType(), false, LocaleMapConverter.convert(page.getFriendlyUrlMap()), false, iconBytes, new ServiceContext());
         LOG.info(String.format("Page %s updated", page.getNameMap().get(LocaleUtil.getSiteDefault())));
     }
 
