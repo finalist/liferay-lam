@@ -16,11 +16,10 @@ public class DefaultValueImpl implements DefaultValue {
     private static final Log LOG = LogFactoryUtil.getLog(DefaultValueImpl.class);
     @Reference
     private CompanyLocalService companyService;
-    private Company defaultCompany;
 
     @Override
     public long getDefaultUserId() {
-        defaultCompany = getDefaultCompany();
+        Company defaultCompany = getDefaultCompany();
         long userId = 0;
         try {
             userId = defaultCompany.getDefaultUser().getUserId();
@@ -33,7 +32,7 @@ public class DefaultValueImpl implements DefaultValue {
 
     @Override
     public Company getDefaultCompany() {
-        defaultCompany = null;
+        Company defaultCompany = null;
         String webId = PropsUtil.get("company.default.web.id");
         try {
             defaultCompany = companyService.getCompanyByWebId(webId);
@@ -45,7 +44,7 @@ public class DefaultValueImpl implements DefaultValue {
 
     @Override
     public long getGlobalGroupId() {
-        defaultCompany = getDefaultCompany();
+        Company defaultCompany = getDefaultCompany();
         long groupId = 0;
         try {
             groupId = defaultCompany.getGroupId();
