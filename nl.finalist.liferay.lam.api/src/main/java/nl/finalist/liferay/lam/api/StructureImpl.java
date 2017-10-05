@@ -101,8 +101,7 @@ public class StructureImpl implements Structure {
     }
 
     private DDMFormLayout createDDMFormLayout(DDMForm ddmForm) {
-        DDMFormLayout ddmFormLayout = DDMUtil.getDefaultDDMFormLayout(ddmForm);
-        return ddmFormLayout;
+        return DDMUtil.getDefaultDDMFormLayout(ddmForm);
     }
 
     private DDMStructure getStructure(String structureKey, long groupId,long classNameId){
@@ -118,14 +117,13 @@ public class StructureImpl implements Structure {
     }
 
     private DDMForm createDDMForm(String fileUrl, Bundle bundle) {
-        DDMForm ddmForm = null;
         String content = getContentFromBundle(fileUrl, bundle);
         try {
-            ddmForm = DDMUtil.getDDMForm(content);
+            return DDMUtil.getDDMForm(content);
         } catch (PortalException e) {
             LOG.error("PortalException when creating DDMForm", e);
+            return null;
         }
-        return ddmForm;
     }
 
     private String getContentFromBundle(String fileUrl, Bundle bundle){
