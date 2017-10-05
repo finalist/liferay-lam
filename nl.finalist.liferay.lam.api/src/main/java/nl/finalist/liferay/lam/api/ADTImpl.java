@@ -1,5 +1,6 @@
 package nl.finalist.liferay.lam.api;
 
+import com.liferay.dynamic.data.mapping.exception.NoSuchTemplateException;
 import com.liferay.dynamic.data.mapping.model.DDMTemplate;
 import com.liferay.dynamic.data.mapping.model.DDMTemplateConstants;
 import com.liferay.dynamic.data.mapping.model.DDMTemplateVersion;
@@ -33,11 +34,11 @@ public class ADTImpl implements ADT{
     private static final Log LOG = LogFactoryUtil.getLog(ADTImpl.class);
 
     @Reference
-    private ClassNameLocalService classNameLocalService;
+    protected ClassNameLocalService classNameLocalService;
     @Reference
-    private DefaultValue defaultValue;
+    protected DefaultValue defaultValue;
     @Reference
-    private DDMTemplateLocalService ddmTemplateLocalService;
+    protected DDMTemplateLocalService ddmTemplateLocalService;
     @Reference
     private DDMTemplateVersionLocalService ddmTemplateVersionLocalService;
 
@@ -53,17 +54,16 @@ public class ADTImpl implements ADT{
             createADT(adtKey, fileUrl, bundle, nameMap, descriptionMap, groupId, classNameId, resourceClassNameId);
         } else {
             LOG.info(String.format("ADT %s already exist, updating ADT", adtKey));
-            updateADT(fileUrl, bundle,  nameMap, descriptionMap, adt, adtKey);
+            updateADT(fileUrl, bundle,  nameMap, descriptionMap, 0, adt, adtKey);
         }
     }
-    private void createADT(String adtKey,String fileUrl, Bundle bundle, Map<Locale, String> nameMap,
+    protected void createADT(String adtKey,String fileUrl, Bundle bundle, Map<Locale, String> nameMap,
                     Map<Locale, String> descriptionMap, long groupId, long classNameId, long resourceClassNameId) {
 
         String scriptLanguage = FilenameUtils.getExtension(fileUrl);
         String script = getContentFromBundle(fileUrl, bundle);
         try {
-            ddmTemplateLocalService.addTemplate(defaultValue.getDefaultUserId(), groupId, classNameId,
-                            0, resourceClassNameId,adtKey, nameMap, descriptionMap,
+            ddmTemplateLocalService.addTemplate(defaultValue.getDefaultUserId(), groupId, classNameId,0, resourceClassNameId,adtKey, nameMap, descriptionMap,
                             DDMTemplateConstants.TEMPLATE_TYPE_DISPLAY, null, scriptLanguage, script,
                             false,false, null, null, new ServiceContext());
             LOG.info(String.format("ADT %s succesfully created", adtKey));
@@ -72,8 +72,8 @@ public class ADTImpl implements ADT{
         }
     }
 
-    private void updateADT(String fileUrl, Bundle bundle,Map<Locale, String> nameMap,
-                    Map<Locale, String> descriptionMap, DDMTemplate adt,String adtKey) {
+    void updateADT(String fileUrl, Bundle bundle,Map<Locale, String> nameMap,
+                    Map<Locale, String> descriptionMap, long classPK, DDMTemplate adt,String adtKey) {
         String scriptLanguage = FilenameUtils.getExtension(fileUrl);
         String script = getContentFromBundle(fileUrl, bundle);
         String newVersion = String.valueOf(MathUtil.format(Double.valueOf(adt.getVersion()) + 0.1, 1, 1));
@@ -81,6 +81,9 @@ public class ADTImpl implements ADT{
         adt.setScript(script);
         adt.setLanguage(scriptLanguage);
         adt.setNameMap(nameMap);
+        if (classPK > 0) {
+            adt.setClassPK(classPK);
+        }
         adt.setDescriptionMap(descriptionMap);
 
         DDMTemplateVersion  adtVersion = null;
@@ -104,18 +107,19 @@ public class ADTImpl implements ADT{
     }
 
 
-    private DDMTemplate getADT(String adtKey, long groupId, long classNameId) {
+    protected DDMTemplate getADT(String adtKey, long groupId, long classNameId) {
         DDMTemplate adt = null;
         try{
             adt = ddmTemplateLocalService.getTemplate(groupId, classNameId, adtKey);
-        }
-        catch(PortalException e){
-            LOG.error(String.format("PortalException while retrieving %s", adtKey) + e);
+        } catch (NoSuchTemplateException e) {
+            LOG.debug(String.format("DDMTemplate with key %s does not yet exist", adtKey));
+        } catch (PortalException e) {
+            LOG.error(String.format("PortalException while retrieving %s ", adtKey), e);
         }
         return adt;
     }
 
-    private String getContentFromBundle(String fileUrl, Bundle bundle) {
+    protected String getContentFromBundle(String fileUrl, Bundle bundle) {
         URL url = bundle.getResource(fileUrl);
         String template = "";
         InputStream input;
