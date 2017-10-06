@@ -1,14 +1,9 @@
 package nl.finalist.liferay.lam.builder.factory
 
 import nl.finalist.liferay.lam.api.Page
-import nl.finalist.liferay.lam.api.Site
 import nl.finalist.liferay.lam.api.model.PageModel
+import nl.finalist.liferay.lam.dslglue.model.SiteModel
 import nl.finalist.liferay.lam.util.LocaleMapConverter
-
-//import nl.finalist.liferay.lam.dslglue.LocaleMapConverter
-
-import nl.finalist.liferay.lam.dslglue.model.SiteModel;
-
 class CreatePageFactory extends AbstractFactory {
 
     Page pageService;
@@ -37,10 +32,11 @@ class CreatePageFactory extends AbstractFactory {
     @Override
     void onNodeCompleted(FactoryBuilderSupport builder, Object parent, Object node) {
         super.onNodeCompleted(builder, parent, node);
-        //System.out.println("onNodeComplete : " + node);
         if( parent instanceof  SiteModel) {
             SiteModel site = (SiteModel)parent;
             site.addPage((PageModel)node);
+        } else {
+            /// Help, standalone pages don't work anymore!!
         }
     }
 }
