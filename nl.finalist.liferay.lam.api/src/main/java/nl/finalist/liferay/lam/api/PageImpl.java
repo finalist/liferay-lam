@@ -1,10 +1,13 @@
 package nl.finalist.liferay.lam.api;
 
+import com.liferay.portal.kernel.exception.NoSuchLayoutException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -23,25 +26,41 @@ public class PageImpl implements Page {
 
     private static final Log LOG = LogFactoryUtil.getLog(PageImpl.class);
     @Reference
-    LayoutLocalService pageService;
+    LayoutLocalService layoutService;
     @Reference
     private CustomFields customFieldsService;
 
+    @Reference
+    private DefaultValue defaultValue;
+
+    @Reference
+    private GroupLocalService groupService;
+
     @Override
-    public void addPage(long userId, long groupId, long groupPrimaryKey, PageModel page) throws PortalException {
+    public void addPage(String siteKey, PageModel page) {
 
         if (Validator.isNull(page.getType())) {
             page.setType("portlet");
         }
-        Layout layout = pageService.addLayout(userId, groupId, page.isPrivatePage(), determineParentId(groupId, page),
-            LocaleMapConverter.convert(page.getNameMap()),
-            page.getTitleMap(),
-            page.getDescriptionMap(), null, null,
-            page.getType(), page.getTypeSettings(), false,
-            LocaleMapConverter.convert(page.getFriendlyUrlMap()),
-            new ServiceContext());
+        Group site = groupService.fetchGroup(defaultValue.getDefaultCompany().getCompanyId(), siteKey);
 
-        LOG.info(String.format("Page %s added", page.getNameMap().get(LocaleUtil.getSiteDefault().toString())));
+        Layout layout = null;
+        try {
+            layout = layoutService.addLayout(defaultValue.getDefaultUserId(), site.getGroupId(), page.isPrivatePage(),
+                determineParentLayoutId(site.getGroupId(), page),
+                LocaleMapConverter.convert(page.getNameMap()),
+                page.getTitleMap(),
+                page.getDescriptionMap(), null, null,
+                page.getType(), page.getTypeSettings(), false,
+                LocaleMapConverter.convert(page.getFriendlyUrlMap()),
+                new ServiceContext());
+        } catch (PortalException e) {
+            LOG.error("While adding page: " + page, e);
+        }
+
+        LOG.info(String.format("Page '%s' with url '%s' added", 
+            layout.getName(LocaleUtil.ENGLISH, true), layout.getFriendlyURL()));
+        
         Map<String, String> customFields = page.getCustomFields();
         if (customFields != null) {
             for (String fieldName : customFields.keySet()) {
@@ -53,14 +72,20 @@ public class PageImpl implements Page {
         }
     }
 
-    private long determineParentId(long groupId, PageModel page) throws PortalException {
+    private long determineParentLayoutId(long groupId, PageModel page) {
         long parentId = LayoutConstants.DEFAULT_PARENT_LAYOUT_ID;
+        Layout parent;
+
         if (page.getParentUrl() != null) {
-            Layout parent = pageService.getFriendlyURLLayout(groupId, page.isPrivatePage(), page.getParentUrl());
-            if (parent != null) {
+            try {
+                parent = layoutService.getFriendlyURLLayout(groupId, page.isPrivatePage(), page.getParentUrl());
                 parentId = parent.getLayoutId();
-            } else {
-                LOG.error("The parent page could not be found, creating page at top level instead.");
+            } catch (NoSuchLayoutException e) {
+                LOG.info("The parent page could not be found, creating page at top level instead.");
+            } catch (PortalException e) {
+                LOG.info(String.format("Exception while fetching parent page by its friendly URL '%s', will create " +
+                        "page at top level instead",
+                    page.getParentUrl()), e);
             }
         }
         return parentId;
@@ -73,7 +98,7 @@ public class PageImpl implements Page {
         }
 
         byte[] iconBytes = new byte[0];
-        pageService.updateLayout(groupId, page.isPrivatePage(), layoutId, determineParentId(groupId, page),
+        layoutService.updateLayout(groupId, page.isPrivatePage(), layoutId, determineParentLayoutId(groupId, page),
             LocaleMapConverter.convert(page.getNameMap()), page.getTitleMap(),
             page.getDescriptionMap(), null, null, page.getType(), false, LocaleMapConverter.convert(page.getFriendlyUrlMap()), false, iconBytes, new ServiceContext());
         LOG.info(String.format("Page %s updated", page.getNameMap().get(LocaleUtil.getSiteDefault())));
@@ -81,6 +106,6 @@ public class PageImpl implements Page {
 
     @Override
     public Layout fetchLayout(long groupId, boolean privateLayout, String friendlyURL) {
-        return pageService.fetchLayoutByFriendlyURL(groupId, privateLayout, friendlyURL);
+        return layoutService.fetchLayoutByFriendlyURL(groupId, privateLayout, friendlyURL);
     }
 }

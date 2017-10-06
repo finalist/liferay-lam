@@ -61,7 +61,7 @@ public class SiteImpl implements Site {
 
 				for (PageModel page : pages) {
 					LOG.debug("Add page : " + page.getNameMap().get(LocaleUtil.getSiteDefault()));
-					pageService.addPage(defaultValue.getDefaultUserId(), group.getGroupId(), group.getPrimaryKey(), page);
+					pageService.addPage(group.getGroupKey(), page);
 				}
 			}
 		} catch (DuplicateGroupException | GroupFriendlyURLException e1) {
@@ -99,7 +99,7 @@ public class SiteImpl implements Site {
 					LOG.info(String.format("page %s is updated ", page.getNameMap().get(locale)));
 					break;
 				} else {
-                    pageService.addPage(defaultValue.getDefaultUserId(), group.getGroupId(), group.getPrimaryKey(), page);
+					pageService.addPage(groupKey, page);
                     LOG.info(String.format("page doesn't exists so it has been added: %s", page.getNameMap().get(locale)));
 				}
 			}

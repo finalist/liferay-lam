@@ -4,6 +4,8 @@ import java.util.Locale;
 import java.util.Map;
 
 public class PageModel {
+
+	private String siteKey;
 	private boolean privatePage;
 	private Map<String, String> nameMap;
 	private Map<Locale, String> titleMap;
@@ -14,19 +16,6 @@ public class PageModel {
 	private String parentUrl;
 	private String type;
 	
-	public PageModel(boolean privatePage, Map<String, String> nameMap, Map<Locale, String> titleMap,
-			Map<Locale, String> descriptionMap, Map<String, String> friendlyUrlMap, String typeSettings, 
-			Map<String, String> customFields, String parentUrl, String type) {
-		this.privatePage = privatePage;
-		this.nameMap = nameMap;
-		this.titleMap = titleMap;
-		this.descriptionMap = descriptionMap;
-		this.friendlyUrlMap = friendlyUrlMap;
-		this.typeSettings = typeSettings;
-		this.customFields = customFields;
-		this.parentUrl = parentUrl;
-		this.setType(type);
-	}
 	
 	public boolean isPrivatePage() {
 		return privatePage;
@@ -89,6 +78,14 @@ public class PageModel {
 		this.type = type;
 	}
 
+	public void setSiteKey(String siteKey) {
+		this.siteKey = siteKey;
+	}
+
+	public String getSiteKey() {
+		return siteKey;
+	}
+
 	@Override
 	public String toString() {
 		return "PageModel [privatePage=" + privatePage + ", nameMap=" + nameMap + ", titleMap=" + titleMap
@@ -96,4 +93,5 @@ public class PageModel {
 				+ typeSettings + ", customFields=" + customFields + ", parentUrl="+parentUrl+", type ="
 				+ type + "]";
 	}
+
 }
