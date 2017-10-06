@@ -11,7 +11,6 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.StringUtil;
 
 import java.util.List;
 import java.util.Locale;
@@ -45,7 +44,7 @@ public class SiteImpl implements Site {
 					Group.class.getName(), 0L, GroupConstants.DEFAULT_LIVE_GROUP_ID, nameMap, descriptionMap,
 					GroupConstants.TYPE_SITE_OPEN, true, GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, friendlyURL,
 					true, false, true, null);
-			LOG.info(String.format("Group (aka site) %s was added", nameMap.get(LocaleUtil.getSiteDefault())));
+			LOG.info(String.format("Site %s was added", nameMap.get(LocaleUtil.getSiteDefault())));
 
 			if (customFields != null) {
 				for (String fieldName : customFields.keySet()) {
