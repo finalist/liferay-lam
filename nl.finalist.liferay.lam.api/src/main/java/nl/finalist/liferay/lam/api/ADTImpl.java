@@ -34,13 +34,14 @@ public class ADTImpl implements ADT{
     private static final Log LOG = LogFactoryUtil.getLog(ADTImpl.class);
 
     @Reference
-    protected ClassNameLocalService classNameLocalService;
+    private ClassNameLocalService classNameLocalService;
     @Reference
-    protected DefaultValue defaultValue;
-    @Reference
+    private DefaultValue defaultValue;
+
+
     protected DDMTemplateLocalService ddmTemplateLocalService;
-    @Reference
-    private DDMTemplateVersionLocalService ddmTemplateVersionLocalService;
+
+    protected DDMTemplateVersionLocalService ddmTemplateVersionLocalService;
 
     @Override
     public void createOrUpdateADT(String adtKey,String fileUrl, Bundle bundle, String className, Map<Locale, String> nameMap,
@@ -136,6 +137,17 @@ public class ADTImpl implements ADT{
             LOG.error("IOException while reading input for ADT " + fileUrl + " " + e);
         }
         return template;
+    }
+
+    @Reference
+    public void setDdmTemplateLocalService(DDMTemplateLocalService ddmTemplateLocalService) {
+        this.ddmTemplateLocalService = ddmTemplateLocalService;
+    }
+
+    @Reference
+    public void setDdmTemplateVersionLocalService(
+        DDMTemplateVersionLocalService ddmTemplateVersionLocalService) {
+        this.ddmTemplateVersionLocalService = ddmTemplateVersionLocalService;
     }
 
 }

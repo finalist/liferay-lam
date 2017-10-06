@@ -6,10 +6,13 @@ import com.liferay.dynamic.data.mapping.model.DDMTemplate;
 import com.liferay.dynamic.data.mapping.model.DDMTemplateConstants;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMTemplateLinkLocalService;
+import com.liferay.dynamic.data.mapping.service.DDMTemplateLocalService;
+import com.liferay.dynamic.data.mapping.service.DDMTemplateVersionLocalService;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -24,6 +27,11 @@ import org.osgi.service.component.annotations.Reference;
 @Component(immediate = true, service = Template.class)
 public class TemplateImpl extends ADTImpl implements Template {
     private static final Log LOG = LogFactoryUtil.getLog(TemplateImpl.class);
+
+    @Reference
+    private ClassNameLocalService classNameLocalService;
+    @Reference
+    private DefaultValue defaultValue;
 
     @Reference
     private DDMTemplateLinkLocalService dDMTemplateLinkLocalService;
@@ -90,5 +98,17 @@ public class TemplateImpl extends ADTImpl implements Template {
             LOG.error(String.format("PortalException while retrieving %s ", structureKey), e);
         }
         return ddmStructure;
+    }
+
+
+    @Reference
+    public void setDdmTemplateLocalService(DDMTemplateLocalService ddmTemplateLocalService) {
+        this.ddmTemplateLocalService = ddmTemplateLocalService;
+    }
+
+    @Reference
+    public void setDdmTemplateVersionLocalService(
+        DDMTemplateVersionLocalService ddmTemplateVersionLocalService) {
+        this.ddmTemplateVersionLocalService = ddmTemplateVersionLocalService;
     }
 }
