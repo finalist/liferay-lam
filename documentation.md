@@ -214,13 +214,22 @@ The following script shows how you can create a vocabulary:
 					typeSettings: "url=http://www.nu.nl",
 					type: "url"
 		)
+		
+		page( privatePage: true,
+			nameMap: ["nl_NL": "verborgen pagina", "en_US": "hidden page"],
+			titleMap: ["nl_NL": "titel verborgen pagina"],
+			descriptionMap: ["nl_NL": "omschrijving verborgen pagina"],
+			friendlyUrlMap: ["nl_NL": "/verborgenpagina", "en_US": "/hiddenpage"],
+			typeSettings: Templates.one_column,
+			hiddenPage: true
+		)	
 	}
 
 To create a site, you have to specify a map of names for the available locales. Make sure the default locale is present, as this will be the siteKey that you will later use for updating and deleting. You also have to specify a map of descriptions and a friendly URL. If you try to add a site that already exists, an error message will be logged.
 
 It is also possible to give a value to a custom field. Of course this custom field has to exist before you can give it a value here. CustomFields is a map where the key is the name of the custom field, and the value is the actual value you want to give it.
 
-Pages can be added to the site, as you can see in the example above. Pages also have a map of names, titles, descriptions and friendly URLS. Both the map of names and the map of friendly urls _always_ need an "en_US" translation, even if that language is not available on your Liferay instance. (This is due to a bug in Liferay.) You also have to specify what kind of template to use in a field called typeSettings. (This can theoretically also be used to specify what portlets to deploy on the page.) This field can also contain the url if you are creating a link to a webpage, instead of a regular page. You can also specify a parentURL. This is the friendly URL of the parent page. It is also possible to give a value to a custom field of the page. Of course this custom field has to exist before you can give it a value here. CustomFields is a map where the key is the name of the custom field, and the value is the actual value you want to give it.
+Pages can be added to the site, as you can see in the example above. Pages also have a map of names, titles, descriptions and friendly URLS. Both the map of names and the map of friendly urls _always_ need an "en_US" translation, even if that language is not available on your Liferay instance. (This is due to a bug in Liferay.) You also have to specify what kind of template to use in a field called typeSettings. (This can theoretically also be used to specify what portlets to deploy on the page.) This field can also contain the url if you are creating a link to a webpage, instead of a regular page. You can also specify a parentURL. This is the friendly URL of the parent page. It is also possible to give a value to a custom field of the page. Of course this custom field has to exist before you can give it a value here. CustomFields is a map where the key is the name of the custom field, and the value is the actual value you want to give it. If you want to hide a page from the navigation menu, you can add the hiddenPage property.
 
 This site will be created at the top level, and will be an open site. It will have the default restrictions on membership, will not inherit content, and will be immediately active.
 

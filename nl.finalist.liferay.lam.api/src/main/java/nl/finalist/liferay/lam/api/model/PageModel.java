@@ -13,10 +13,11 @@ public class PageModel {
 	private String typeSettings;
 	private String parentUrl;
 	private String type;
+	private boolean hiddenPage;
 	
 	public PageModel(boolean privatePage, Map<String, String> nameMap, Map<Locale, String> titleMap,
 			Map<Locale, String> descriptionMap, Map<String, String> friendlyUrlMap, String typeSettings, 
-			Map<String, String> customFields, String parentUrl, String type) {
+			Map<String, String> customFields, String parentUrl, String type, boolean hiddenPage) {
 		this.privatePage = privatePage;
 		this.nameMap = nameMap;
 		this.titleMap = titleMap;
@@ -26,6 +27,7 @@ public class PageModel {
 		this.customFields = customFields;
 		this.parentUrl = parentUrl;
 		this.setType(type);
+		this.hiddenPage = hiddenPage;
 	}
 	
 	public boolean isPrivatePage() {
@@ -89,11 +91,19 @@ public class PageModel {
 		this.type = type;
 	}
 
+	public boolean isHiddenPage() {
+		return hiddenPage;
+	}
+
+	public void setHiddenPage(boolean hiddenPage) {
+		this.hiddenPage = hiddenPage;
+	}
+
 	@Override
 	public String toString() {
 		return "PageModel [privatePage=" + privatePage + ", nameMap=" + nameMap + ", titleMap=" + titleMap
 				+ ", descriptionMap=" + descriptionMap + ", friendlyUrlMap=" + friendlyUrlMap + ", typeSettings="
 				+ typeSettings + ", customFields=" + customFields + ", parentUrl="+parentUrl+", type ="
-				+ type + "]";
+				+ type + ", hidden = "+ hiddenPage + "]";
 	}
 }

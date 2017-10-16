@@ -37,7 +37,7 @@ public class PageImpl implements Page {
             LocaleMapConverter.convert(page.getNameMap()),
             page.getTitleMap(),
             page.getDescriptionMap(), null, null,
-            page.getType(), page.getTypeSettings(), false,
+            page.getType(), page.getTypeSettings(), page.isHiddenPage(),
             LocaleMapConverter.convert(page.getFriendlyUrlMap()),
             new ServiceContext());
 
@@ -75,7 +75,8 @@ public class PageImpl implements Page {
         byte[] iconBytes = new byte[0];
         pageService.updateLayout(groupId, page.isPrivatePage(), layoutId, determineParentId(groupId, page),
             LocaleMapConverter.convert(page.getNameMap()), page.getTitleMap(),
-            page.getDescriptionMap(), null, null, page.getType(), false, LocaleMapConverter.convert(page.getFriendlyUrlMap()), false, iconBytes, new ServiceContext());
+            page.getDescriptionMap(), null, null, page.getType(), page.isHiddenPage(), 
+            LocaleMapConverter.convert(page.getFriendlyUrlMap()), false, iconBytes, new ServiceContext());
         LOG.info(String.format("Page %s updated", page.getNameMap().get(LocaleUtil.getSiteDefault())));
     }
 

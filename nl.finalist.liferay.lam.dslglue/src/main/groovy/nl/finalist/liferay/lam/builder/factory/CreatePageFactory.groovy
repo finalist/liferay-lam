@@ -15,7 +15,11 @@ class CreatePageFactory extends AbstractFactory {
 
     @Override
     Object newInstance(FactoryBuilderSupport builder, Object objectName, Object value, Map attributes)
-                    throws InstantiationException, IllegalAccessException {                    
+                    throws InstantiationException, IllegalAccessException {   
+        boolean hiddenPage = false;
+        if (attributes.get("hiddenPage") != null) {
+        	hiddenPage = attributes.get("hiddenPage");
+        }                  
         new PageModel(
             attributes.get("privatePage"),
             LocaleMapConverter.convert(attributes.get("nameMap")),
@@ -25,7 +29,8 @@ class CreatePageFactory extends AbstractFactory {
             attributes.get("typeSettings"),
             attributes.get("customFields"),
             attributes.get("parentUrl"),
-            attributes.get("type")
+            attributes.get("type"),
+            hiddenPage
     	);
     }
 
