@@ -1,5 +1,6 @@
 package nl.finalist.liferay.lam.api.model;
 
+import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 
@@ -16,7 +17,25 @@ public class PageModel {
 	private String parentUrl;
 	private String type;
 	
-	
+	public PageModel(LinkedHashMap<String, Object> map) {
+		this((String)map.get("siteKey"), (Boolean)map.get("privatePage"), (Map)map.get("nameMap"), (Map)map.get("titleMap"),
+				(Map)map.get("descriptionMap"), (Map)map.get("friendlyUrlMap"), (String)map.get("typeSettings"), 
+				(Map)map.get("customFields"), (String)map.get("parentUrl"), (String)map.get("type"));
+	}
+    public PageModel(String siteKey, boolean privatePage, Map<String, String> nameMap, Map<Locale, String> titleMap,
+            Map<Locale, String> descriptionMap, Map<String, String> friendlyUrlMap, String typeSettings, 
+            Map<String, String> customFields, String parentUrl, String type) {
+        this.privatePage = privatePage;
+        this.nameMap = nameMap;
+        this.titleMap = titleMap;
+        this.descriptionMap = descriptionMap;
+        this.friendlyUrlMap = friendlyUrlMap;
+        this.typeSettings = typeSettings;
+        this.customFields = customFields;
+        this.parentUrl = parentUrl;
+        this.setType(type);
+    }
+
 	public boolean isPrivatePage() {
 		return privatePage;
 	}
