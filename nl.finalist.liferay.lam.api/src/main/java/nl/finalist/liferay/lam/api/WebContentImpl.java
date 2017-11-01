@@ -67,31 +67,6 @@ public class WebContentImpl implements WebContent {
 
     private static final Log LOG = LogFactoryUtil.getLog(WebContentImpl.class);
 
-    //    @Override
-    //    public void addWebContent(Map<Locale, String> titleMap, Map<Locale, String> descriptionMap, String content,
-    //                    String urlTitle) {
-    //        try {
-    //            LOG.debug(" Starting to add the article");
-    //            JournalArticle article = journalArticleService.fetchArticleByUrlTitle(defaultValue.getGlobalGroupId(), urlTitle);
-    //            if (article == null) {
-    //                ServiceContext serviceContext = new ServiceContext();
-    //                serviceContext.setScopeGroupId(defaultValue.getGlobalGroupId());
-    //                serviceContext.setCurrentURL(urlTitle);
-    //                journalArticleService.addArticle(defaultValue.getDefaultUserId(), defaultValue.getGlobalGroupId(),
-    //                                DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, titleMap, descriptionMap,
-    //                                processJournalArticleContent(content), "BASIC-WEB-CONTENT", "BASIC-WEB-CONTENT",
-    //                                serviceContext);
-    //
-    //                LOG.info(String.format("Added an article with Title Url as %s", urlTitle));
-    //            } else {
-    //                LOG.info(String.format("article with the URL Title %s already exists , so addition was not succesful",
-    //                                urlTitle));
-    //            }
-    //        } catch (PortalException e) {
-    //            LOG.error(e);
-    //        }
-    //    }
-
     @Override
     public void createOrUpdateWebcontent(String articleId, String siteFriendlyURL, Map<Locale,String> titleMap, String fileUrl, Bundle bundle,
                     String urlTitle, String structureKey, String templateKey){
