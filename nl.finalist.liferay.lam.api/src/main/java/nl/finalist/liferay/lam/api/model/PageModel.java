@@ -16,6 +16,7 @@ public class PageModel {
 	private String typeSettings;
 	private String parentUrl;
 	private String type;
+	private boolean hiddenPage;
 	
 	public PageModel(LinkedHashMap<String, Object> map) {
 		this((String)map.get("siteKey"), (Boolean)map.get("privatePage"), (Map)map.get("nameMap"), (Map)map.get("titleMap"),
@@ -97,6 +98,16 @@ public class PageModel {
 		this.type = type;
 	}
 
+
+	public boolean isHiddenPage() {
+		return hiddenPage;
+	}
+
+	public void setHiddenPage(boolean hiddenPage) {
+		this.hiddenPage = hiddenPage;
+
+	}
+
 	public void setSiteKey(String siteKey) {
 		this.siteKey = siteKey;
 	}
@@ -110,7 +121,7 @@ public class PageModel {
 		return "PageModel [privatePage=" + privatePage + ", nameMap=" + nameMap + ", titleMap=" + titleMap
 				+ ", descriptionMap=" + descriptionMap + ", friendlyUrlMap=" + friendlyUrlMap + ", typeSettings="
 				+ typeSettings + ", customFields=" + customFields + ", parentUrl="+parentUrl+", type ="
-				+ type + "]";
+				+ type + ", hidden = "+ hiddenPage + "]";
 	}
 
 }

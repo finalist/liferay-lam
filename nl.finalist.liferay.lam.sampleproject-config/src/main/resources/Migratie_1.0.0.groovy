@@ -199,6 +199,14 @@ create.site(
 				typeSettings: "url=http://www.nu.nl",
 				type: "url"
 	)
+	page( privatePage: true,
+		nameMap: ["nl_NL": "verborgen pagina", "en_US": "hidden page"],
+		titleMap: ["nl_NL": "titel verborgen pagina"],
+		descriptionMap: ["nl_NL": "omschrijving verborgen pagina"],
+		friendlyUrlMap: ["nl_NL": "/verborgenpagina", "en_US": "/hiddenpage"],
+		typeSettings: Templates.one_column,
+		hiddenPage: true
+	)	
 }
 
 createOrUpdate.structure(

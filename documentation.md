@@ -214,13 +214,22 @@ The following script shows how you can create a vocabulary:
 					typeSettings: "url=http://www.nu.nl",
 					type: "url"
 		)
+		
+		page( privatePage: true,
+			nameMap: ["nl_NL": "verborgen pagina", "en_US": "hidden page"],
+			titleMap: ["nl_NL": "titel verborgen pagina"],
+			descriptionMap: ["nl_NL": "omschrijving verborgen pagina"],
+			friendlyUrlMap: ["nl_NL": "/verborgenpagina", "en_US": "/hiddenpage"],
+			typeSettings: Templates.one_column,
+			hiddenPage: true
+		)	
 	}
 
 To create a site, you have to specify a map of names for the available locales. Make sure the default locale is present, as this will be the siteKey that you will later use for updating and deleting. You also have to specify a map of descriptions and a friendly URL. If you try to add a site that already exists, an error message will be logged.
 
 It is also possible to give a value to a custom field. Of course this custom field has to exist before you can give it a value here. CustomFields is a map where the key is the name of the custom field, and the value is the actual value you want to give it.
 
-Pages can be added to the site, as you can see in the example above. Pages also have a map of names, titles, descriptions and friendly URLS. Both the map of names and the map of friendly urls _always_ need an "en_US" translation, even if that language is not available on your Liferay instance. (This is due to a bug in Liferay.) You also have to specify what kind of template to use in a field called typeSettings. (This can theoretically also be used to specify what portlets to deploy on the page.) This field can also contain the url if you are creating a link to a webpage, instead of a regular page. You can also specify a parentURL. This is the friendly URL of the parent page. It is also possible to give a value to a custom field of the page. Of course this custom field has to exist before you can give it a value here. CustomFields is a map where the key is the name of the custom field, and the value is the actual value you want to give it.
+Pages can be added to the site, as you can see in the example above. Pages also have a map of names, titles, descriptions and friendly URLS. Both the map of names and the map of friendly urls _always_ need an "en_US" translation, even if that language is not available on your Liferay instance. (This is due to a bug in Liferay.) You also have to specify what kind of template to use in a field called typeSettings. (This can theoretically also be used to specify what portlets to deploy on the page.) This field can also contain the url if you are creating a link to a webpage, instead of a regular page. You can also specify a parentURL. This is the friendly URL of the parent page. It is also possible to give a value to a custom field of the page. Of course this custom field has to exist before you can give it a value here. CustomFields is a map where the key is the name of the custom field, and the value is the actual value you want to give it. If you want to hide a page from the navigation menu, you can add the hiddenPage property.
 
 This site will be created at the top level, and will be an open site. It will have the default restrictions on membership, will not inherit content, and will be immediately active.
 
@@ -416,11 +425,19 @@ The following script gives an example of adding or updating a template for webco
 
 As you can see you need to define a file in either Freemarker or Velocity format containing the actual template and then you have to pass along the location and name of the file, along with a localized map of descriptions and names. The template key is an identifier that you can use later to refer to this template. You also have to indicate which structure this template is meant for, here you should use the structureKey that was defined before.
 	
+<<<<<<< HEAD
 
 ## ADT
 ### create
 The following script gives an example of creating or updating an ADT:
 
+=======
+
+## ADT
+### create
+The following script gives an example of creating or updating an ADT:
+
+>>>>>>> abaf1df0fad9cc80efe3f09cdc139c6b0eaba26c
 	createOrUpdate.ADT(
 		file: "/adts/myADT.vm",
 		adtKey: "MY-ADT",
@@ -433,6 +450,7 @@ The following script gives an example of creating or updating an ADT:
 			"nl_NL": "MyADT", 
 			"en_US": "MyADT"
 		]
+<<<<<<< HEAD
 	)
 
 As you can see you need to define a file in either Freemarker or Velocity format containing the actual ADT and then you have to pass along the location and name of the file, along with a localized map of descriptions and names. The ADT key is an identifier that you can use later to refer to this ADT. You also have to define the type of content that this ADT applies to.
@@ -469,6 +487,44 @@ The following script shows how you can create or update webcontent:
 	   id: "TSTNOSITE"
 	)
 
+=======
+	)
+
+As you can see you need to define a file in either Freemarker or Velocity format containing the actual ADT and then you have to pass along the location and name of the file, along with a localized map of descriptions and names. The ADT key is an identifier that you can use later to refer to this ADT. You also have to define the type of content that this ADT applies to.
+
+At the moment the following types are supported:
+
+| ADT type |
+|---|
+| ASSET_PUBLISHER |
+| DOCUMENTS_AND_MEDIA |
+| CATEGORY_NAVIGATION |
+| BREADCRUMBS |
+| NAVIGATION_MENU |
+| TAG_NAVIGATION |
+| BLOGS |
+| SITEMAP |
+| LANGUAGE_SELECTOR |
+| WIKI |
+| RSS_PUBLISHER |
+
+# WebContent
+You can create, update and delete webcontent.
+
+## CreateOrUpdate
+The following script shows how you can create or update webcontent:
+
+	createOrUpdate.webcontent(
+		titleMap: [
+			"en_US": "TestNOSITE", 
+			"nl_NL": "TestNOSITE"
+		],
+		urlTitle: "test-nosite",
+	   file: "/articles/testNoSite.xml",
+	   id: "TSTNOSITE"
+	)
+
+>>>>>>> abaf1df0fad9cc80efe3f09cdc139c6b0eaba26c
 As you can see you have to define the content as an xml file and then you have to pass along the location and name of the file, along with a localized map of titles. You also have to define the url title and the article id of the content. If you do not specify anything else, the webcontent that is created does not have a specific structure or template and will be added to the default site.
 
 It is also possible to specify structure, template and site. The following script shows how you do that:

@@ -1,6 +1,5 @@
 package nl.finalist.liferay.lam.builder.factory
 
-import nl.finalist.liferay.lam.api.model.PageModel
 import nl.finalist.liferay.lam.util.LocaleMapConverter
 import nl.finalist.liferay.lam.api.Site;
 import nl.finalist.liferay.lam.dslglue.model.SiteModel;

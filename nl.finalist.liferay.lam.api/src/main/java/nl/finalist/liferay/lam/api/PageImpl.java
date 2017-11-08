@@ -42,6 +42,7 @@ public class PageImpl implements Page {
         if (Validator.isNull(page.getType())) {
             page.setType("portlet");
         }
+
         Group site = groupService.fetchGroup(defaultValue.getDefaultCompany().getCompanyId(), siteKey);
 
         Layout layout = null;
@@ -51,7 +52,7 @@ public class PageImpl implements Page {
                 LocaleMapConverter.convert(page.getNameMap()),
                 page.getTitleMap(),
                 page.getDescriptionMap(), null, null,
-                page.getType(), page.getTypeSettings(), false,
+                page.getType(), page.getTypeSettings(), page.isHiddenPage(),
                 LocaleMapConverter.convert(page.getFriendlyUrlMap()),
                 new ServiceContext());
         } catch (PortalException e) {
@@ -60,7 +61,7 @@ public class PageImpl implements Page {
 
         LOG.info(String.format("Page '%s' with url '%s' added", 
             layout.getName(LocaleUtil.ENGLISH, true), layout.getFriendlyURL()));
-        
+
         Map<String, String> customFields = page.getCustomFields();
         if (customFields != null) {
             for (String fieldName : customFields.keySet()) {
