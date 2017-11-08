@@ -1,10 +1,17 @@
 package nl.finalist.liferay.lam.api;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
+import com.liferay.counter.kernel.service.CounterLocalService;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.StringPool;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,20 +28,13 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import com.liferay.counter.kernel.service.CounterLocalService;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.model.GroupConstants;
-import com.liferay.portal.kernel.model.Layout;
-import com.liferay.portal.kernel.service.GroupLocalService;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.PropsUtil;
-import com.liferay.portal.kernel.util.StringPool;
-
 import nl.finalist.liferay.lam.api.model.PageModel;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ LocaleUtil.class, SiteImpl.class, PropsUtil.class, Locale.class, PortalUtil.class,
@@ -240,7 +240,9 @@ public class SiteImplTest {
 		testLocaleMap.put(Locale.US, "test");
 		Map<String,String> testStringMap  = new HashMap<String, String>();
 		testStringMap.put(Locale.US.toString(), "friendlyName");
+
 		PageModel page = new PageModel(true, testStringMap, testLocaleMap, testLocaleMap, createFriendlyUrlMap(), StringPool.BLANK,createCustomFields(), null, "portlet", false);
+
 		return page;
 	}
 
@@ -256,7 +258,9 @@ public class SiteImplTest {
 		Map<String,String> testStringMap  = new HashMap<String, String>();
 		testStringMap.put(Locale.US.toString(), "friendlyChildName");
 		Map<String, String> testUrlMap = createFriendlyUrlMap();
+
 		PageModel page = new PageModel(true, testStringMap, testLocaleMap, testLocaleMap, testUrlMap, StringPool.BLANK,createCustomFields(), "/friendlyNameus", "portlet", false);
+
 		return page;
 	}
 }

@@ -370,40 +370,135 @@ The following script shows how you can delete a vocabulary:
 As you can see, you have to specify the name and the description. It is also possible to give a value to a custom field.
 Of course this custom field has to exist before you can give it a value here. CustomFields is a map where the key is
 the name of the custom field, and the value is the actual value you want to give it.
+
+#Pages
+Besides in the context of a site, you can also create, update and delete on their own. The syntax is mostly the same, but in this case you also have to pass along the siteKey. The following script gives a brief example of creating a page:
+
+	create.page(
+        siteKey: "Fictional Bank",
+        privatePage: false,
+        nameMap: [
+        	"en_US": "Fictional bank2", 
+        	"nl_NL": "Fictieve bank2"
+        ]
+	) 
+
+This is the most minimalistic way to create a page. You pass along the siteKey (which is the name of the site that you must have defined elsewhere), indicate whether the page is private or not and pass along the name map. 
+
+#Structures and templates
+You can create or update templates, structures and ADT's as well.
+
+## Structure
+The following script gives an example of adding or updating a structure for webcontent:
+
+	createOrUpdate.structure(
+		file: "/structures/myStructure.json",
+		descriptionMap: [
+			"nl_NL": "Dit is een test structure", 
+			"en_US": "This is a test structure"
+		],
+		nameMap: [
+			"nl_NL": "MyStructure", 
+			"en_US": "MyStructure"
+		],
+		structureKey: "MY-STRUCTURE"
+	)
+
+As you can see you need to define a file in json format containing the actual structure and then you have to pass along the location and name of the file, along with a localized map of descriptions and names. The structure key is an identifier that you can use later to refer to this structure.
+
+## Template
+The following script gives an example of adding or updating a template for webcontent:
+
+	createOrUpdate.template(
+		file: "/templates/myTemplate.vm",
+		forStructure: "MY-STRUCTURE",
+		templateKey: "MY-TEMPLATE",
+		descriptionMap: [
+			"nl_NL": "Dit is een test template", 
+			"en_US": "This is a test template"
+		],
+		nameMap: [
+			"nl_NL": "MyTemplate", 
+			"en_US": "MyTemplate"
+		]
+	)
+
+As you can see you need to define a file in either Freemarker or Velocity format containing the actual template and then you have to pass along the location and name of the file, along with a localized map of descriptions and names. The template key is an identifier that you can use later to refer to this template. You also have to indicate which structure this template is meant for, here you should use the structureKey that was defined before.
+	
+
+## ADT
+### create
+The following script gives an example of creating or updating an ADT:
+
+	createOrUpdate.ADT(
+		file: "/adts/myADT.vm",
+		adtKey: "MY-ADT",
+		type: ADTTypes.ASSET_PUBLISHER,
+		descriptionMap: [
+			"nl_NL": "Dit is een test adt", 
+			"en_US": "This is a test adt"
+		],
+		nameMap: [
+			"nl_NL": "MyADT", 
+			"en_US": "MyADT"
+		]
+	)
+
+As you can see you need to define a file in either Freemarker or Velocity format containing the actual ADT and then you have to pass along the location and name of the file, along with a localized map of descriptions and names. The ADT key is an identifier that you can use later to refer to this ADT. You also have to define the type of content that this ADT applies to.
+
+At the moment the following types are supported:
+
+| ADT type |
+|---|
+| ASSET_PUBLISHER |
+| DOCUMENTS_AND_MEDIA |
+| CATEGORY_NAVIGATION |
+| BREADCRUMBS |
+| NAVIGATION_MENU |
+| TAG_NAVIGATION |
+| BLOGS |
+| SITEMAP |
+| LANGUAGE_SELECTOR |
+| WIKI |
+| RSS_PUBLISHER |
+
 # WebContent
 You can create, update and delete webcontent.
 
-## Create
-The following script shows how you can create a category to a vocabulary:
+## CreateOrUpdate
+The following script shows how you can create or update webcontent:
 
-	create.webcontent(
-	titleMap:["en_US": "SomeWebcontent title in locale US english"],
-	descriptionMap: ["en_US": "Description of the webcontent in Locale US english"],
-	content : "Content of the webcontent",
-	urlTitle: "UrlTitle of the webcontent"
-)
-
-
-As you can see, all you have to do is to specify titleMap , descriptionMap, content and urlTitle of the webcontent. Default locale should be present in titleMap and descriptionMap otherwise webcontent is not added.
-
-## Update
-The following script shows how you can update a webcontent:
-
-	update.webcontent(
-	titleMap:["en_US" :"Update the title of the webcontent"],
-	descriptionMap:["en_US":"Update the description of the webcontent"],
-	content: "content of the webcontent to be updated",
-	urlTitle: "Existing urlTitle"
+	createOrUpdate.webcontent(
+		titleMap: [
+			"en_US": "TestNOSITE", 
+			"nl_NL": "TestNOSITE"
+		],
+		urlTitle: "test-nosite",
+	   file: "/articles/testNoSite.xml",
+	   id: "TSTNOSITE"
 	)
 
-To update a webcontent, you have to specify the titleMap, the desciprionMap and the contenet which is to be updated to with the  existing urlTitle. If the webcontent with UrlTitle doesn't exist then it is considered to be a new webcontent and added.
+As you can see you have to define the content as an xml file and then you have to pass along the location and name of the file, along with a localized map of titles. You also have to define the url title and the article id of the content. If you do not specify anything else, the webcontent that is created does not have a specific structure or template and will be added to the default site.
+
+It is also possible to specify structure, template and site. The following script shows how you do that:
+
+	createOrUpdate.webcontent(
+		titleMap: ["en_US": "TestWebcontent", "nl_NL": "TestWebcontent"],
+		urlTitle: "test-webcontent",
+	    file: "/articles/testWebcontent.xml",
+	    id: "TSTWBCNT",
+	    forSite:"/automatedTestSite",
+	    forStructure:"MY-STRUCTURE",
+	    forTemplate:"MY-TEMPLATE"
+	)
+	
+The field 'forSite' contains the friendlyUrl of the site. The fields 'forStructure' and 'forTemplate' refer to the keys of the structure and the template respectively.
 
 ## Delete
 The following script shows how you can delete a category:
 
 	delete.webcontent(
-	urlTitle: "some-url-title"
+		urlTitle: "some-url-title"
 	)
-	
 	
 As you can see, all you have to do is to specify the Url title of the webcontent to be deleted . If the webcontent doesn't exist, an info message that deletion was not possible will be logged.

@@ -9,37 +9,19 @@ import java.util.Map;
 import org.osgi.framework.Bundle;
 
 public interface WebContent {
-    //    /**
-    //     * Adds webcontent to the Global group/site
-    //     *
-    //     * @param titleMap
-    //     *            map of locale and title to be added
-    //     * @param descriptionMap
-    //     *            map of locale and description to be added
-    //     * @param content
-    //     *            content of the web content to be added.
-    //     * @param urlTitle
-    //     *            urlTitle of the Existing added
-    //     */
-    //    void addWebContent(Map<Locale, String> titleMap, Map<Locale, String> descriptionMap, String content,
-    //                    String urlTitle);
-    //
-    //    /**
-    //     * updates webcontent to the Global group/site
-    //     *
-    //     * @param newTitle
-    //     *            map of locale and title to be updated
-    //     * @param descriptionMap
-    //     *            map of locale and description to be updated
-    //     * @param content
-    //     *            content of the web content to be updated.
-    //     * @param urlTitle
-    //     *            urlTitle of the Existing webcontent
-    //     */
-    //    void updateWebContent(Map<Locale, String> newTitle, Map<Locale, String> descriptionMap, String content,
-    //                    String urlTitle);
 
-
+	/**
+	 * Create or update webcontent.
+	 * 
+	 * @param articleId id of the webcontent
+	 * @param siteFriendlyURL map of locale and site friendly urls
+	 * @param titleMap map of locale and title
+	 * @param fileUrl The String relative url to the webcontent xml file 
+	 * @param bundle OSGi bundle containing the file
+	 * @param urlTitle urlTitle of the webcontent
+	 * @param structureKey Key of the structure that is used for this content
+	 * @param templateKey Key of the template that is used for this content
+	 */
     void createOrUpdateWebcontent(String articleId, String siteFriendlyURL, Map<Locale,String> titleMap, String fileUrl, Bundle bundle,
                     String urlTitle, String structureKey, String templateKey);
     /**

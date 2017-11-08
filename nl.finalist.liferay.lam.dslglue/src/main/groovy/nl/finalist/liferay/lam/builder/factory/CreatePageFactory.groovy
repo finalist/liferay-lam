@@ -3,20 +3,20 @@ package nl.finalist.liferay.lam.builder.factory
 import nl.finalist.liferay.lam.api.Page
 import nl.finalist.liferay.lam.api.model.PageModel
 import nl.finalist.liferay.lam.dslglue.model.SiteModel
-import nl.finalist.liferay.lam.util.LocaleMapConverter
+
 class CreatePageFactory extends AbstractFactory {
 
     Page pageService;
 
-    CreatePageFactory(Page site) {
-        this.pageService = site;
+    CreatePageFactory(Page pageService) {
+        this.pageService = pageService;
     }
 
-
-    @Override
+    
+     @Override
     Object newInstance(FactoryBuilderSupport builder, Object objectName, Object value, Map attributes)
-                    throws InstantiationException, IllegalAccessException {   
-        boolean hiddenPage = false;
+                    throws InstantiationException, IllegalAccessException {
+                 boolean hiddenPage = false;
         if (attributes.get("hiddenPage") != null) {
         	hiddenPage = attributes.get("hiddenPage");
         }                  
@@ -41,7 +41,7 @@ class CreatePageFactory extends AbstractFactory {
             SiteModel site = (SiteModel)parent;
             site.addPage((PageModel)node);
         } else {
-            /// Help, standalone pages don't work anymore!!
+            pageService.addPage(((PageModel)node).getSiteKey(), (PageModel) node)
         }
     }
 }

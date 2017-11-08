@@ -24,7 +24,7 @@ public interface Page {
 	/**
 	 * Update a page (in Liferay called layout) of type 'portlet' to a site (in Liferay called
 	 * group)
-	 * 
+	 *
 	 * @param layoutId
 	 *            Id of the page to be update
 	 * @param groupId
@@ -34,11 +34,11 @@ public interface Page {
 	 * @throws PortalException
 	 */
 	void updatePage(long layoutId, long groupId, long groupPrimaryKey, PageModel page) throws PortalException;
-	
+
 	/**
 	 * fetch a page (in Liferay called layout) to a site (in Liferay called
 	 * group)
-	 * 
+	 *
 	 * @param privateLayout
 	 *            whether the layout is private to the group
 	 * @param groupId
