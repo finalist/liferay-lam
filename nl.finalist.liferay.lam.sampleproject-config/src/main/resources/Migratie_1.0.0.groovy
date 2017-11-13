@@ -246,3 +246,11 @@ createOrUpdate.webcontent(
     file: "/articles/testNoSite.xml",
     id: "TSTNOSITE"
 )
+create.tag(
+	name: "testtag",
+	forSite: "/automatedTestSite"
+)
+delete.tag(
+	name: "testtag",
+	forSite: "/automatedTestSite"
+)

@@ -9,12 +9,15 @@ import java.io.Reader;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
 import org.osgi.framework.Bundle;
-import org.osgi.service.component.annotations.*;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import nl.finalist.liferay.lam.api.*;
 import nl.finalist.liferay.lam.builder.*;
+import nl.finalist.liferay.lam.builder.factory.*;
 
 
 
@@ -53,6 +56,8 @@ public class DslExecutor implements Executor {
     private Page pageService;
     @Reference
     private WebContent webContentService;
+    @Reference
+    private Tag tagService;
 
     @Activate
     public void activate() {
@@ -68,11 +73,11 @@ public class DslExecutor implements Executor {
         // Add all available API classes to the context of the scripts
         sharedData.setVariable("LOG", LOG);
 
-        sharedData.setVariable("create", new CreateFactoryBuilder(customFieldsService, vocabularyService, siteService, categoryService, userGroupsService, roleAndPermissionsService, pageService));
+        sharedData.setVariable("create", new CreateFactoryBuilder(customFieldsService, vocabularyService, siteService, categoryService, userGroupsService, roleAndPermissionsService, pageService, tagService));
 
         sharedData.setVariable("update", new UpdateFactoryBuilder(portalSettingsService, vocabularyService, siteService, categoryService, webContentService));
         sharedData.setVariable("validate", new ValidateFactoryBuilder(portalPropertiesService));
-        sharedData.setVariable("delete", new DeleteFactoryBuilder(customFieldsService, vocabularyService, siteService, categoryService, webContentService));
+        sharedData.setVariable("delete", new DeleteFactoryBuilder(customFieldsService, vocabularyService, siteService, categoryService, webContentService, tagService));
         sharedData.setVariable("createOrUpdate", new CreateOrUpdateFactoryBuilder(structureService,templateService, adtService, webContentService, bundle));
 
         sharedData.setVariable("Roles", new Roles());
