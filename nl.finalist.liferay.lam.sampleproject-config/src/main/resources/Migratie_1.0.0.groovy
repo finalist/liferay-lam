@@ -250,7 +250,6 @@ create.user(
 	screenName:"t.testing",
 	firstName:"test",
 	lastName:"testing",
-	newScreenName:"t.testing",
 	emailAddress: "t.testing@testing.nl"
 )
 update.user(
