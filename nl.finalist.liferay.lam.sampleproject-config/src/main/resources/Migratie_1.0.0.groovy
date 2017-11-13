@@ -246,3 +246,21 @@ createOrUpdate.webcontent(
     file: "/articles/testNoSite.xml",
     id: "TSTNOSITE"
 )
+create.user(
+	screenName:"t.testing",
+	firstName:"test",
+	lastName:"testing",
+	newScreenName:"t.testing",
+	emailAddress: "t.testing@testing.nl"
+)
+update.user(
+	screenName:"t.testing",
+	newScreenName:"t.testinga",
+	lastName:"testinga",
+	roles:[Roles.admin],
+	sites:["/automatedTestSite"]
+)
+delete.user(
+screenName: "t.testinga"
+)
+

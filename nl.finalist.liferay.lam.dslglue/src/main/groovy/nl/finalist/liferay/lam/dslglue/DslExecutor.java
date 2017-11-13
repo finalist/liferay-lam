@@ -53,6 +53,8 @@ public class DslExecutor implements Executor {
     private Page pageService;
     @Reference
     private WebContent webContentService;
+    @Reference
+    private User userService;
 
     @Activate
     public void activate() {
@@ -68,12 +70,16 @@ public class DslExecutor implements Executor {
         // Add all available API classes to the context of the scripts
         sharedData.setVariable("LOG", LOG);
 
-        sharedData.setVariable("create", new CreateFactoryBuilder(customFieldsService, vocabularyService, siteService, categoryService, userGroupsService, roleAndPermissionsService, pageService));
+        sharedData.setVariable("create", new CreateFactoryBuilder(customFieldsService, vocabularyService, siteService, 
+                        categoryService, userGroupsService, roleAndPermissionsService, pageService, userService));
 
-        sharedData.setVariable("update", new UpdateFactoryBuilder(portalSettingsService, vocabularyService, siteService, categoryService, webContentService));
+        sharedData.setVariable("update", new UpdateFactoryBuilder(portalSettingsService, vocabularyService, siteService, 
+                        categoryService, userService));
         sharedData.setVariable("validate", new ValidateFactoryBuilder(portalPropertiesService));
-        sharedData.setVariable("delete", new DeleteFactoryBuilder(customFieldsService, vocabularyService, siteService, categoryService, webContentService));
-        sharedData.setVariable("createOrUpdate", new CreateOrUpdateFactoryBuilder(structureService,templateService, adtService, webContentService, bundle));
+        sharedData.setVariable("delete", new DeleteFactoryBuilder(customFieldsService, vocabularyService, siteService, 
+                        categoryService, webContentService, userService));
+        sharedData.setVariable("createOrUpdate", new CreateOrUpdateFactoryBuilder(structureService,templateService, 
+                        adtService, webContentService, bundle));
 
         sharedData.setVariable("Roles", new Roles());
         sharedData.setVariable("Entities", new Entities());
