@@ -310,12 +310,37 @@ To update a category, you have to specify the name of the category, the vocabula
 The following script shows how you can delete a category:
 
 	delete.category(
-	title: "categoryName",
-	vocabularyName: "TestVocabulary"
+		title: "categoryName",
+		vocabularyName: "TestVocabulary"
 	)
 	
 As you can see, all you have to do is to specify the title of the default locale  to be deleted and the vocabulary name where the category exists. If the categroy doesn't exist in the given vocabulary name, an error message will be logged.
 
+# Tag
+You can create and delete tags for specific sites or to the global scope
+
+## Create 
+The following script shows how you can create a tag for a specific site:
+
+	create.tag(
+		name: "testtag",
+		forSite: "/automatedTestSite"
+	)
+As you can see, all you have to specify is the name and the friendly url for the site you want the tag added to. If you want to add a tag to the global scope, you can write the script with just the name like so:
+	create.tag(
+		name: "globaltag"
+	)
+	
+	
+## Delete
+The following script shows how you can delete a tag for a specific site:
+	delete.tag(
+		name: "testtag",
+		forSite: "/automatedTestSite"
+	)
+
+All you have to specify is the name and site, just like with the creation of tags. If you want to delete a tag from the global scope you can just omit the forSite variable. 
+	
 # Roles and permissions
 You can add roles with permissions.
 
