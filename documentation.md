@@ -327,6 +327,7 @@ The following script shows how you can create a tag for a specific site:
 		forSite: "/automatedTestSite"
 	)
 As you can see, all you have to specify is the name and the friendly url for the site you want the tag added to. If you want to add a tag to the global scope, you can write the script with just the name like so:
+
 	create.tag(
 		name: "globaltag"
 	)
@@ -334,13 +335,18 @@ As you can see, all you have to specify is the name and the friendly url for the
 	
 ## Delete
 The following script shows how you can delete a tag for a specific site:
+
 	delete.tag(
 		name: "testtag",
 		forSite: "/automatedTestSite"
 	)
 
 All you have to specify is the name and site, just like with the creation of tags. If you want to delete a tag from the global scope you can just omit the forSite variable. 
-	
+
+    delete.tag(
+        name: "globaltag"
+    )
+
 # Roles and permissions
 You can add roles with permissions.
 
