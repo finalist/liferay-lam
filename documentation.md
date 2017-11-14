@@ -521,7 +521,7 @@ The following script shows you can create users:
 		userGroups: ["usergroup1"]
 	)
 As you can see, you have to define a screenname, a first name, a last name and an emailaddress. These fields are all required to add a user.
-Then there are some association fields like roles, sites & userGroups, these fields aren't required.	
+Then there are some association fields like roles, sites & userGroups, these fields aren't required.
 The field roles contains an array of the roles you want added for the user. See the chapter Roles on which roles you can use.
 The field sites contains an array of site friendly urls of the sites the user has to be a member of.
 The field userGroups contains an array of userGroup names that the user will be added to. If a role, site or userGroup can't be found with the provided name, it will not be added to the user.
@@ -535,14 +535,18 @@ So for example, the following script is also correct:
 		emailAddress: "t.testing@testing.nl"
 	)
 
+The password for the user will be generated and emailed to the emailAddress if a mail server has been configured at the server level.
+
 ##Update
 
 The following script shows how you can update users:
-update.user(
+
+    update.user(
 		screenName:"t.testing",
 		newScreenName:"t.testinga",
 		lastName:"testinga"
 	)
+
 The only required field is screenName, since this is used to find the user. All other fields are only updated if they are added in the script.
 If you want to update the screenName you have to add the field newScreenName. The old screenname has to be entered into the screenName field,
 so the user can still be found.
@@ -551,8 +555,8 @@ so the user can still be found.
 
 The following script shows how you can delete users:
 
-delete.user(
-	screenName: "t.testinga"
-)
+    delete.user(
+        screenName: "t.testinga"
+    )
 
 If a user with the given screenName is found it is deleted, otherwise no action is taken.

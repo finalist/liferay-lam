@@ -17,9 +17,7 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
@@ -73,7 +71,7 @@ public class UserImpl implements User {
         if (Validator.isNotNull(user)) {
             long[] roleIds = user.getRoleIds();
             long[] userGroupIds = user.getUserGroupIds();
-            if(Validator.isNotNull(groups) && !ArrayUtil.isEmpty(groups)){
+            if(!ArrayUtil.isEmpty(groups)){
                 long[] newGroupIds = getIdsFromNames(groups, "GROUP");
                 try {
                     userLocalService.updateGroups(user.getUserId(), newGroupIds, new ServiceContext());
@@ -81,7 +79,7 @@ public class UserImpl implements User {
                     LOG.info(String.format("PortalException while updating site memberships for user %s. Sites not updated.", screenName)+e);
                 }
             }
-            if(Validator.isNotNull(roles) && !ArrayUtil.isEmpty(roles)){
+            if(!ArrayUtil.isEmpty(roles)){
                 roleIds = getIdsFromNames(roles, "ROLE");
                 try {
                     roleLocalService.addUserRoles(user.getUserId(), roleIds);
@@ -89,17 +87,17 @@ public class UserImpl implements User {
                     LOG.info(String.format("PortalException while updating roles for user %s. Roles not updated", screenName)+e);
                 }
             }
-            if(Validator.isNotNull(userGroups) && !ArrayUtil.isEmpty(userGroups)){
+            if(!ArrayUtil.isEmpty(userGroups)){
                 userGroupIds = getIdsFromNames(userGroups, "USERGROUP");
                 usergroupLocalService.addUserUserGroups(user.getUserId(), userGroupIds);
             }
-            if(Validator.isNotNull(newScreenName) && !Validator.isBlank(newScreenName)){
+            if(!Validator.isBlank(newScreenName)){
                 user.setScreenName(newScreenName);
             }
-            if(Validator.isNotNull(emailAddress) && !Validator.isBlank(emailAddress)){
+            if(!Validator.isBlank(emailAddress)){
                 user.setEmailAddress(emailAddress);
             }
-            if(Validator.isNotNull(firstName) && !Validator.isBlank(firstName)){
+            if(!Validator.isBlank(firstName)){
                 user.setFirstName(firstName);
             }
             if(Validator.isNotNull(lastName) && !Validator.isBlank(lastName)){
@@ -133,17 +131,15 @@ public class UserImpl implements User {
     private com.liferay.portal.kernel.model.User getUserIfExists(String screenName) {
         Company company = defaultValue.getDefaultCompany();
         long companyId = company.getCompanyId();
-        com.liferay.portal.kernel.model.User user = userLocalService.fetchUserByScreenName(companyId, screenName);
-        return user;
+        return userLocalService.fetchUserByScreenName(companyId, screenName);
     }
 
     private long getGroupId(String siteFriendlyURL) {
         long companyId = defaultValue.getDefaultCompany().getCompanyId();
         long groupId = 0;
-        if (Validator.isNotNull(siteFriendlyURL) && !Validator.isBlank(siteFriendlyURL)) {
+        if (!Validator.isBlank(siteFriendlyURL)) {
             Group group = groupLocalService.fetchFriendlyURLGroup(companyId, siteFriendlyURL);
             if (Validator.isNotNull(group)) {
-                LOG.info("groupNAME "+ group.getName());
                 groupId = group.getGroupId();
             } else {
                 LOG.error(String.format("Site %s can not be found, user is added to global group", siteFriendlyURL));
@@ -156,10 +152,9 @@ public class UserImpl implements User {
     private long getRoleId(String name) {
         long companyId = defaultValue.getDefaultCompany().getCompanyId();
         long roleId = 0;
-        if (Validator.isNotNull(name) && !Validator.isBlank(name)) {
+        if (!Validator.isBlank(name)) {
             Role role = roleLocalService.fetchRole(companyId, name);
             if (Validator.isNotNull(role)) {
-                LOG.info("ROLENAME "+ role.getName());
                 roleId = role.getRoleId();
             } else {
                 LOG.error(String.format("Role %s can not be found, user is added without this role", name));
@@ -185,32 +180,21 @@ public class UserImpl implements User {
     }
 
     private long[] getIdsFromNames(String[] names, String type) {
-        List<Long> idList = new ArrayList<>();
-        if (Validator.isNull(names) || names.length < 1) {
+        if (ArrayUtil.isEmpty(names)) {
             return null;
-        } else if (type.equalsIgnoreCase("USERGROUP")) {
-            Arrays.stream(names).forEach(name -> {
-                long id = getUserGroupId(name);
-                if (Validator.isNotNull(id))
-                    ;
-                idList.add(id);
-            });
-        } else if (type.equalsIgnoreCase("ROLE")) {
-            Arrays.stream(names).forEach(name -> {
-                long id = getRoleId(name);
-                if (Validator.isNotNull(id))
-                    ;
-                idList.add(id);
-            });
         } else {
-            Arrays.stream(names).forEach(name -> {
-                long id = getGroupId(name);
-                if (Validator.isNotNull(id))
-                    ;
-                idList.add(id);
-            });
+            return Arrays.stream(names)
+                .mapToLong(name -> {
+                    switch (type) {
+                        case "USERGROUP":
+                            return getUserGroupId(name);
+                        case "ROLE":
+                            return getRoleId(name);
+                        default:
+                            return getGroupId(name);
+                    }
+                })
+                .toArray();
         }
-        return idList.stream().mapToLong(l -> l).toArray();
     }
-
 }
