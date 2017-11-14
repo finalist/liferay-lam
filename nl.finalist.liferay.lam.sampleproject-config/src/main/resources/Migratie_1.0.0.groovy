@@ -247,10 +247,27 @@ createOrUpdate.webcontent(
     id: "TSTNOSITE"
 )
 create.tag(
-	name: "testtag",
-	forSite: "/automatedTestSite"
+		name: "testtag",
+		forSite: "/automatedTestSite"
 )
 delete.tag(
-	name: "testtag",
-	forSite: "/automatedTestSite"
+		name: "testtag",
+		forSite: "/automatedTestSite"
 )
+create.user(
+	screenName:"t.testing",
+	firstName:"test",
+	lastName:"testing",
+	emailAddress: "t.testing@testing.nl"
+)
+update.user(
+	screenName:"t.testing",
+	newScreenName:"t.testinga",
+	lastName:"testinga",
+	roles:[Roles.admin],
+	sites:["/automatedTestSite"]
+)
+delete.user(
+screenName: "t.testinga"
+)
+

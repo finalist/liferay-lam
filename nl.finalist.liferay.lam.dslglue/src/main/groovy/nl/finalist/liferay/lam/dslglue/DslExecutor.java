@@ -15,9 +15,26 @@ import org.osgi.service.component.annotations.Reference;
 
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
-import nl.finalist.liferay.lam.api.*;
-import nl.finalist.liferay.lam.builder.*;
-import nl.finalist.liferay.lam.builder.factory.*;
+import nl.finalist.liferay.lam.api.ADT;
+import nl.finalist.liferay.lam.api.Category;
+import nl.finalist.liferay.lam.api.CustomFields;
+import nl.finalist.liferay.lam.api.Page;
+import nl.finalist.liferay.lam.api.PortalProperties;
+import nl.finalist.liferay.lam.api.PortalSettings;
+import nl.finalist.liferay.lam.api.RoleAndPermissions;
+import nl.finalist.liferay.lam.api.Site;
+import nl.finalist.liferay.lam.api.Structure;
+import nl.finalist.liferay.lam.api.Tag;
+import nl.finalist.liferay.lam.api.Template;
+import nl.finalist.liferay.lam.api.User;
+import nl.finalist.liferay.lam.api.UserGroups;
+import nl.finalist.liferay.lam.api.Vocabulary;
+import nl.finalist.liferay.lam.api.WebContent;
+import nl.finalist.liferay.lam.builder.CreateFactoryBuilder;
+import nl.finalist.liferay.lam.builder.CreateOrUpdateFactoryBuilder;
+import nl.finalist.liferay.lam.builder.DeleteFactoryBuilder;
+import nl.finalist.liferay.lam.builder.UpdateFactoryBuilder;
+import nl.finalist.liferay.lam.builder.ValidateFactoryBuilder;
 
 
 
@@ -57,6 +74,8 @@ public class DslExecutor implements Executor {
     @Reference
     private WebContent webContentService;
     @Reference
+    private User userService;
+    @Reference
     private Tag tagService;
 
     @Activate
@@ -73,12 +92,17 @@ public class DslExecutor implements Executor {
         // Add all available API classes to the context of the scripts
         sharedData.setVariable("LOG", LOG);
 
-        sharedData.setVariable("create", new CreateFactoryBuilder(customFieldsService, vocabularyService, siteService, categoryService, userGroupsService, roleAndPermissionsService, pageService, tagService));
+        sharedData.setVariable("create", new CreateFactoryBuilder(customFieldsService, vocabularyService, siteService,
+                        categoryService, userGroupsService, roleAndPermissionsService, pageService, tagService,
+                        userService));
 
-        sharedData.setVariable("update", new UpdateFactoryBuilder(portalSettingsService, vocabularyService, siteService, categoryService, webContentService));
+        sharedData.setVariable("update", new UpdateFactoryBuilder(portalSettingsService, vocabularyService,
+                        siteService, categoryService, userService));
         sharedData.setVariable("validate", new ValidateFactoryBuilder(portalPropertiesService));
-        sharedData.setVariable("delete", new DeleteFactoryBuilder(customFieldsService, vocabularyService, siteService, categoryService, webContentService, tagService));
-        sharedData.setVariable("createOrUpdate", new CreateOrUpdateFactoryBuilder(structureService,templateService, adtService, webContentService, bundle));
+        sharedData.setVariable("delete", new DeleteFactoryBuilder(customFieldsService, vocabularyService,
+                        siteService, categoryService, webContentService, tagService, userService));
+        sharedData.setVariable("createOrUpdate", new CreateOrUpdateFactoryBuilder(structureService,templateService,
+                        adtService, webContentService, bundle));
 
         sharedData.setVariable("Roles", new Roles());
         sharedData.setVariable("Entities", new Entities());

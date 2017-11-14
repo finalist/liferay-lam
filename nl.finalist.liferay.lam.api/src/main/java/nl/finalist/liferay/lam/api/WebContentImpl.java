@@ -21,9 +21,7 @@ import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
-import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MathUtil;
-import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
@@ -160,29 +158,6 @@ public class WebContentImpl implements WebContent {
         LOG.info(String.format("Article creation/update process completed ", articleId));
     }
 
-    //    @Override
-    //    public void updateWebContent(Map<Locale, String> newTitleMap, Map<Locale, String> newDescriptionMap, String content,
-    //                    String urlTitle) {
-    //        JournalArticle article = journalArticleService.fetchArticleByUrlTitle(defaultValue.getGlobalGroupId(), urlTitle);
-    //        LOG.info(" Starting to update the article");
-    //        if (article == null) {
-    //            addWebContent(newTitleMap, newDescriptionMap, content, urlTitle);
-    //            LOG.info(String.format("The article with UrlTitle %s does not exist yet, so it was added", urlTitle));
-    //        } else {
-    //            try {
-    //                ServiceContext serviceContext = new ServiceContext();
-    //                serviceContext.setScopeGroupId(defaultValue.getGlobalGroupId());
-    //                journalArticleService.updateArticle(defaultValue.getDefaultUserId(), defaultValue.getGlobalGroupId(), 0, article.getArticleId(),
-    //                                article.getVersion(), newTitleMap, newDescriptionMap,
-    //                                processJournalArticleContent(content), null, serviceContext);
-    //                LOG.info("Updated the article");
-    //            } catch (PortalException e) {
-    //                LOG.error(e);
-    //            }
-    //        }
-    //
-    //    }
-
     @Override
     public void deleteWebContent(String urlTitle) {
         JournalArticle article = journalArticleService.fetchArticleByUrlTitle(defaultValue.getGlobalGroupId(), urlTitle);
@@ -196,31 +171,6 @@ public class WebContentImpl implements WebContent {
             LOG.info(String.format("article with urlTitle %s doesn't exists so deletion was not possible", urlTitle));
         }
 
-    }
-
-    private String processJournalArticleContent(String content) {
-
-        if (content.contains("<?xml version=\"1.0\"")) {
-            return content;
-        }
-
-        StringBundler sb = new StringBundler(13);
-
-        sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-        sb.append("<root available-locales=\"");
-        sb.append(LocaleUtil.getDefault());
-        sb.append("\" default-locale=\"");
-        sb.append(LocaleUtil.getDefault());
-        sb.append("\">");
-        sb.append("<static-content language-id=\"");
-        sb.append(LocaleUtil.getDefault());
-        sb.append("\">");
-        sb.append("<![CDATA[");
-        sb.append(content);
-        sb.append("]]>");
-        sb.append("</static-content></root>");
-
-        return sb.toString();
     }
 
     public void setPermissions(String className, long primaryKey, long companyId) {
