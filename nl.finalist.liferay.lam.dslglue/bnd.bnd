@@ -1,6 +1,7 @@
 Bundle-Name: nl.finalist.liferay.lam.dslglue
 Bundle-SymbolicName: nl.finalist.liferay.lam.dslglue
-Bundle-Version: 0.1.1
+Bundle-Vendor: Finalist
+Bundle-Version: 0.3.0
 Export-Package: \
 	nl.finalist.liferay.lam.dslglue,\
 	nl.finalist.liferay.lam.builder
@@ -9,6 +10,7 @@ Include-Resource: \
  @jansi-*.jar,\
  @flyway-core-*.jar
 Import-Package: \
+nl.finalist.liferay.lam.api.model,\
  !com.thoughtworks.qdox.*,\
  !groovyjarjarasm.asm.tree.analysis.*,\
  !jline.*,\

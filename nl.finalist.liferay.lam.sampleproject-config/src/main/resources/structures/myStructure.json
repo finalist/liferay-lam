@@ -1,0 +1,31 @@
+{
+    "availableLanguageIds": [
+        "nl_NL"
+    ],
+    "defaultLanguageId": "nl_NL",
+    "fields": [
+        {
+            "label": {
+                "nl_NL": "First Field"
+            },
+            "predefinedValue": {
+                "nl_NL": ""
+            },
+            "style": {
+                "nl_NL": ""
+            },
+            "tip": {
+                "nl_NL": ""
+            },
+            "dataType": "string",
+            "indexType": "keyword",
+            "localizable": true,
+            "name": "firstField",
+            "readOnly": false,
+            "repeatable": false,
+            "required": false,
+            "showLabel": true,
+            "type": "text"
+        }
+    ]
+}

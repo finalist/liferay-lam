@@ -27,9 +27,9 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.PropsUtil;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ UserGroupsImpl.class, PropsUtil.class })
+@PrepareForTest({ UserGroupsImpl.class, PropsUtil.class})
 public class UserGroupsImplTest {
-
+private static final Long USER_ID = 10L;
     @Mock
     private CompanyLocalService companyService;
     @Mock
@@ -46,7 +46,9 @@ public class UserGroupsImplTest {
     private CustomFields customFieldsService;
     @Mock
 	private UserGroup mockUserGroup;
-
+	@Mock
+	private DefaultValue defaultValue;
+	
     @InjectMocks
     private UserGroupsImpl userGroupsImpl;
     
@@ -54,7 +56,7 @@ public class UserGroupsImplTest {
     public void setUp() {
         userGroupsImpl = new UserGroupsImpl();
         PowerMockito.mockStatic(PropsUtil.class);
-        PowerMockito.when(PropsUtil.get("company.default.web.id")).thenReturn("liferay.com");
+        PowerMockito.mockStatic(DefaultValueImpl.class);
         initMocks(this);
     }
 
@@ -62,10 +64,9 @@ public class UserGroupsImplTest {
     public void testAddUserGroupWithoutCustomFields() throws Exception {
         String groupName = "testName";
         String description = "some description";
-        when(companyService.getCompanyByWebId("liferay.com")).thenReturn(mockCompany);
+        when(defaultValue.getDefaultCompany()).thenReturn(mockCompany);
         when(mockCompany.getCompanyId()).thenReturn(1L);
-        when(mockCompany.getDefaultUser()).thenReturn(mockDefaultUser);
-        when(mockDefaultUser.getUserId()).thenReturn(10L);
+        when(defaultValue.getDefaultUserId()).thenReturn(USER_ID);
         whenNew(ServiceContext.class).withNoArguments().thenReturn(mockServiceContext);
 
         userGroupsImpl.addUserGroup(groupName, description, null);
@@ -79,10 +80,10 @@ public class UserGroupsImplTest {
         String description = "some description";
         Map<String,String> customFields = new HashMap<>();
         customFields.put("someField", "someValue");
-        when(companyService.getCompanyByWebId("liferay.com")).thenReturn(mockCompany);
+       
+        when(defaultValue.getDefaultCompany()).thenReturn(mockCompany);
         when(mockCompany.getCompanyId()).thenReturn(1L);
-        when(mockCompany.getDefaultUser()).thenReturn(mockDefaultUser);
-        when(mockDefaultUser.getUserId()).thenReturn(10L);
+        when(defaultValue.getDefaultUserId()).thenReturn(USER_ID);
         whenNew(ServiceContext.class).withNoArguments().thenReturn(mockServiceContext);
         
         when(userGroupService.addUserGroup(10L, 1L, groupName, description, mockServiceContext)).thenReturn(mockUserGroup);
@@ -90,7 +91,7 @@ public class UserGroupsImplTest {
 
         userGroupsImpl.addUserGroup(groupName, description, customFields);
 
-        verify(userGroupService).addUserGroup(10L, 1L, groupName, description, mockServiceContext);
+        verify(userGroupService).addUserGroup(USER_ID, 1L, groupName, description, mockServiceContext);
         verify(customFieldsService).addCustomFieldValue(UserGroup.class.getName(), "someField", 1L, "someValue");
     }
     

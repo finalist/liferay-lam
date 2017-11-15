@@ -22,6 +22,6 @@ class DeleteVocabularyFactory extends AbstractFactory{
         super.onNodeCompleted(builder, parent, node);
         VocabularyModel vocabulary = (VocabularyModel) node;
         
-        vocabularyService.deleteVocabulary(vocabulary.name);
+        vocabularyService.deleteVocabulary(vocabulary.existingName);
     }
 }

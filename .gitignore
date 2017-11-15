@@ -3,15 +3,7 @@
 .project
 .idea
 *.iml
-.gradle
-TestStartupHook/gradlew
-TestStartupHook/gradlew.bat
-TestStartupHook/bin/
-TestStartupHook/gradle/
 build
-
+.gradle
 .metadata
-gradlew
-gradlew.bat
-gradle/
 nl.finalist.liferay.lam.api/out/
