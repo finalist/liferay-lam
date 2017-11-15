@@ -7,5 +7,5 @@ class CategoryModel {
     Map<String, String> updateName;
     String title;
     String categoryName;
-
+	String parentCategoryName;
 }

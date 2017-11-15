@@ -292,7 +292,17 @@ The following script shows how you can create a category to a vocabulary:
 
 
 As you can see, all you have to do is to specify the name of the vocabulary, name of category along with the locale and the title to the category. This category will be added to the vocabulary.
+If you want to add a category that is nested under another category you can use the following script:
 
+		create.category(
+			name: [ "en_US" : "nestedStyleU",
+					"nl_NL" : "nestedStyleN"],
+			vocabularyName: "TestVocab5",
+			title : "Testing it",
+			parentCategoryName: "styleU"
+		)
+As you can see, this script requires the name of the parent category. 
+		
 ## Update
 The following script shows how you can update a category:
 

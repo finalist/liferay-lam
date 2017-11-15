@@ -95,7 +95,13 @@ create.category(
 	vocabularyName: "TestVocab5",
 	title : "Testing it"
 )
-
+create.category(
+	name: [ "en_US" : "nestedStyleUS",
+			"nl_NL" : "nestedStyleNL"],
+	vocabularyName: "TestVocab5",
+	title : "Testing it",
+	parentCategoryName: "styleUS"
+)
 create.category(
 name: [ "en_US" : "style2US",
 			"nl_NL" : "style2NL",
