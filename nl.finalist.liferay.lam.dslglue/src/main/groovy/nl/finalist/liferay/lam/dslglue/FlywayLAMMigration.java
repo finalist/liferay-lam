@@ -11,6 +11,7 @@ import org.flywaydb.core.api.MigrationVersion;
 import org.flywaydb.core.api.migration.MigrationChecksumProvider;
 import org.flywaydb.core.api.resolver.MigrationExecutor;
 import org.flywaydb.core.internal.resolver.ResolvedMigrationImpl;
+import org.osgi.framework.Bundle;
 
 public class FlywayLAMMigration extends ResolvedMigrationImpl implements MigrationChecksumProvider {
 
@@ -18,23 +19,25 @@ public class FlywayLAMMigration extends ResolvedMigrationImpl implements Migrati
 
     private final Executor executor;
     private Script script;
+    private Bundle bundle;
 
-    public FlywayLAMMigration(Executor executor, Script script) {
+    public FlywayLAMMigration(Bundle bundle, Executor executor, Script script) {
         this.executor = executor;
         this.script = script;
-
+        this.bundle = bundle;
         String usableVersion = script.getName()
-            .replaceAll("[^\\d.]", "") // remove all chars that aren't numeric or dot
-            .replaceAll("[\\D]+$","") // remove trailing dots
-            .replaceAll("^[\\D]+",""); // remove heading dots
+                        .replaceAll("[^\\d.]", "") // remove all chars that aren't numeric or dot
+                        .replaceAll("[\\D]+$","") // remove trailing dots
+                        .replaceAll("^[\\D]+",""); // remove heading dots
         LOG.debug(String.format("Setting migration version from script name '%s' to version '%s'",
-            script.getName(), usableVersion));
+                        script.getName(), usableVersion));
 
         this.setVersion(MigrationVersion.fromVersion(usableVersion));
         setType(MigrationType.CUSTOM);
         setDescription(script.getName());
         setPhysicalLocation(script.getName());
         setScript(script.getName());
+        setChecksum(script.getChecksum());
     }
 
     @Override
@@ -43,7 +46,7 @@ public class FlywayLAMMigration extends ResolvedMigrationImpl implements Migrati
         return new MigrationExecutor() {
             @Override
             public void execute(Connection connection) throws SQLException {
-                executor.runScripts(script.getReader());
+                executor.runScripts(bundle, script.getReader());
             }
 
             @Override
@@ -52,5 +55,7 @@ public class FlywayLAMMigration extends ResolvedMigrationImpl implements Migrati
             }
         };
     }
+
+
 
 }

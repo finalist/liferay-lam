@@ -7,7 +7,10 @@ import com.liferay.portal.kernel.util.InfrastructureUtil;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.math.BigInteger;
 import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
@@ -17,6 +20,7 @@ import java.util.stream.Collectors;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.MigrationVersion;
 import org.flywaydb.core.api.resolver.MigrationResolver;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -49,28 +53,30 @@ public abstract class ProjectConfig {
 
 
         List<Script> scripts = Collections.list(entries).stream()
-            .map(scriptUrl -> {
+                        .map(scriptUrl -> {
 
-            LOG.debug("Entry : " + scriptUrl.getFile());
+                            LOG.debug("Entry : " + scriptUrl.getFile());
 
-                InputStream input;
-                try {
-                    input = scriptUrl.openStream();
-                    return new Script(scriptUrl.getFile(), new InputStreamReader(input));
+                            InputStream inputChecksum;
+                            InputStream input;
+                            try {
+                                inputChecksum = scriptUrl.openStream();
+                                input = scriptUrl.openStream();
+                                return new Script(scriptUrl.getFile(), new InputStreamReader(input), createChecksum(inputChecksum));
 
-                } catch (IOException e) {
-                    LOG.error(e);
-                }
-                return null;
-            })
-            .filter(Objects::nonNull)
-            .collect(Collectors.toList());
+                            } catch (IOException | NoSuchAlgorithmException e) {
+                                LOG.error(e);
+                            }
+                            return null;
+                        })
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toList());
 
-        flyway(scripts);
+        flyway(scripts, context.getBundle());
     }
 
 
-    void flyway(List<Script> scripts) {
+    void flyway(List<Script> scripts, Bundle bundle) {
         LOG.info("Running flyway migrations with scripts: " + scripts);
         Flyway flyway = new Flyway();
 
@@ -79,10 +85,10 @@ public abstract class ProjectConfig {
         flyway.setDataSource(InfrastructureUtil.getDataSource());
 
         flyway.setResolvers((MigrationResolver) () ->
-            scripts
-            .stream()
-            .map(s -> new FlywayLAMMigration(executor, s))
-            .collect(Collectors.toList()));
+        scripts
+        .stream()
+        .map(s -> new FlywayLAMMigration(bundle, executor, s))
+        .collect(Collectors.toList()));
 
         flyway.setTable("LAM_Changelog");
 
@@ -93,4 +99,22 @@ public abstract class ProjectConfig {
         flyway.setBaselineDescription("Baseline");
         flyway.migrate();
     }
+
+    protected  Integer createChecksum(InputStream inputStream) throws NoSuchAlgorithmException, IOException {
+        byte[] buffer = new byte[1024];
+        MessageDigest complete = MessageDigest.getInstance("SHA-1");
+
+        int numRead;
+        do {
+            numRead = inputStream.read(buffer);
+            if (numRead > 0) {
+                complete.update(buffer, 0, numRead);
+            }
+        } while (numRead != -1);
+
+        inputStream.close();
+        return new BigInteger(complete.digest()).intValue();
+    }
+
+
 }

@@ -6,11 +6,13 @@ public class Script {
 
     private String name;
     private Reader reader;
+    private Integer checksum;
 
 
-    public Script(String name, Reader reader) {
+    public Script(String name, Reader reader, int checksum) {
         this.name = name;
         this.reader = reader;
+        this.checksum = checksum;
     }
 
     public String getName() {
@@ -27,5 +29,13 @@ public class Script {
 
     public void setReader(Reader reader) {
         this.reader = reader;
+    }
+
+    public Integer getChecksum() {
+        return checksum;
+    }
+
+    public void setChecksum(Integer checksum) {
+        this.checksum = checksum;
     }
 }
