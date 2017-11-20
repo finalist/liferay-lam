@@ -17,15 +17,16 @@ public class PageModel {
 	private String parentUrl;
 	private String type;
 	private boolean hiddenPage;
+	private String linkedLayoutUrl;
 	
 	public PageModel(LinkedHashMap<String, Object> map) {
 		this((String)map.get("siteKey"), (Boolean)map.get("privatePage"), (Map)map.get("nameMap"), (Map)map.get("titleMap"),
 				(Map)map.get("descriptionMap"), (Map)map.get("friendlyUrlMap"), (String)map.get("typeSettings"), 
-				(Map)map.get("customFields"), (String)map.get("parentUrl"), (String)map.get("type"));
+				(Map)map.get("customFields"), (String)map.get("parentUrl"), (String)map.get("type"), (String)map.get("linkedLayoutUrl"));
 	}
     public PageModel(String siteKey, boolean privatePage, Map<String, String> nameMap, Map<Locale, String> titleMap,
             Map<Locale, String> descriptionMap, Map<String, String> friendlyUrlMap, String typeSettings, 
-            Map<String, String> customFields, String parentUrl, String type) {
+            Map<String, String> customFields, String parentUrl, String type, String linkedLayoutUrl) {
         this.privatePage = privatePage;
         this.nameMap = nameMap;
         this.titleMap = titleMap;
@@ -35,6 +36,7 @@ public class PageModel {
         this.customFields = customFields;
         this.parentUrl = parentUrl;
         this.setType(type);
+        this.linkedLayoutUrl = linkedLayoutUrl;
     }
 
 	public boolean isPrivatePage() {
@@ -116,6 +118,12 @@ public class PageModel {
 		return siteKey;
 	}
 
+	public String getLinkedLayoutUrl() {
+		return linkedLayoutUrl;
+	}
+	public void setLinkedLayoutUrl(String linkedLayoutUrl) {
+		this.linkedLayoutUrl = linkedLayoutUrl;
+	}
 	@Override
 	public String toString() {
 		return "PageModel [privatePage=" + privatePage + ", nameMap=" + nameMap + ", titleMap=" + titleMap

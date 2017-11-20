@@ -54,6 +54,7 @@ validate.portalProperties(
 	"database.indexes.update.on.startup": "true",
 	"auth.token.check.enabled": "true"
 )
+
 create.vocabulary(
 	name: [ "en_US" : "TestVocabulary US",
 			"nl_NL" : "TestVocabulary NL",
@@ -77,7 +78,6 @@ update.vocabulary(
 			"nl_NL" : "NL Updated",
 			"en_GB" : "GB Updated"]
 )
-
 delete.vocabulary(
 	existingName: "Test US"
 )
@@ -212,6 +212,15 @@ create.site(
 		friendlyUrlMap: ["nl_NL": "/verborgenpagina", "en_US": "/hiddenpage"],
 		typeSettings: Templates.one_column,
 		hiddenPage: true
+	)
+	page( 
+		privatePage: true,
+		nameMap: ["nl_NL": "paginalink", "en_US": "linked page"],
+		titleMap: ["nl_NL": "titel paginalink"],
+		descriptionMap: ["nl_NL": "omschrijving paginalink"],
+		friendlyUrlMap: ["nl_NL": "/paginalink", "en_US": "/linkedpage"],
+		type: "link_to_layout",
+		linkedLayoutUrl: "/privatepage"
 	)	
 }
 
@@ -252,6 +261,7 @@ createOrUpdate.webcontent(
     file: "/articles/testNoSite.xml",
     id: "TSTNOSITE"
 )
+
 create.tag(
 		name: "testtag",
 		forSite: "/automatedTestSite"
@@ -260,6 +270,7 @@ delete.tag(
 		name: "testtag",
 		forSite: "/automatedTestSite"
 )
+
 create.user(
 	screenName:"t.testing",
 	firstName:"test",
@@ -276,4 +287,3 @@ update.user(
 delete.user(
 screenName: "t.testinga"
 )
-

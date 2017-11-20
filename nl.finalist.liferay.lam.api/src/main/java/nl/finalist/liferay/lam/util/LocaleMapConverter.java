@@ -4,6 +4,12 @@ import java.util.*;
 
 public class LocaleMapConverter {
 
+	/**
+	 * Converts a Map with keys of type String to a Map with a key of type Locale
+	 * 
+	 * @param origin Original map
+	 * @return converted map
+	 */
     public static Map<Locale,String> convert(Map<String, String> origin) {
         Map<Locale, String> result = new HashMap<>();
         if (origin != null) {

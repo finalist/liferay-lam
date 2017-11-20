@@ -44,7 +44,13 @@ public class PageImpl implements Page {
         }
 
         Group site = groupService.fetchGroup(defaultValue.getDefaultCompany().getCompanyId(), siteKey);
+        
+        String linkedLayoutTypeSettings = determineTypeSettingsForLinkedLayout(page, site);
 
+        String typeSettings = page.getTypeSettings() == null 
+        		? linkedLayoutTypeSettings
+        		: page.getTypeSettings()+linkedLayoutTypeSettings;
+        
         Layout layout = null;
         try {
             layout = layoutService.addLayout(defaultValue.getDefaultUserId(), site.getGroupId(), page.isPrivatePage(),
@@ -52,7 +58,7 @@ public class PageImpl implements Page {
                 LocaleMapConverter.convert(page.getNameMap()),
                 page.getTitleMap(),
                 page.getDescriptionMap(), null, null,
-                page.getType(), page.getTypeSettings(), page.isHiddenPage(),
+                page.getType(), typeSettings, page.isHiddenPage(),
                 LocaleMapConverter.convert(page.getFriendlyUrlMap()),
                 new ServiceContext());
         } catch (PortalException e) {
@@ -73,20 +79,45 @@ public class PageImpl implements Page {
         }
     }
 
+	private String determineTypeSettingsForLinkedLayout(PageModel page, Group site) {
+		String linkedLayoutTypeSettings = "";
+        if (page.getLinkedLayoutUrl() != null) {
+        	long linkedLayoutId = 0;
+        	try {
+				linkedLayoutId = determineLayoutId(site.getGroupId(), page.isPrivatePage(), page.getLinkedLayoutUrl());
+			} catch (NoSuchLayoutException e) {
+				LOG.info(String.format("No linked layout found for url: %s", page.getLinkedLayoutUrl()));
+			}
+        	if (linkedLayoutId > 0) {
+        		linkedLayoutTypeSettings = "linkToLayoutId="+linkedLayoutId;
+        	}
+        }
+		return linkedLayoutTypeSettings;
+	}
+
     private long determineParentLayoutId(long groupId, PageModel page) {
         long parentId = LayoutConstants.DEFAULT_PARENT_LAYOUT_ID;
-        Layout parent;
+       
+        try {
+            parentId = determineLayoutId(groupId, page.isPrivatePage(), page.getParentUrl());
+        } catch (NoSuchLayoutException e) {
+            LOG.info("The parent page could not be found, creating page at top level instead.");
+        }
+        
+        return parentId;
+    }
+    
+    private long determineLayoutId(long groupId, boolean isPrivatePage, String url) throws NoSuchLayoutException {
+        long parentId = LayoutConstants.DEFAULT_PARENT_LAYOUT_ID;
+        Layout page;
 
-        if (page.getParentUrl() != null) {
+        if (url != null) {
             try {
-                parent = layoutService.getFriendlyURLLayout(groupId, page.isPrivatePage(), page.getParentUrl());
-                parentId = parent.getLayoutId();
-            } catch (NoSuchLayoutException e) {
-                LOG.info("The parent page could not be found, creating page at top level instead.");
+                page = layoutService.getFriendlyURLLayout(groupId, isPrivatePage, url);
+                parentId = page.getLayoutId();
             } catch (PortalException e) {
                 LOG.info(String.format("Exception while fetching parent page by its friendly URL '%s', will create " +
-                        "page at top level instead",
-                    page.getParentUrl()), e);
+                        "page at top level instead", url), e);
             }
         }
         return parentId;
