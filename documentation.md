@@ -601,3 +601,12 @@ The following script shows how you can delete users:
     )
 
 If a user with the given screenName is found it is deleted, otherwise no action is taken.
+
+# Locales
+When creating sites with LAM ('groups' in Liferay speak), a so called groupKey is generated, taken from the site's name in the default locale.
+When having no en_US version of the site name, a GroupException is thrown.
+If you don't want to have to specify english locales for all LAM resources, the solution for this 
+is to set ``company.default.locale`` in ``portal-ext.properties`` to the one locale that you want instead of en_US.
+Like this:
+
+    company.default.locale=nl_NL
