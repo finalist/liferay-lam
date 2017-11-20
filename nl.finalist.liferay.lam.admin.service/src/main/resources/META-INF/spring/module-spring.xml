@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" default-destroy-method="destroy" default-init-method="afterPropertiesSet" xsi:schemaLocation=" http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<bean class="nl.finalist.liferay.lam.admin.service.service.impl.ChangelogLocalServiceImpl" id="nl.finalist.liferay.lam.admin.service.service.ChangelogLocalService" />
+	<bean class="nl.finalist.liferay.lam.admin.service.service.persistence.impl.ChangelogPersistenceImpl" id="nl.finalist.liferay.lam.admin.service.service.persistence.ChangelogPersistence" parent="basePersistence" />
+</beans>
