@@ -29,21 +29,21 @@ create.site(
                 "en_GB": "Fictional Bank",
                 "nl_NL": "Fictiebank"
         ],
-
         friendlyURL: "/bank"
 )
 
 /* Minimalistic page: only the required parameters */
 create.page(
-        siteKey: "Fictional Bank",
-        privatePage: false,
-        nameMap: ["en_US": "Fictional bank2", "nl_NL": "Fictieve bank2"]
+       siteKey: "Fictional Bank",
+       privatePage: false,
+       nameMap: ["en_US": "Fictional bank2", "nl_NL": "Fictieve bank2"]
 )
 
 create.tag(
     name: "blockchain",
     forSite: "/bank"
 )
+
 create.tag(
     name: "cryptocurrency",
     forSite: "/bank"

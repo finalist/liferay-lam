@@ -1,7 +1,11 @@
 package nl.finalist.liferay.lam.dslglue;
 
 import java.io.Reader;
-
+/**
+ * Script holds all script data that is required for a flyway migration registration
+ * @author danielle.ardon
+ *
+ */
 public class Script {
 
     private String name;

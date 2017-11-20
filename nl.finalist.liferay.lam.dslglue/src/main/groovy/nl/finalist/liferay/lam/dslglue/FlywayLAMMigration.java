@@ -12,7 +12,11 @@ import org.flywaydb.core.api.migration.MigrationChecksumProvider;
 import org.flywaydb.core.api.resolver.MigrationExecutor;
 import org.flywaydb.core.internal.resolver.ResolvedMigrationImpl;
 import org.osgi.framework.Bundle;
-
+/**
+ * FlywayLAMMigration enables the versioning of migration scripts.
+ * @author danielle.ardon
+ *
+ */
 public class FlywayLAMMigration extends ResolvedMigrationImpl implements MigrationChecksumProvider {
 
     private static final Log LOG = LogFactoryUtil.getLog(FlywayLAMMigration.class);
@@ -25,14 +29,8 @@ public class FlywayLAMMigration extends ResolvedMigrationImpl implements Migrati
         this.executor = executor;
         this.script = script;
         this.bundle = bundle;
-        String usableVersion = script.getName()
-                        .replaceAll("[^\\d.]", "") // remove all chars that aren't numeric or dot
-                        .replaceAll("[\\D]+$","") // remove trailing dots
-                        .replaceAll("^[\\D]+",""); // remove heading dots
-        LOG.debug(String.format("Setting migration version from script name '%s' to version '%s'",
-                        script.getName(), usableVersion));
 
-        this.setVersion(MigrationVersion.fromVersion(usableVersion));
+        setVersion(MigrationVersion.fromVersion(getUsableVersion(script.getName())));
         setType(MigrationType.CUSTOM);
         setDescription(script.getName());
         setPhysicalLocation(script.getName());
@@ -56,6 +54,14 @@ public class FlywayLAMMigration extends ResolvedMigrationImpl implements Migrati
         };
     }
 
-
+    private String getUsableVersion(String scriptName){
+        String usableVersion = scriptName
+                        .replaceAll("[^\\d.]", "") // remove all chars that aren't numeric or dot
+                        .replaceAll("[\\D]+$","") // remove trailing dots
+                        .replaceAll("^[\\D]+",""); // remove heading dots
+        LOG.debug(String.format("Setting migration version from script name '%s' to version '%s'",
+                        scriptName, usableVersion));
+        return usableVersion;
+    }
 
 }

@@ -33,50 +33,46 @@ public abstract class ProjectConfig {
     private static final Log LOG = LogFactoryUtil.getLog(ProjectConfig.class);
 
     /**
-     * Implement this method and annotate with @Activate. In it, call super.doActivate(context);
+     * Implement this method and annotate with @Activate. In it, call
+     * super.doActivate(context);
      *
-     * @param context the BundleContext
+     * @param context
+     *            the BundleContext
      */
     public abstract void activate(BundleContext context);
 
     /**
      * Implement this setter and annotate with @Reference
-     * @param executor the Executor
+     *
+     * @param executor
+     *            the Executor
      */
     protected abstract void setExecutor(Executor executor);
 
     protected void doActivate(BundleContext context) {
-
         LOG.debug("Running project-specific configuration with @Activate");
-
         Enumeration<URL> entries = context.getBundle().findEntries("/", "*.groovy", true);
+        List<Script> scripts = Collections.list(entries).stream().map(scriptUrl -> {
 
+            LOG.debug("Entry : " + scriptUrl.getFile());
 
-        List<Script> scripts = Collections.list(entries).stream()
-                        .map(scriptUrl -> {
+            InputStream inputChecksum;
+            InputStream input;
+            try {
+                inputChecksum = scriptUrl.openStream();
+                input = scriptUrl.openStream();
+                return new Script(scriptUrl.getFile(), new InputStreamReader(input), createChecksum(inputChecksum));
 
-                            LOG.debug("Entry : " + scriptUrl.getFile());
-
-                            InputStream inputChecksum;
-                            InputStream input;
-                            try {
-                                inputChecksum = scriptUrl.openStream();
-                                input = scriptUrl.openStream();
-                                return new Script(scriptUrl.getFile(), new InputStreamReader(input), createChecksum(inputChecksum));
-
-                            } catch (IOException | NoSuchAlgorithmException e) {
-                                LOG.error(e);
-                            }
-                            return null;
-                        })
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toList());
+            } catch (IOException | NoSuchAlgorithmException e) {
+                LOG.error(e);
+            }
+            return null;
+        }).filter(Objects::nonNull).collect(Collectors.toList());
 
         flyway(scripts, context.getBundle());
     }
 
-
-    void flyway(List<Script> scripts, Bundle bundle) {
+    protected void flyway(List<Script> scripts, Bundle bundle) {
         LOG.info("Running flyway migrations with scripts: " + scripts);
         Flyway flyway = new Flyway();
 
@@ -84,15 +80,10 @@ public abstract class ProjectConfig {
 
         flyway.setDataSource(InfrastructureUtil.getDataSource());
 
-        flyway.setResolvers((MigrationResolver) () ->
-        scripts
-        .stream()
-        .map(s -> new FlywayLAMMigration(bundle, executor, s))
-        .collect(Collectors.toList()));
+        flyway.setResolvers((MigrationResolver) () -> scripts.stream()
+                        .map(s -> new FlywayLAMMigration(bundle, executor, s)).collect(Collectors.toList()));
 
         flyway.setTable("LAM_Changelog");
-
-        // TODO: is this safe enough? The Flyway javadoc says it removes the safety net.
         flyway.setBaselineOnMigrate(true);
         flyway.setBaselineVersion(MigrationVersion.fromVersion("0"));
         flyway.setBaselineVersionAsString("0");
@@ -100,7 +91,7 @@ public abstract class ProjectConfig {
         flyway.migrate();
     }
 
-    protected  Integer createChecksum(InputStream inputStream) throws NoSuchAlgorithmException, IOException {
+    protected Integer createChecksum(InputStream inputStream) throws NoSuchAlgorithmException, IOException {
         byte[] buffer = new byte[1024];
         MessageDigest complete = MessageDigest.getInstance("SHA-1");
 
@@ -115,6 +106,5 @@ public abstract class ProjectConfig {
         inputStream.close();
         return new BigInteger(complete.digest()).intValue();
     }
-
 
 }
