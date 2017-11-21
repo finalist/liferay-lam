@@ -30,11 +30,7 @@ import nl.finalist.liferay.lam.api.User;
 import nl.finalist.liferay.lam.api.UserGroups;
 import nl.finalist.liferay.lam.api.Vocabulary;
 import nl.finalist.liferay.lam.api.WebContent;
-import nl.finalist.liferay.lam.builder.CreateFactoryBuilder;
-import nl.finalist.liferay.lam.builder.CreateOrUpdateFactoryBuilder;
-import nl.finalist.liferay.lam.builder.DeleteFactoryBuilder;
-import nl.finalist.liferay.lam.builder.UpdateFactoryBuilder;
-import nl.finalist.liferay.lam.builder.ValidateFactoryBuilder;
+import nl.finalist.liferay.lam.builder.*;
 
 
 

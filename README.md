@@ -10,6 +10,7 @@ Initially it's targeted towards development teams, but it's also definitely usef
 * Exception handling
 * Sensible defaults (no need to fiddle with companyIds and groupIds if you've only got one site)
 * Statements groupable / orderable in separate files
+* State management (keeps track of scripts already executed on environment)
 
 ## Usage
 
@@ -38,7 +39,6 @@ See also the module `nl.finalist.liferay.lam.sampleproject-config`, our flagship
 
 ## Roadmap
 
-* Versioning (state management for every environment, keeping track of scripts already executed)
 * Expose more APIs
 * Control panel portlets for:
     - one-off script execution
