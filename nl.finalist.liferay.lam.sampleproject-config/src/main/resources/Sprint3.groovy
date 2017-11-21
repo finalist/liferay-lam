@@ -10,7 +10,9 @@ create.page(
 )
 
 // TODO: create a useful/sensible example from this
-create.page( privatePage: true,
+create.page( 
+        siteKey: "Fictional Bank",
+        privatePage: true,
         nameMap: ["nl_NL": "verborgen pagina", "en_US": "hidden page"],
         titleMap: ["nl_NL": "titel verborgen pagina"],
         descriptionMap: ["nl_NL": "omschrijving verborgen pagina"],
@@ -21,10 +23,11 @@ create.page( privatePage: true,
 
 // TODO: create a useful/sensible example from this
 create.page(
+        siteKey: "Fictional Bank",
         privatePage: false,
         nameMap: ["nl_NL": "paginalink", "en_US": "linked page"],
         titleMap: ["nl_NL": "titel paginalink"],
         descriptionMap: ["nl_NL": "omschrijving paginalink"],
         friendlyUrlMap: ["nl_NL": "/paginalink", "en_US": "/linkedpage"],
-        linkedPageUrl: "/privatepage"
+        linkedPageUrl: "/fictional-bank-home"
 )

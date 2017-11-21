@@ -119,19 +119,19 @@ public class PageImpl implements Page {
     }
     
     private long determineLayoutId(long groupId, boolean isPrivatePage, String url) throws NoSuchLayoutException {
-        long parentId = LayoutConstants.DEFAULT_PARENT_LAYOUT_ID;
+        long layoutId = LayoutConstants.DEFAULT_PARENT_LAYOUT_ID;
         Layout page;
 
         if (url != null) {
             try {
                 page = layoutService.getFriendlyURLLayout(groupId, isPrivatePage, url);
-                parentId = page.getLayoutId();
+                layoutId = page.getLayoutId();
             } catch (PortalException e) {
-                LOG.info(String.format("Exception while fetching parent page by its friendly URL '%s', will create " +
-                        "page at top level instead", url), e);
+                LOG.info(String.format("Exception while fetching page by its friendly URL '%s', " +
+                    "will return default parent id. Exception: %s", url, e.getMessage()));
             }
         }
-        return parentId;
+        return layoutId;
     }
 
     @Override
