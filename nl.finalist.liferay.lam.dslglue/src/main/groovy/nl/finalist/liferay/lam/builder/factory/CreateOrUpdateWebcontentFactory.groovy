@@ -26,6 +26,7 @@ class CreateOrUpdateWebcontentFactory extends AbstractFactory {
     void onNodeCompleted(FactoryBuilderSupport builder, Object parent, Object node) {
         super.onNodeCompleted(builder, parent, node);
         WebContentModel model = (WebContentModel) node;
-        webContentService.createOrUpdateWebcontent(model.id, model.forSite, LocaleMapConverter.convert(model.titleMap), model.file, bundle , model.urlTitle, model.forStructure, model.forTemplate);
+        webContentService.createOrUpdateWebcontent(model.id, model.forSite, LocaleMapConverter.convert(model
+                .titleMap), model.file, bundle , model.urlTitle, model.structure, model.template);
     }
 }

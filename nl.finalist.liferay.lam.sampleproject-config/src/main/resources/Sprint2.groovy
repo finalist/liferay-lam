@@ -46,8 +46,8 @@ createOrUpdate.webcontent(
     file: "/articles/testWebcontent.xml",
     id: "NEWS1",
     forSite:"/bank",
-    forStructure:"NIEUWS-STRUCTURE",
-    forTemplate:"NIEUWS-TEMPLATE"
+    structure:"NIEUWS-STRUCTURE",
+    template:"NIEUWS-TEMPLATE"
 )
 create.user(
 	screenName:"contact.beleggen",

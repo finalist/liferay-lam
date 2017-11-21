@@ -8,6 +8,6 @@ class WebContentModel {
     String urlTitle;
     String id;
     String forSite;
-    String forStructure;
-    String forTemplate;
+    String structure;
+    String template;
 }

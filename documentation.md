@@ -548,11 +548,11 @@ It is also possible to specify structure, template and site. The following scrip
 	    file: "/articles/testWebcontent.xml",
 	    id: "TSTWBCNT",
 	    forSite:"/automatedTestSite",
-	    forStructure:"MY-STRUCTURE",
-	    forTemplate:"MY-TEMPLATE"
+	    structure:"MY-STRUCTURE",
+	    template:"MY-TEMPLATE"
 	)
 	
-The field 'forSite' contains the friendlyUrl of the site. The fields 'forStructure' and 'forTemplate' refer to the keys of the structure and the template respectively.
+The field 'forSite' contains the friendlyUrl of the site. The fields 'structure' and 'template' refer to the keys of the structure and the template respectively.
 
 ## Delete
 The following script shows how you can delete a content item:
