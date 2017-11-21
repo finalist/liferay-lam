@@ -1,3 +1,8 @@
+import nl.finalist.liferay.lam.dslglue.ADTTypes
+import nl.finalist.liferay.lam.dslglue.CustomFieldType
+import nl.finalist.liferay.lam.dslglue.Entities
+import nl.finalist.liferay.lam.dslglue.Roles
+
 create.customField (
 	name: 'contactEmailAdres',
 	type: CustomFieldType.TEXT,
@@ -13,8 +18,10 @@ create.userGroup(
 )
 createOrUpdate.structure(
 	file: "/structures/myStructure.json",
-	descriptionMap: ["nl_NL": "Dit is een nieuws structure", "en_GB": "This is a news structure"],
-	nameMap: ["nl_NL": "NieuwStructure", "en_GB": "NewsStructure"],
+	descriptionMap: [
+	   "nl_NL": "Dit is een nieuws structure",
+	   "en_US": "This is a news structure"],
+	nameMap: ["nl_NL": "NieuwStructure", "en_US": "NewsStructure"],
 	structureKey: "NIEUWS-STRUCTURE"
 )
 
@@ -22,19 +29,19 @@ createOrUpdate.template(
 	file: "/templates/myTemplate.vm",
 	forStructure: "NIEUWS-STRUCTURE",
 	templateKey: "NIEUWS-TEMPLATE",
-	descriptionMap: ["nl_NL": "Dit is een nieuws template", "en_GB": "This is a news template"],
-	nameMap: ["nl_NL": "NieuwsTemplate", "en_GB": "NewsTemplate"]
+	descriptionMap: ["nl_NL": "Dit is een nieuws template", "en_US": "This is a news template"],
+	nameMap: ["nl_NL": "NieuwsTemplate", "en_US": "NewsTemplate"]
 )
 
 createOrUpdate.ADT(
 	file: "/adts/myADT.vm",
 	adtKey: "NEWS-ADT",
 	type: ADTTypes.ASSET_PUBLISHER,
-	descriptionMap: ["nl_NL": "Dit is een nieuws adt", "en_GB": "This is a news adt"],
-	nameMap: ["nl_NL": "NewsADT", "en_GB": "NewsADT"]
+	descriptionMap: ["nl_NL": "Dit is een nieuws adt", "en_US": "This is a news adt"],
+	nameMap: ["nl_NL": "NewsADT", "en_US": "NewsADT"]
 )
 createOrUpdate.webcontent(
-	titleMap: ["en_GB": "NewsWebcontent", "nl_NL": "NieuwsWebcontent"],
+	titleMap: ["en_US": "NewsWebcontent", "nl_NL": "NieuwsWebcontent"],
 	urlTitle: "test-webcontent",
     file: "/articles/testWebcontent.xml",
     id: "NEWS1",

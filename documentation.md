@@ -601,3 +601,33 @@ The following script shows how you can delete users:
     )
 
 If a user with the given screenName is found it is deleted, otherwise no action is taken.
+
+
+
+
+
+# State management
+LAM makes use of a state management component to keep track of which scripts are installed on which environments.
+
+This is a powerful feature that makes LAM perfectly suitable for repeatedly deploying and redeploying on all environments, including production.
+
+The most important consequence however is that scripts that are executed, are registered using a checksum of the contents of the script. This means that changing scripts that have been executed already is a bad practice.
+
+In general this means: all changes belonging to the same feature/deployment/sprint should be grouped together and as soon as this script is deployed on an environment that should not be reset (acceptance / production) it should not be touched anymore.
+
+Locally (and on a test environment?) this rule is a bit more flexible because you can reset/tune the internal state to reflect changes to scripts.
+
+## Implementation
+The state management component comprises of a third party package [Flyway](http://www.flywaydb.org), with an extension to make it work for LAM.
+Because LAM uses Flyway under the hood, the same commands and structures apply.
+
+* Scripts are ordered using natural order, and a version is derived from their file names
+* Checksums are calculated based on the contents of the scripts
+
+### Reset: command line utility 
+Database state can be reset using the flyway command line utility:
+
+    flyway db reset --user=lam --password=lam --database=lam (how exactly?)
+    
+### Reset: control panel
+With the module `nl.finalist.liferay.lam.admin.web` a control panel portlet is provided with which you can inspect and reset the database state.
