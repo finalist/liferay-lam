@@ -1,0 +1,10 @@
+Bundle-Name: nl.finalist.liferay.lam.admin.api
+Bundle-SymbolicName: nl.finalist.liferay.lam.admin.api
+Bundle-Version: 0.3.0
+-includeresource: META-INF/service.xml=../nl.finalist.liferay.lam.admin.service/service.xml
+-sources: true
+Export-Package: \
+	nl.finalist.liferay.lam.admin.service.exception,\
+	nl.finalist.liferay.lam.admin.service.model,\
+	nl.finalist.liferay.lam.admin.service.service,\
+	nl.finalist.liferay.lam.admin.service.service.persistence

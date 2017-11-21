@@ -50,7 +50,7 @@ public class SiteImpl implements Site {
 				for (String fieldName : customFields.keySet()) {
 					customFieldsService.addCustomFieldValue(Group.class.getName(), fieldName, group.getPrimaryKey(),
 							customFields.get(fieldName));
-					LOG.info(String.format("Custom field %s now has value %s", fieldName, customFields.get(fieldName)));
+					LOG.info(String.format("Custom field '%s' now has value '%s'", fieldName, customFields.get(fieldName)));
 				}
 			}
 
@@ -60,14 +60,14 @@ public class SiteImpl implements Site {
 				LOG.debug(String.format("Adding pages defaultuser : %d , group : %d", defaultValue.getDefaultUserId(), group.getGroupId()));
 
 				for (PageModel page : pages) {
-					LOG.debug("Add page : " + page.getNameMap().get(LocaleUtil.getSiteDefault()));
+					LOG.debug("Add page : " + page.getNameMap().get(LocaleUtil.getSiteDefault().toString()));
 					pageService.addPage(group.getGroupKey(), page);
 				}
 			}
 		} catch (DuplicateGroupException | GroupFriendlyURLException e1) {
 			LOG.warn(String.format("The site %s already exists.", nameMap.get(LocaleUtil.getSiteDefault())));
 		} catch (PortalException e) {
-			LOG.error(e);
+			LOG.error(String.format("While adding group for site '%s'", friendlyURL), e);
 		}
 	}
 
