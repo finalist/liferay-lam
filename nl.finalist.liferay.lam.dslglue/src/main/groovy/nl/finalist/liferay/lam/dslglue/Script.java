@@ -42,4 +42,9 @@ public class Script {
     public void setChecksum(Integer checksum) {
         this.checksum = checksum;
     }
+
+    @Override
+    public String toString() {
+        return "Script [name=" + name + ", checksum=" + checksum + "]";
+    }
 }

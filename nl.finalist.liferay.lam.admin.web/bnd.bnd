@@ -1,4 +1,4 @@
 Bundle-Name: nl.finalist.liferay.lam.admin.web
 Bundle-SymbolicName: nl.finalist.liferay.lam.admin.web
-Bundle-Version: 1.0.0
+Bundle-Version: 0.3.0
 -sources: true

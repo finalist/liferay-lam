@@ -32,7 +32,7 @@ create.site(
 create.page(
        siteKey: "Fictional Bank",
        privatePage: false,
-       nameMap: ["en_US": "Fictional bank2", "nl_NL": "Fictieve bank2"]
+       nameMap: ["en_US": "Fictional bank Home", "nl_NL": "Fictieve bank Home"]
 )
 
 create.tag(
