@@ -81,12 +81,12 @@ public class PageImpl implements Page {
 
 	private String determineTypeSettingsForLinkedLayout(PageModel page, Group site) {
 		String linkedLayoutTypeSettings = "";
-        if (page.getLinkedLayoutUrl() != null) {
+        if (page.getLinkedPageUrl() != null) {
         	long linkedLayoutId = 0;
         	try {
-				linkedLayoutId = determineLayoutId(site.getGroupId(), page.isPrivatePage(), page.getLinkedLayoutUrl());
+				linkedLayoutId = determineLayoutId(site.getGroupId(), page.isPrivatePage(), page.getLinkedPageUrl());
 			} catch (NoSuchLayoutException e) {
-				LOG.info(String.format("No linked layout found for url: %s", page.getLinkedLayoutUrl()));
+				LOG.info(String.format("No linked layout found for url: %s", page.getLinkedPageUrl()));
 			}
         	if (linkedLayoutId > 0) {
         		linkedLayoutTypeSettings = "linkToLayoutId="+linkedLayoutId;

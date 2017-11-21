@@ -220,7 +220,7 @@ create.site(
 		descriptionMap: ["nl_NL": "omschrijving paginalink"],
 		friendlyUrlMap: ["nl_NL": "/paginalink", "en_US": "/linkedpage"],
 		type: "link_to_layout",
-		linkedLayoutUrl: "/privatepage"
+		linkedPageUrl: "/privatepage"
 	)	
 }
 
