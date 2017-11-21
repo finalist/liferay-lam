@@ -15,18 +15,19 @@ public class PageModel {
 	private Map<String, String> customFields;
 	private String typeSettings;
 	private String parentUrl;
-	private String type;
 	private boolean hiddenPage;
 	private String linkedPageUrl;
+	private String externalUrl;
 	
 	public PageModel(LinkedHashMap<String, Object> map) {
 		this((String)map.get("siteKey"), (Boolean)map.get("privatePage"), (Map)map.get("nameMap"), (Map)map.get("titleMap"),
 				(Map)map.get("descriptionMap"), (Map)map.get("friendlyUrlMap"), (String)map.get("typeSettings"), 
-				(Map)map.get("customFields"), (String)map.get("parentUrl"), (String)map.get("type"), (String)map.get("linkedPageUrl"));
+				(Map)map.get("customFields"), (String)map.get("parentUrl"), (String)map.get("linkedPageUrl"),
+				(String)map.get("externalUrl"));
 	}
     public PageModel(String siteKey, boolean privatePage, Map<String, String> nameMap, Map<Locale, String> titleMap,
             Map<Locale, String> descriptionMap, Map<String, String> friendlyUrlMap, String typeSettings, 
-            Map<String, String> customFields, String parentUrl, String type, String linkedPageUrl) {
+            Map<String, String> customFields, String parentUrl, String linkedPageUrl, String externalUrl) {
         this.privatePage = privatePage;
         this.nameMap = nameMap;
         this.titleMap = titleMap;
@@ -35,8 +36,8 @@ public class PageModel {
         this.typeSettings = typeSettings;
         this.customFields = customFields;
         this.parentUrl = parentUrl;
-        this.setType(type);
         this.linkedPageUrl = linkedPageUrl;
+        this.setExternalUrl(externalUrl);
     }
 
 	public boolean isPrivatePage() {
@@ -92,15 +93,6 @@ public class PageModel {
 		this.parentUrl = parentUrl;
 	}
 
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-
-
 	public boolean isHiddenPage() {
 		return hiddenPage;
 	}
@@ -124,12 +116,18 @@ public class PageModel {
 	public void setLinkedPageUrl(String linkedPageUrl) {
 		this.linkedPageUrl = linkedPageUrl;
 	}
+	public String getExternalUrl() {
+		return externalUrl;
+	}
+	public void setExternalUrl(String externalUrl) {
+		this.externalUrl = externalUrl;
+	}
 	@Override
 	public String toString() {
 		return "PageModel [privatePage=" + privatePage + ", nameMap=" + nameMap + ", titleMap=" + titleMap
 				+ ", descriptionMap=" + descriptionMap + ", friendlyUrlMap=" + friendlyUrlMap + ", typeSettings="
-				+ typeSettings + ", customFields=" + customFields + ", parentUrl="+parentUrl+", type ="
-				+ type + ", hidden = "+ hiddenPage + "]";
+				+ typeSettings + ", customFields=" + customFields + ", parentUrl="+parentUrl+
+				", hidden = "+ hiddenPage + "]";
 	}
 
 }

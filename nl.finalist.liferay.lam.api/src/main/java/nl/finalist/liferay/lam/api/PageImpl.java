@@ -11,7 +11,6 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Map;
 
@@ -38,19 +37,7 @@ public class PageImpl implements Page {
 
     @Override
     public void addPage(String siteKey, PageModel page) {
-
-        if (Validator.isNull(page.getType())) {
-            page.setType("portlet");
-        }
-
-        Group site = groupService.fetchGroup(defaultValue.getDefaultCompany().getCompanyId(), siteKey);
-        
-        String linkedLayoutTypeSettings = determineTypeSettingsForLinkedLayout(page, site);
-
-        String typeSettings = page.getTypeSettings() == null 
-        		? linkedLayoutTypeSettings
-        		: page.getTypeSettings()+linkedLayoutTypeSettings;
-        
+    	Group site = groupService.fetchGroup(defaultValue.getDefaultCompany().getCompanyId(), siteKey);
         Layout layout = null;
         try {
             layout = layoutService.addLayout(defaultValue.getDefaultUserId(), site.getGroupId(), page.isPrivatePage(),
@@ -58,7 +45,7 @@ public class PageImpl implements Page {
                 LocaleMapConverter.convert(page.getNameMap()),
                 page.getTitleMap(),
                 page.getDescriptionMap(), null, null,
-                page.getType(), typeSettings, page.isHiddenPage(),
+                determinePageType(page), determineTypeSettings(page, site), page.isHiddenPage(),
                 LocaleMapConverter.convert(page.getFriendlyUrlMap()),
                 new ServiceContext());
         } catch (PortalException e) {
@@ -78,20 +65,44 @@ public class PageImpl implements Page {
             }
         }
     }
+    
+    private String determinePageType (PageModel page) {
+    	String type = "portlet";
+    	if (page.getLinkedPageUrl() != null) {
+        	type="link_to_layout";
+        } else if(page.getExternalUrl() != null) {
+        	type = "url";
+        }
+    	return type;
+    }
+    
+    private String determineTypeSettings(PageModel page, Group site) {
+    	String addedTypeSettings = "";
+
+        if (page.getLinkedPageUrl() != null) {
+        	addedTypeSettings = determineTypeSettingsForLinkedLayout(page, site);
+        } else if(page.getExternalUrl() != null) {
+        	addedTypeSettings = "url="+page.getExternalUrl();
+        }
+        
+        String typeSettings = page.getTypeSettings() == null 
+        		? addedTypeSettings
+        		: page.getTypeSettings()+addedTypeSettings;
+        
+        return typeSettings;
+    }
 
 	private String determineTypeSettingsForLinkedLayout(PageModel page, Group site) {
 		String linkedLayoutTypeSettings = "";
-        if (page.getLinkedPageUrl() != null) {
-        	long linkedLayoutId = 0;
-        	try {
-				linkedLayoutId = determineLayoutId(site.getGroupId(), page.isPrivatePage(), page.getLinkedPageUrl());
-			} catch (NoSuchLayoutException e) {
-				LOG.info(String.format("No linked layout found for url: %s", page.getLinkedPageUrl()));
-			}
-        	if (linkedLayoutId > 0) {
-        		linkedLayoutTypeSettings = "linkToLayoutId="+linkedLayoutId;
-        	}
-        }
+    	long linkedLayoutId = 0;
+    	try {
+			linkedLayoutId = determineLayoutId(site.getGroupId(), page.isPrivatePage(), page.getLinkedPageUrl());
+		} catch (NoSuchLayoutException e) {
+			LOG.info(String.format("No linked layout found for url: %s", page.getLinkedPageUrl()));
+		}
+    	if (linkedLayoutId > 0) {
+    		linkedLayoutTypeSettings = "linkToLayoutId="+linkedLayoutId;
+    	}
 		return linkedLayoutTypeSettings;
 	}
 
@@ -125,14 +136,10 @@ public class PageImpl implements Page {
 
     @Override
     public void updatePage(long layoutId, long groupId, long groupPrimaryKey, PageModel page) throws PortalException {
-        if (page.getType() == null || page.getType().isEmpty()) {
-            page.setType("portlet");
-        }
-
         byte[] iconBytes = new byte[0];
         layoutService.updateLayout(groupId, page.isPrivatePage(), layoutId, determineParentLayoutId(groupId, page),
             LocaleMapConverter.convert(page.getNameMap()), page.getTitleMap(),
-            page.getDescriptionMap(), null, null, page.getType(), false, LocaleMapConverter.convert(page.getFriendlyUrlMap()), false, iconBytes, new ServiceContext());
+            page.getDescriptionMap(), null, null, determinePageType(page), false, LocaleMapConverter.convert(page.getFriendlyUrlMap()), false, iconBytes, new ServiceContext());
         LOG.info(String.format("Page %s updated", page.getNameMap().get(LocaleUtil.getSiteDefault())));
     }
 

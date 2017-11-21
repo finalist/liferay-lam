@@ -21,6 +21,8 @@ public interface Page {
 	/**
 	 * Update a page (in Liferay called layout) of type 'portlet' to a site (in Liferay called
 	 * group)
+	 * 
+	 * Mind you, this method does not update the typesettings at the moment!
 	 *
 	 * @param layoutId
 	 *            Id of the page to be update

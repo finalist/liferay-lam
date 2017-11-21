@@ -190,20 +190,19 @@ create.site(
 				])
 
 	page( privatePage: true,
-				nameMap: ["nl_NL": "privatepageChildNL", "en_US": "private child page"],
-				titleMap: ["nl_NL": "titel prive subpagina", "en_US": "private child page"],
-				descriptionMap: ["nl_NL": "omschrijving prive subpagina", "en_US": "private child page"],
-				friendlyUrlMap: ["nl_NL": "/privesubpagina", "en_US": "/private-child-page"],
-				typeSettings: Templates.one_column,
-				parentUrl: "/privatepage"
+			nameMap: ["nl_NL": "privatepageChildNL", "en_US": "private child page"],
+			titleMap: ["nl_NL": "titel prive subpagina", "en_US": "private child page"],
+			descriptionMap: ["nl_NL": "omschrijving prive subpagina", "en_US": "private child page"],
+			friendlyUrlMap: ["nl_NL": "/privesubpagina", "en_US": "/private-child-page"],
+			typeSettings: Templates.one_column,
+			parentUrl: "/privatepage"
 	)
 	page( privatePage: true,
-				nameMap: ["nl_NL": "url pagina", "en_US": "url page"],
-				titleMap: ["nl_NL": "titel url pagina"],
-				descriptionMap: ["nl_NL": "omschrijving url pagina"],
-				friendlyUrlMap: ["nl_NL": "/urlpagina", "en_US": "/urlpage"],
-				typeSettings: "url=http://www.nu.nl",
-				type: "url"
+			nameMap: ["nl_NL": "url pagina", "en_US": "url page"],
+			titleMap: ["nl_NL": "titel url pagina"],
+			descriptionMap: ["nl_NL": "omschrijving url pagina"],
+			friendlyUrlMap: ["nl_NL": "/urlpagina", "en_US": "/urlpage"],
+			externalUrl: "http://www.nu.nl"
 	)
 	page( privatePage: true,
 		nameMap: ["nl_NL": "verborgen pagina", "en_US": "hidden page"],
@@ -219,7 +218,6 @@ create.site(
 		titleMap: ["nl_NL": "titel paginalink"],
 		descriptionMap: ["nl_NL": "omschrijving paginalink"],
 		friendlyUrlMap: ["nl_NL": "/paginalink", "en_US": "/linkedpage"],
-		type: "link_to_layout",
 		linkedPageUrl: "/privatepage"
 	)	
 }
@@ -246,6 +244,7 @@ createOrUpdate.ADT(
 	descriptionMap: ["nl_NL": "Dit is een test adt", "en_US": "This is a test adt"],
 	nameMap: ["nl_NL": "MyADT", "en_US": "MyADT"]
 )
+
 createOrUpdate.webcontent(
 	titleMap: ["en_US": "TestWebcontent", "nl_NL": "TestWebcontent"],
 	urlTitle: "test-webcontent",
