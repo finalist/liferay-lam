@@ -53,7 +53,7 @@ public class PageImpl implements Page {
         }
 
         LOG.info(String.format("Page '%s' with url '%s' added", 
-            layout.getName(LocaleUtil.ENGLISH, true), layout.getFriendlyURL()));
+            layout.getName(LocaleUtil.getDefault()), layout.getFriendlyURL()));
 
         Map<String, String> customFields = page.getCustomFields();
         if (customFields != null) {

@@ -94,7 +94,8 @@ public class WebContentImpl implements WebContent {
         try {
             webcontent = journalArticleService.getArticle(groupId, articleId);
         } catch (PortalException e) {
-            LOG.error(String.format("PortalException while retrieving webcontent %s c, creating", articleId) + e);
+            LOG.debug(String.format("PortalException while retrieving webcontent %s, creating. Exception: %s",
+                articleId, e.getMessage()));
         }
         if(webcontent == null){
             webcontent = journalArticleService.createJournalArticle(counterLocalService.increment());
@@ -155,7 +156,7 @@ public class WebContentImpl implements WebContent {
         }
         webcontent.setVersion((MathUtil.format(webcontent.getVersion() + 0.1, 1, 1)));
         journalArticleService.updateJournalArticle(webcontent);
-        LOG.info(String.format("Article creation/update process completed ", articleId));
+        LOG.debug(String.format("Article creation/update process completed for article with id '%s'", articleId));
     }
 
     @Override
