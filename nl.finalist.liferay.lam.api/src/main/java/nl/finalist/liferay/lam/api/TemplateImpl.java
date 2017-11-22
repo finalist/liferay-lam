@@ -68,9 +68,9 @@ public class TemplateImpl extends ADTImpl implements Template {
                             script, false, false, null, null, new ServiceContext());
 
             dDMTemplateLinkLocalService.addTemplateLink(resourceClassNameId, classPK, ddmTemplate.getTemplateId());
-            LOG.info(String.format("Template %s succesfully created",adtKey));
+            LOG.info(String.format("Template %s succesfully created", adtKey));
         } catch (PortalException e) {
-            LOG.error(String.format("PortalException while creating template %s", adtKey)+ e);
+            LOG.error(String.format("PortalException while creating template %s: %s", adtKey, e.getMessage()));
         }
     }
 
