@@ -1,5 +1,13 @@
-apply plugin: "java"
+plugins {
+ 
+   	id 'nu.studer.credentials' version '1.0.1'
+}
+
 apply plugin: "com.liferay.plugin"
+apply plugin: 'maven'
+apply plugin: 'nu.studer.credentials'
+apply plugin: "java"
+
 
 dependencies {
 	compileOnly group: "org.osgi", name: "org.osgi.core", version: "6.0.0"
@@ -34,4 +42,17 @@ testCompile  'com.liferay:com.liferay.dynamic.data.mapping.api:3.5.5'
     
 	compile group: "com.liferay", name:"com.liferay.journal.api", version:"2.1.0"
 	compile group: 'commons-io', name: 'commons-io', version: '2.5'
+}
+
+uploadArchives {
+    repositories {
+       mavenDeployer {
+             repository(url: project.finalistnexusrepository) {
+             	authentication(userName: credentials.userid, password: credentials.password)
+				}
+             	pom.version = project.version
+             	pom.artifactId = project.name
+             	pom.groupId = project.mavenGroupId
+       }
+    }
 }

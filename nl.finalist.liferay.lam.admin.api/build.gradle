@@ -11,8 +11,14 @@ buildscript {
 		}
 	}
 }
+plugins {
+ 
+   	id 'nu.studer.credentials' version '1.0.1'
+}
 
 apply plugin: "com.liferay.plugin"
+apply plugin: 'maven'
+apply plugin: 'nu.studer.credentials'
 
 dependencies {
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "2.0.0"
@@ -33,5 +39,20 @@ repositories {
 
 	maven {
 		url "https://cdn.lfrs.sl/repository.liferay.com/nexus/content/groups/public"
+		url "https://www.intranet.finalist.com/nexus/content/repositories/public/"
 	}
+}
+
+
+uploadArchives {
+    repositories {
+       mavenDeployer {
+             repository(url: project.finalistnexusrepository) {
+             	authentication(userName: credentials.userid, password: credentials.password)
+				}
+             	pom.version = project.version
+             	pom.artifactId = project.name
+             	pom.groupId = project.mavenGroupId
+       }
+    }
 }

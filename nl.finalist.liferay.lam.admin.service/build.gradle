@@ -4,8 +4,18 @@ buildscript {
 		classpath group: "com.liferay", name: "com.liferay.gradle.plugins.service.builder", version: "latest.release"
 	}
 }
+
+plugins {
+ 
+   	id 'nu.studer.credentials' version '1.0.1'
+}
+
+
+apply plugin: 'maven'
+apply plugin: 'nu.studer.credentials'
 apply plugin: "com.liferay.portal.tools.service.builder"
 apply plugin: "com.liferay.plugin"
+
 dependencies {
 	compile project(":nl.finalist.liferay.lam.admin.api")
 	compileOnly group: "biz.aQute.bnd", name: "biz.aQute.bndlib", version: "3.1.0"
@@ -20,6 +30,7 @@ repositories {
 
 	maven {
 		url "https://cdn.lfrs.sl/repository.liferay.com/nexus/content/groups/public"
+		url "https://www.intranet.finalist.com/nexus/content/repositories/public/"
 	}
 }
 
@@ -27,4 +38,18 @@ buildService {
 	apiDir = "../nl.finalist.liferay.lam.admin.api/src/main/java"
 	osgiModule = true
 	propsUtil = "nl.finalist.liferay.lam.admin.service.util.PropsUtil"
+}
+
+
+uploadArchives {
+    repositories {
+       mavenDeployer {
+             repository(url: project.finalistnexusrepository) {
+             	authentication(userName: credentials.userid, password: credentials.password)
+				}
+             	pom.version = project.version
+             	pom.artifactId = project.name
+             	pom.groupId = project.mavenGroupId
+       }
+    }
 }

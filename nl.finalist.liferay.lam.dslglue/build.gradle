@@ -1,4 +1,11 @@
+plugins {
+ 
+   	id 'nu.studer.credentials' version '1.0.1'
+}
+
 apply plugin: "com.liferay.plugin"
+apply plugin: 'maven'
+apply plugin: 'nu.studer.credentials'
 apply plugin: "groovy"
 
 
@@ -22,4 +29,17 @@ dependencies {
     compile project(":nl.finalist.liferay.lam.api")
 
 	compile "org.flywaydb:flyway-core:4.2.0"
+}
+
+uploadArchives {
+    repositories {
+       mavenDeployer {
+             repository(url: project.finalistnexusrepository) {
+             	authentication(userName: credentials.userid, password: credentials.password)
+				}
+             	pom.version = project.version
+             	pom.artifactId = project.name
+             	pom.groupId = project.mavenGroupId
+       }
+    }
 }

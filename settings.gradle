@@ -4,3 +4,5 @@ include 'nl.finalist.liferay.lam.sampleproject-config'
 include 'nl.finalist.liferay.lam.admin.service'
 include 'nl.finalist.liferay.lam.admin.web'
 include 'nl.finalist.liferay.lam.admin.api'
+
+rootProject.name =  'nl.finalist.liferay.lam'
