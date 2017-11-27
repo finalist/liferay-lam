@@ -1,7 +1,7 @@
 Bundle-Name: nl.finalist.liferay.lam.dslglue
 Bundle-SymbolicName: nl.finalist.liferay.lam.dslglue
 Bundle-Vendor: Finalist
-Bundle-Version: 0.3.0
+Bundle-Version: 0.4.0
 Export-Package: \
 	nl.finalist.liferay.lam.dslglue,\
 	nl.finalist.liferay.lam.builder
