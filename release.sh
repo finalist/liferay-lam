@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
 
-#if git diff-index --quiet HEAD --; then
-if true; then
+if git diff-index --quiet HEAD --; then
     echo Enter the version to release:
     read VERSION
 
