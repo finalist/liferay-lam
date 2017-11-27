@@ -38,6 +38,7 @@ public class ChangelogSoap implements Serializable {
 		soapModel.setDescription(model.getDescription());
 		soapModel.setType(model.getType());
 		soapModel.setChecksum(model.getChecksum());
+		soapModel.setScript(model.getScript());
 		soapModel.setInstalled_by(model.getInstalled_by());
 		soapModel.setInstalled_on(model.getInstalled_on());
 		soapModel.setExecution_time(model.getExecution_time());
@@ -102,11 +103,11 @@ public class ChangelogSoap implements Serializable {
 		_installed_rank = installed_rank;
 	}
 
-	public int getVersion() {
+	public String getVersion() {
 		return _version;
 	}
 
-	public void setVersion(int version) {
+	public void setVersion(String version) {
 		_version = version;
 	}
 
@@ -132,6 +133,14 @@ public class ChangelogSoap implements Serializable {
 
 	public void setChecksum(int checksum) {
 		_checksum = checksum;
+	}
+
+	public String getScript() {
+		return _script;
+	}
+
+	public void setScript(String script) {
+		_script = script;
 	}
 
 	public String getInstalled_by() {
@@ -171,10 +180,11 @@ public class ChangelogSoap implements Serializable {
 	}
 
 	private int _installed_rank;
-	private int _version;
+	private String _version;
 	private String _description;
 	private String _type;
 	private int _checksum;
+	private String _script;
 	private String _installed_by;
 	private Date _installed_on;
 	private int _execution_time;

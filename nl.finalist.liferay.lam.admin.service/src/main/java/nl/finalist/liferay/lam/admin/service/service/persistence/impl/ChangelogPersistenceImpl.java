@@ -317,6 +317,7 @@ public class ChangelogPersistenceImpl extends BasePersistenceImpl<Changelog>
 		changelogImpl.setDescription(changelog.getDescription());
 		changelogImpl.setType(changelog.getType());
 		changelogImpl.setChecksum(changelog.getChecksum());
+		changelogImpl.setScript(changelog.getScript());
 		changelogImpl.setInstalled_by(changelog.getInstalled_by());
 		changelogImpl.setInstalled_on(changelog.getInstalled_on());
 		changelogImpl.setExecution_time(changelog.getExecution_time());

@@ -14,19 +14,17 @@
 
 package nl.finalist.liferay.lam.admin.service.model;
 
-import aQute.bnd.annotation.ProviderType;
-
 import com.liferay.expando.kernel.model.ExpandoBridge;
-
 import com.liferay.portal.kernel.model.ModelWrapper;
 import com.liferay.portal.kernel.service.ServiceContext;
 
 import java.io.Serializable;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+
+import aQute.bnd.annotation.ProviderType;
 
 /**
  * <p>
@@ -62,6 +60,7 @@ public class ChangelogWrapper implements Changelog, ModelWrapper<Changelog> {
 		attributes.put("description", getDescription());
 		attributes.put("type", getType());
 		attributes.put("checksum", getChecksum());
+		attributes.put("script", getScript());
 		attributes.put("installed_by", getInstalled_by());
 		attributes.put("installed_on", getInstalled_on());
 		attributes.put("execution_time", getExecution_time());
@@ -78,7 +77,7 @@ public class ChangelogWrapper implements Changelog, ModelWrapper<Changelog> {
 			setInstalled_rank(installed_rank);
 		}
 
-		Integer version = (Integer)attributes.get("version");
+		String version = (String)attributes.get("version");
 
 		if (version != null) {
 			setVersion(version);
@@ -100,6 +99,12 @@ public class ChangelogWrapper implements Changelog, ModelWrapper<Changelog> {
 
 		if (checksum != null) {
 			setChecksum(checksum);
+		}
+
+		String script = (String)attributes.get("script");
+
+		if (script != null) {
+			setScript(script);
 		}
 
 		String installed_by = (String)attributes.get("installed_by");
@@ -218,6 +223,16 @@ public class ChangelogWrapper implements Changelog, ModelWrapper<Changelog> {
 	}
 
 	/**
+	* Returns the script of this changelog.
+	*
+	* @return the script of this changelog
+	*/
+	@Override
+	public java.lang.String getScript() {
+		return _changelog.getScript();
+	}
+
+	/**
 	* Returns the success of this changelog.
 	*
 	* @return the success of this changelog
@@ -243,7 +258,7 @@ public class ChangelogWrapper implements Changelog, ModelWrapper<Changelog> {
 	* @return the version of this changelog
 	*/
 	@Override
-	public int getVersion() {
+	public java.lang.String getVersion() {
 		return _changelog.getVersion();
 	}
 
@@ -384,6 +399,16 @@ public class ChangelogWrapper implements Changelog, ModelWrapper<Changelog> {
 	}
 
 	/**
+	* Sets the script of this changelog.
+	*
+	* @param script the script of this changelog
+	*/
+	@Override
+	public void setScript(java.lang.String script) {
+		_changelog.setScript(script);
+	}
+
+	/**
 	* Sets whether this changelog is success.
 	*
 	* @param success the success of this changelog
@@ -409,7 +434,7 @@ public class ChangelogWrapper implements Changelog, ModelWrapper<Changelog> {
 	* @param version the version of this changelog
 	*/
 	@Override
-	public void setVersion(int version) {
+	public void setVersion(java.lang.String version) {
 		_changelog.setVersion(version);
 	}
 

@@ -14,21 +14,19 @@
 
 package nl.finalist.liferay.lam.admin.service.model.impl;
 
-import aQute.bnd.annotation.ProviderType;
-
 import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.util.HashUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 
-import nl.finalist.liferay.lam.admin.service.model.Changelog;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-
 import java.util.Date;
+
+import aQute.bnd.annotation.ProviderType;
+import nl.finalist.liferay.lam.admin.service.model.Changelog;
 
 /**
  * The cache model class for representing Changelog in entity cache.
@@ -66,7 +64,7 @@ public class ChangelogCacheModel implements CacheModel<Changelog>,
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(19);
+		StringBundler sb = new StringBundler(21);
 
 		sb.append("{installed_rank=");
 		sb.append(installed_rank);
@@ -78,6 +76,8 @@ public class ChangelogCacheModel implements CacheModel<Changelog>,
 		sb.append(type);
 		sb.append(", checksum=");
 		sb.append(checksum);
+		sb.append(", script=");
+		sb.append(script);
 		sb.append(", installed_by=");
 		sb.append(installed_by);
 		sb.append(", installed_on=");
@@ -96,7 +96,13 @@ public class ChangelogCacheModel implements CacheModel<Changelog>,
 		ChangelogImpl changelogImpl = new ChangelogImpl();
 
 		changelogImpl.setInstalled_rank(installed_rank);
-		changelogImpl.setVersion(version);
+
+		if (version == null) {
+			changelogImpl.setVersion(StringPool.BLANK);
+		}
+		else {
+			changelogImpl.setVersion(version);
+		}
 
 		if (description == null) {
 			changelogImpl.setDescription(StringPool.BLANK);
@@ -113,6 +119,13 @@ public class ChangelogCacheModel implements CacheModel<Changelog>,
 		}
 
 		changelogImpl.setChecksum(checksum);
+
+		if (script == null) {
+			changelogImpl.setScript(StringPool.BLANK);
+		}
+		else {
+			changelogImpl.setScript(script);
+		}
 
 		if (installed_by == null) {
 			changelogImpl.setInstalled_by(StringPool.BLANK);
@@ -139,12 +152,12 @@ public class ChangelogCacheModel implements CacheModel<Changelog>,
 	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		installed_rank = objectInput.readInt();
-
-		version = objectInput.readInt();
+		version = objectInput.readUTF();
 		description = objectInput.readUTF();
 		type = objectInput.readUTF();
 
 		checksum = objectInput.readInt();
+		script = objectInput.readUTF();
 		installed_by = objectInput.readUTF();
 		installed_on = objectInput.readLong();
 
@@ -158,7 +171,12 @@ public class ChangelogCacheModel implements CacheModel<Changelog>,
 		throws IOException {
 		objectOutput.writeInt(installed_rank);
 
-		objectOutput.writeInt(version);
+		if (version == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(version);
+		}
 
 		if (description == null) {
 			objectOutput.writeUTF(StringPool.BLANK);
@@ -176,6 +194,13 @@ public class ChangelogCacheModel implements CacheModel<Changelog>,
 
 		objectOutput.writeInt(checksum);
 
+		if (script == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(script);
+		}
+
 		if (installed_by == null) {
 			objectOutput.writeUTF(StringPool.BLANK);
 		}
@@ -191,10 +216,11 @@ public class ChangelogCacheModel implements CacheModel<Changelog>,
 	}
 
 	public int installed_rank;
-	public int version;
+	public String version;
 	public String description;
 	public String type;
 	public int checksum;
+	public String script;
 	public String installed_by;
 	public long installed_on;
 	public int execution_time;

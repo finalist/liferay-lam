@@ -7,10 +7,11 @@
 		<id name="installed_rank" type="int">
 			<generator class="assigned" />
 		</id>
-		<property name="version" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property name="version" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="description" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="type" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="checksum" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property name="script" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="installed_by" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="installed_on" type="org.hibernate.type.TimestampType" />
 		<property name="execution_time" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />

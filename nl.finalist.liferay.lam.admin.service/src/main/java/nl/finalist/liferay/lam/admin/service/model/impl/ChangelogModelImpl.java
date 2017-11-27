@@ -59,10 +59,11 @@ public class ChangelogModelImpl extends BaseModelImpl<Changelog>
 	public static final String TABLE_NAME = "LAM_Changelog";
 	public static final Object[][] TABLE_COLUMNS = {
 			{ "installed_rank", Types.INTEGER },
-			{ "version", Types.INTEGER },
+			{ "version", Types.VARCHAR },
 			{ "description", Types.VARCHAR },
 			{ "type", Types.VARCHAR },
 			{ "checksum", Types.INTEGER },
+			{ "script", Types.VARCHAR },
 			{ "installed_by", Types.VARCHAR },
 			{ "installed_on", Types.TIMESTAMP },
 			{ "execution_time", Types.INTEGER },
@@ -72,17 +73,18 @@ public class ChangelogModelImpl extends BaseModelImpl<Changelog>
 
 	static {
 		TABLE_COLUMNS_MAP.put("installed_rank", Types.INTEGER);
-		TABLE_COLUMNS_MAP.put("version", Types.INTEGER);
+		TABLE_COLUMNS_MAP.put("version", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("description", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("type", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("checksum", Types.INTEGER);
+		TABLE_COLUMNS_MAP.put("script", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("installed_by", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("installed_on", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("execution_time", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("success", Types.BOOLEAN);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table LAM_Changelog (installed_rank INTEGER not null primary key,version INTEGER,description VARCHAR(75) null,type VARCHAR(75) null,checksum INTEGER,installed_by VARCHAR(75) null,installed_on DATE null,execution_time INTEGER,success BOOLEAN)";
+	public static final String TABLE_SQL_CREATE = "create table LAM_Changelog (installed_rank INTEGER not null primary key,version VARCHAR(75) null,description VARCHAR(75) null,type VARCHAR(75) null,checksum INTEGER,script VARCHAR(75) null,installed_by VARCHAR(75) null,installed_on DATE null,execution_time INTEGER,success BOOLEAN)";
 	public static final String TABLE_SQL_DROP = "drop table LAM_Changelog";
 	public static final String ORDER_BY_JPQL = " ORDER BY changelog.installed_rank ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY LAM_Changelog.installed_rank ASC";
@@ -141,6 +143,7 @@ public class ChangelogModelImpl extends BaseModelImpl<Changelog>
 		attributes.put("description", getDescription());
 		attributes.put("type", getType());
 		attributes.put("checksum", getChecksum());
+		attributes.put("script", getScript());
 		attributes.put("installed_by", getInstalled_by());
 		attributes.put("installed_on", getInstalled_on());
 		attributes.put("execution_time", getExecution_time());
@@ -160,7 +163,7 @@ public class ChangelogModelImpl extends BaseModelImpl<Changelog>
 			setInstalled_rank(installed_rank);
 		}
 
-		Integer version = (Integer)attributes.get("version");
+		String version = (String)attributes.get("version");
 
 		if (version != null) {
 			setVersion(version);
@@ -182,6 +185,12 @@ public class ChangelogModelImpl extends BaseModelImpl<Changelog>
 
 		if (checksum != null) {
 			setChecksum(checksum);
+		}
+
+		String script = (String)attributes.get("script");
+
+		if (script != null) {
+			setScript(script);
 		}
 
 		String installed_by = (String)attributes.get("installed_by");
@@ -220,12 +229,17 @@ public class ChangelogModelImpl extends BaseModelImpl<Changelog>
 	}
 
 	@Override
-	public int getVersion() {
-		return _version;
+	public String getVersion() {
+		if (_version == null) {
+			return StringPool.BLANK;
+		}
+		else {
+			return _version;
+		}
 	}
 
 	@Override
-	public void setVersion(int version) {
+	public void setVersion(String version) {
 		_version = version;
 	}
 
@@ -267,6 +281,21 @@ public class ChangelogModelImpl extends BaseModelImpl<Changelog>
 	@Override
 	public void setChecksum(int checksum) {
 		_checksum = checksum;
+	}
+
+	@Override
+	public String getScript() {
+		if (_script == null) {
+			return StringPool.BLANK;
+		}
+		else {
+			return _script;
+		}
+	}
+
+	@Override
+	public void setScript(String script) {
+		_script = script;
 	}
 
 	@Override
@@ -338,6 +367,7 @@ public class ChangelogModelImpl extends BaseModelImpl<Changelog>
 		changelogImpl.setDescription(getDescription());
 		changelogImpl.setType(getType());
 		changelogImpl.setChecksum(getChecksum());
+		changelogImpl.setScript(getScript());
 		changelogImpl.setInstalled_by(getInstalled_by());
 		changelogImpl.setInstalled_on(getInstalled_on());
 		changelogImpl.setExecution_time(getExecution_time());
@@ -412,6 +442,12 @@ public class ChangelogModelImpl extends BaseModelImpl<Changelog>
 
 		changelogCacheModel.version = getVersion();
 
+		String version = changelogCacheModel.version;
+
+		if ((version != null) && (version.length() == 0)) {
+			changelogCacheModel.version = null;
+		}
+
 		changelogCacheModel.description = getDescription();
 
 		String description = changelogCacheModel.description;
@@ -429,6 +465,14 @@ public class ChangelogModelImpl extends BaseModelImpl<Changelog>
 		}
 
 		changelogCacheModel.checksum = getChecksum();
+
+		changelogCacheModel.script = getScript();
+
+		String script = changelogCacheModel.script;
+
+		if ((script != null) && (script.length() == 0)) {
+			changelogCacheModel.script = null;
+		}
 
 		changelogCacheModel.installed_by = getInstalled_by();
 
@@ -456,7 +500,7 @@ public class ChangelogModelImpl extends BaseModelImpl<Changelog>
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(19);
+		StringBundler sb = new StringBundler(21);
 
 		sb.append("{installed_rank=");
 		sb.append(getInstalled_rank());
@@ -468,6 +512,8 @@ public class ChangelogModelImpl extends BaseModelImpl<Changelog>
 		sb.append(getType());
 		sb.append(", checksum=");
 		sb.append(getChecksum());
+		sb.append(", script=");
+		sb.append(getScript());
 		sb.append(", installed_by=");
 		sb.append(getInstalled_by());
 		sb.append(", installed_on=");
@@ -483,7 +529,7 @@ public class ChangelogModelImpl extends BaseModelImpl<Changelog>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(31);
+		StringBundler sb = new StringBundler(34);
 
 		sb.append("<model><model-name>");
 		sb.append("nl.finalist.liferay.lam.admin.service.model.Changelog");
@@ -508,6 +554,10 @@ public class ChangelogModelImpl extends BaseModelImpl<Changelog>
 		sb.append(
 			"<column><column-name>checksum</column-name><column-value><![CDATA[");
 		sb.append(getChecksum());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>script</column-name><column-value><![CDATA[");
+		sb.append(getScript());
 		sb.append("]]></column-value></column>");
 		sb.append(
 			"<column><column-name>installed_by</column-name><column-value><![CDATA[");
@@ -536,10 +586,11 @@ public class ChangelogModelImpl extends BaseModelImpl<Changelog>
 			Changelog.class
 		};
 	private int _installed_rank;
-	private int _version;
+	private String _version;
 	private String _description;
 	private String _type;
 	private int _checksum;
+	private String _script;
 	private String _installed_by;
 	private Date _installed_on;
 	private int _execution_time;

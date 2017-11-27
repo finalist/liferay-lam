@@ -81,14 +81,15 @@ public interface ChangelogModel extends BaseModel<Changelog> {
 	 *
 	 * @return the version of this changelog
 	 */
-	public int getVersion();
+	@AutoEscape
+	public String getVersion();
 
 	/**
 	 * Sets the version of this changelog.
 	 *
 	 * @param version the version of this changelog
 	 */
-	public void setVersion(int version);
+	public void setVersion(String version);
 
 	/**
 	 * Returns the description of this changelog.
@@ -133,6 +134,21 @@ public interface ChangelogModel extends BaseModel<Changelog> {
 	 * @param checksum the checksum of this changelog
 	 */
 	public void setChecksum(int checksum);
+
+	/**
+	 * Returns the script of this changelog.
+	 *
+	 * @return the script of this changelog
+	 */
+	@AutoEscape
+	public String getScript();
+
+	/**
+	 * Sets the script of this changelog.
+	 *
+	 * @param script the script of this changelog
+	 */
+	public void setScript(String script);
 
 	/**
 	 * Returns the installed_by of this changelog.

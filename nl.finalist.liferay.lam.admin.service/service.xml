@@ -4,10 +4,11 @@
 <namespace>LAM</namespace>
     <entity name="Changelog" remote-service="false" local-service="true" cache-enabled="false" json-enabled="false" table="LAM_Changelog">
         <column name="installed_rank" type="int" primary="true"></column>
-        <column name="version" type="int"></column>
+        <column name="version" type="String"></column>
         <column name="description" type="String"></column>
         <column name="type" type="String" db-name="type"></column>
         <column name="checksum" type="int"></column>
+        <column name="script" type="String"></column>
         <column name="installed_by" type="String"></column>
         <column name="installed_on" type="Date"></column>
         <column name="execution_time" type="int"></column>

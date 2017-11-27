@@ -3,10 +3,11 @@
 <model-hints>
 	<model name="nl.finalist.liferay.lam.admin.service.model.Changelog">
 		<field name="installed_rank" type="int" />
-		<field name="version" type="int" />
+		<field name="version" type="String" />
 		<field name="description" type="String" />
 		<field name="type" type="String" />
 		<field name="checksum" type="int" />
+		<field name="script" type="String" />
 		<field name="installed_by" type="String" />
 		<field name="installed_on" type="Date" />
 		<field name="execution_time" type="int" />
