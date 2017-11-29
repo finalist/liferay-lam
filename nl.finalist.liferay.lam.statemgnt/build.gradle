@@ -1,0 +1,41 @@
+plugins {
+
+    id 'nu.studer.credentials' version '1.0.1'
+}
+
+apply plugin: "com.liferay.plugin"
+apply plugin: 'maven'
+apply plugin: 'nu.studer.credentials'
+
+dependencies {
+	compileOnly group: "org.osgi", name: "org.osgi.core", version: "6.0.0"
+	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.3.0"
+    compileOnly "com.liferay.portal:com.liferay.portal.kernel:2.15.0"
+
+    testCompile 'junit:junit:4.12'
+
+    compile "org.flywaydb:flyway-core:4.2.0"
+}
+
+
+repositories {
+	mavenLocal()
+
+	maven {
+		url "https://cdn.lfrs.sl/repository.liferay.com/nexus/content/groups/public"
+	}
+}
+
+
+uploadArchives {
+	repositories {
+		mavenDeployer {
+			repository(url: project.finalistnexusrepository) {
+				authentication(userName: credentials.userid, password: credentials.password)
+			}
+			pom.version = project.version
+			pom.artifactId = project.name
+			pom.groupId = project.mavenGroupId
+		}
+	}
+}
