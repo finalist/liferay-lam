@@ -1,5 +1,7 @@
 package nl.finalist.liferay.lam.statemgnt.flyway;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.InfrastructureUtil;
 
 import java.util.List;
@@ -16,7 +18,7 @@ import nl.finalist.liferay.lam.statemgnt.api.StateManager;
 @Component(service = StateManager.class)
 public class FlywayStateManager implements StateManager {
 
-    private static final com.liferay.portal.kernel.log.Log LOG = com.liferay.portal.kernel.log.LogFactoryUtil.getLog(FlywayStateManager.class);
+    private static final Log LOG = LogFactoryUtil.getLog(FlywayStateManager.class);
 
     private Flyway flyway;
 
