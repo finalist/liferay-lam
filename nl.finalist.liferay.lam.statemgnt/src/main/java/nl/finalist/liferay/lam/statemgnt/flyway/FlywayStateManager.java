@@ -20,12 +20,12 @@ public class FlywayStateManager implements StateManager {
 
     private static final Log LOG = LogFactoryUtil.getLog(FlywayStateManager.class);
 
-    private Flyway flyway;
+
+    private Flyway flyway = new Flyway();
 
     @Activate
     public void init() {
         LOG.debug("Initializing Flyway State Manager...");
-        flyway = new Flyway();
 
         flyway.setSkipDefaultResolvers(true);
 
@@ -34,8 +34,7 @@ public class FlywayStateManager implements StateManager {
         flyway.setTable("LAM_Changelog");
         flyway.setBaselineOnMigrate(true);
         flyway.setBaselineVersion(MigrationVersion.fromVersion("0"));
-        flyway.setBaselineVersionAsString("0");
-        flyway.setBaselineDescription("Baseline");
+        flyway.setBaselineDescription("Baseline by LAM statemanagement");
         flyway.migrate();
     }
 
@@ -66,5 +65,7 @@ public class FlywayStateManager implements StateManager {
         flyway.repair();
     }
 
-
+    public void setFlyway(Flyway flyway) {
+        this.flyway = flyway;
+    }
 }
