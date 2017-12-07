@@ -62,12 +62,11 @@ public class TemplateImpl extends ADTImpl implements Template {
         String scriptLanguage = FilenameUtils.getExtension(fileUrl);
         String script = getContentFromBundle(fileUrl, bundle);
         try {
-            DDMTemplate ddmTemplate  = ddmTemplateLocalService.addTemplate(defaultValue.getDefaultUserId(), groupId, classNameId, classPK,
+            ddmTemplateLocalService.addTemplate(defaultValue.getDefaultUserId(), groupId, classNameId, classPK,
                             resourceClassNameId, adtKey, nameMap, descriptionMap,  DDMTemplateConstants.TEMPLATE_TYPE_DISPLAY,
                             DDMTemplateConstants.TEMPLATE_MODE_CREATE, scriptLanguage,
                             script, false, false, null, null, new ServiceContext());
 
-            dDMTemplateLinkLocalService.addTemplateLink(resourceClassNameId, classPK, ddmTemplate.getTemplateId());
             LOG.info(String.format("Template %s succesfully created", adtKey));
         } catch (PortalException e) {
             LOG.error(String.format("PortalException while creating template %s: %s", adtKey, e.getMessage()));
