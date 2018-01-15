@@ -25,7 +25,9 @@ public class FlywayStateManagerTest {
 
     @Mock
     private Flyway flyway;
-
+    @Mock
+    private InputStream mockInputStream;
+    
     @InjectMocks
     private FlywayStateManager flywayStateManager;
 
@@ -59,12 +61,12 @@ public class FlywayStateManagerTest {
 
             @Override
             public String getName() {
-                return "";
+                return "Test_1";
             }
 
             @Override
             public InputStream getStream() throws IOException {
-                return null;
+                return mockInputStream;
             }
 
             @Override
@@ -72,9 +74,8 @@ public class FlywayStateManagerTest {
                 return null;
             }
         }));
-
+        
         verify(flyway).setResolvers(captor.capture());
-        MigrationResolver[] registeredResolvers = captor.getValue();
-        assertEquals(1, registeredResolvers.length);
+        assertEquals(1, captor.getValue().length);
     }
 }
