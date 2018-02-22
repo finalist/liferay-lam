@@ -57,11 +57,11 @@ public class PageImpl implements Page {
 
         Map<String, String> customFields = page.getCustomFields();
         if (customFields != null) {
-            for (String fieldName : customFields.keySet()) {
-                LOG.debug(String.format("Page Custom field %s now has value %s", fieldName, customFields.get(fieldName)));
-
-                customFieldsService.addCustomFieldValue(Layout.class.getName(), fieldName, layout.getPrimaryKey(),
-                    customFields.get(fieldName));
+            for (Map.Entry<String, String> field : customFields.entrySet()) {
+                String fieldKey = field.getKey();
+                String value = field.getValue();
+                LOG.debug(String.format("Page Custom field %s now has value %s", fieldKey, value));
+                customFieldsService.addCustomFieldValue(Layout.class.getName(), fieldKey, layout.getPrimaryKey(), value);
             }
         }
     }
@@ -84,12 +84,10 @@ public class PageImpl implements Page {
         } else if(page.getExternalUrl() != null) {
         	addedTypeSettings = "url="+page.getExternalUrl();
         }
-        
-        String typeSettings = page.getTypeSettings() == null 
+
+        return page.getTypeSettings() == null
         		? addedTypeSettings
         		: page.getTypeSettings()+addedTypeSettings;
-        
-        return typeSettings;
     }
 
 	private String determineTypeSettingsForLinkedLayout(PageModel page, Group site) {

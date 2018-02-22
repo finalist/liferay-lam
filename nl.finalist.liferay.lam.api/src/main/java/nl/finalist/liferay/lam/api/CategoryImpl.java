@@ -8,7 +8,6 @@ import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -31,9 +30,6 @@ public class CategoryImpl implements Category {
 
 
     @Reference
-    private CompanyLocalService companyService;
-
-    @Reference
     private AssetCategoryLocalService assetCategoryService;
 
     @Reference
@@ -41,7 +37,7 @@ public class CategoryImpl implements Category {
 
     @Reference
     private DefaultValue defaultValue;
-    AssetCategory assetCategory;
+
 
     @Override
     public void addCategory(Map<Locale, String> categoryName, String vocabularyName, String title, String parentCategoryName) {
@@ -68,7 +64,7 @@ public class CategoryImpl implements Category {
                                     .filter(assetCategory -> assetCategory.getName().equalsIgnoreCase(parentCategoryName))
                                     .map(AssetCategory::getCategoryId)
                                     .findFirst()
-                                    .orElse(0l);
+                                    .orElse(0L);
                 }
                 assetCategoryService.addCategory(defaultValue.getDefaultUserId(), defaultValue.getGlobalGroupId(),
                                 parentCategoryId, categoryName, new HashMap<>(), vocabulary.getVocabularyId(), new String[0], new ServiceContext());
