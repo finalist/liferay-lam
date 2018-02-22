@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.MigrationVersion;
-import org.flywaydb.core.api.resolver.MigrationResolver;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 
@@ -40,13 +39,10 @@ public class FlywayStateManager implements StateManager {
     }
 
     private void setScripts(List<ScriptMigration> scripts) {
-    	List<FlywayLAMMigration> migrations = scripts
-    			.stream()
-    			.map(FlywayLAMMigration::new)
-                .collect(Collectors.toList());
-    			MigrationResolver[] resolvers  = (MigrationResolver[]) migrations.toArray();	
-    			
-        flyway.setResolvers(resolvers);
+        flyway.setResolvers(() -> scripts
+            .stream()
+            .map(FlywayLAMMigration::new)
+            .collect(Collectors.toList()));
     }
 
 
