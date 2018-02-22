@@ -63,7 +63,7 @@ public class LamAdminWebPortlet extends MVCPortlet {
 
 
         List<Changelog> changelogs = getChangelogLocalService().getChangelogs(0, getChangelogLocalService().getChangelogsCount());
-        LOG.debug("Amount of changelogs" + changelogs.size());
+        LOG.debug("Number of changelog entries: " + changelogs.size());
         //set service bean
         request.setAttribute("changelogs", changelogs);
 

@@ -1,0 +1,14 @@
+Bundle-Name: nl.finalist.liferay.lam.statemgnt
+Bundle-SymbolicName: nl.finalist.liferay.lam.statemgnt
+Bundle-Version: 1.0.0
+Export-Package: nl.finalist.liferay.lam.statemgnt.api
+Bundle-Vendor: Finalist
+Include-Resource: \
+ @flyway-core-*.jar
+Import-Package: \
+ !android.*,\
+ !dalvik.*,\
+ !org.jboss.*,\
+ !org.postgresql.*,\
+ !org.springframework.*,\
+ *

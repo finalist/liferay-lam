@@ -6,4 +6,5 @@
 build
 .gradle
 .metadata
-nl.finalist.liferay.lam.api/out/
+bin
+out

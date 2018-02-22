@@ -7,6 +7,7 @@ import org.osgi.service.component.annotations.Reference;
 
 import nl.finalist.liferay.lam.dslglue.Executor;
 import nl.finalist.liferay.lam.dslglue.ProjectConfig;
+import nl.finalist.liferay.lam.statemgnt.api.StateManager;
 
 /**
  * This is an example of a Component that you need to include in your project specific config module.
@@ -27,5 +28,11 @@ public class SampleProjectConfig extends ProjectConfig {
 	@Reference
 	protected void setExecutor(Executor executor) {
 		this.executor = executor;
+	}
+
+	@Override
+    @Reference
+	protected void setStateManager(StateManager stateManager) {
+		this.stateManager = stateManager;
 	}
 }

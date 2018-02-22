@@ -27,8 +27,7 @@ dependencies {
     testCompile 'org.mockito:mockito-all:1.10.8'
 
     compile project(":nl.finalist.liferay.lam.api")
-
-	compile "org.flywaydb:flyway-core:4.2.0"
+    compile project(":nl.finalist.liferay.lam.statemgnt")
 }
 
 uploadArchives {

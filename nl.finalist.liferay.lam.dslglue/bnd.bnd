@@ -7,10 +7,10 @@ Export-Package: \
 	nl.finalist.liferay.lam.builder
 Include-Resource: \
  @groovy-*.jar,\
- @jansi-*.jar,\
- @flyway-core-*.jar
+ @jansi-*.jar
 Import-Package: \
 nl.finalist.liferay.lam.api.model,\
+nl.finalist.liferay.lam.statemgnt.api,\
  !com.thoughtworks.qdox.*,\
  !groovyjarjarasm.asm.tree.analysis.*,\
  !jline.*,\
@@ -19,10 +19,5 @@ nl.finalist.liferay.lam.api.model,\
  !org.apache.bsf.*,\
  !org.apache.commons.cli.*,\
  !org.apache.ivy.*,\
- !android.*,\
- !dalvik.*,\
- !org.jboss.*,\
- !org.postgresql.*,\
- !org.springframework.*,\
  *
  
