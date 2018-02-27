@@ -1,6 +1,6 @@
 Bundle-Name: nl.finalist.liferay.lam.statemgnt
 Bundle-SymbolicName: nl.finalist.liferay.lam.statemgnt
-Bundle-Version: 1.0.0
+Bundle-Version: 0.4.3
 Export-Package: nl.finalist.liferay.lam.statemgnt.api
 Bundle-Vendor: Finalist
 Include-Resource: \
