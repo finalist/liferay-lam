@@ -431,10 +431,10 @@ As you can see, you have to specify the name and the description. It is also pos
 Of course this custom field has to exist before you can give it a value here. CustomFields is a map where the key is
 the name of the custom field, and the value is the actual value you want to give it.
 
-#Pages
-Besides in the context of a site, you can also create, update and delete on their own. The syntax is mostly the same, but in this case you also have to pass along the siteKey. The following script gives a brief example of creating a page:
+# Pages
+Besides in the context of a site, you can also create, update and delete on their own. The syntax is mostly the same, but in this case you also have to pass along the siteKey. The following script gives a brief example of creating or updating a page:
 
-	create.page(
+	createOrUpdate.page(
         siteKey: "Fictional Bank",
         privatePage: false,
         nameMap: [
