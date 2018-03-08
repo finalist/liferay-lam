@@ -54,7 +54,7 @@ See also the module `nl.finalist.liferay.lam.sampleproject-config`, our flagship
 3. Import existing Gradle project, point to base directory of cloned Git repo
 4. Run 'gradle build'
 5. Run unit tests
-6. Deploy modules to Liferay to see it in action: `dslglue`, `api`, and `sampleproject-config`
+6. Deploy modules to Liferay to see it in action: `dslglue`, `api`, `statemgnt`, and `sampleproject-config`
 
 
 ![Image of LAM](sheep.png)
