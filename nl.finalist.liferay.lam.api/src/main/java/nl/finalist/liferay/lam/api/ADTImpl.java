@@ -58,7 +58,7 @@ public class ADTImpl implements ADT{
             updateADT(fileUrl, bundle,  nameMap, descriptionMap, 0, adt, adtKey);
         }
     }
-    protected void createADT(String adtKey,String fileUrl, Bundle bundle, Map<Locale, String> nameMap,
+    void createADT(String adtKey,String fileUrl, Bundle bundle, Map<Locale, String> nameMap,
                     Map<Locale, String> descriptionMap, long groupId, long classNameId, long resourceClassNameId) {
 
         String scriptLanguage = FilenameUtils.getExtension(fileUrl);
