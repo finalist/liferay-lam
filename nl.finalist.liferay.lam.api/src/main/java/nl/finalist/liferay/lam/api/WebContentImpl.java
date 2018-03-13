@@ -69,7 +69,6 @@ public class WebContentImpl implements WebContent {
     public void createOrUpdateWebcontent(String articleId, String siteFriendlyURL, Map<Locale,String> titleMap, String fileUrl, Bundle bundle,
                     String urlTitle, String structureKey, String templateKey){
         long globalGroupId = defaultValue.getGlobalGroupId();
-        long groupId = globalGroupId;
         long companyId = defaultValue.getDefaultCompany().getCompanyId();
         long userId = defaultValue.getDefaultUserId();
         String xmlContent = getContentFromBundle(fileUrl, bundle);
@@ -81,31 +80,17 @@ public class WebContentImpl implements WebContent {
             templateKey = "BASIC-WEB-CONTENT";
         }
         DDMStructure ddmStructure = getStructure(structureKey, globalGroupId, classNameId);
-        if(Validator.isNotNull(siteFriendlyURL)  && !Validator.isBlank(siteFriendlyURL)){
-            Group group = groupLocalService.fetchFriendlyURLGroup(companyId, siteFriendlyURL);
-            if(Validator.isNotNull(group)){
-                groupId = group.getGroupId();
-            }
-            else{
-                LOG.error(String.format("Site %s can not be found, webcontent %s is added to global group", siteFriendlyURL, articleId));
-            }
-        }
-        JournalArticle webcontent = null;
-        try {
-            webcontent = journalArticleService.getArticle(groupId, articleId);
-        } catch (PortalException e) {
-            LOG.debug(String.format("PortalException while retrieving webcontent %s, creating. Exception: %s",
-                articleId, e.getMessage()));
-        }
+        long groupId = determineGroupId(siteFriendlyURL, globalGroupId, companyId);
+        JournalArticle webcontent = journalArticleService.fetchArticle(groupId, articleId);
         if(webcontent == null){
             webcontent = journalArticleService.createJournalArticle(counterLocalService.increment());
-            LOG.info(String.format("Webcontent %s does not exist, Creating new webcontent", articleId));
+            LOG.info(String.format("Webcontent %s does not exist, creating new webcontent", articleId));
             webcontent.setGroupId(groupId);
             webcontent.setUserId(userId);
             webcontent.setArticleId(articleId);
             webcontent.setCompanyId(companyId);
             webcontent.setCreateDate(new Date());
-            webcontent.setVersion(MathUtil.format(1.0, 1, 1));
+            webcontent.setVersion(1.0d);
 
             JournalArticleResource resource;
             resource = journalArticleResourceLocalService.fetchArticleResource(groupId, articleId);
@@ -154,10 +139,25 @@ public class WebContentImpl implements WebContent {
             assetEntry.setTitleMap(titleMap);
             AssetEntryLocalServiceUtil.updateAssetEntry(assetEntry);
         }
+        // This is how Liferay determines the version in 'JournalArticleLocalServiceImpl' 
         webcontent.setVersion((MathUtil.format(webcontent.getVersion() + 0.1, 1, 1)));
         journalArticleService.updateJournalArticle(webcontent);
         LOG.debug(String.format("Article creation/update process completed for article with id '%s'", articleId));
     }
+
+	private long determineGroupId(String siteFriendlyURL, long globalGroupId, long companyId) {
+		long groupId = globalGroupId;
+        if(Validator.isNotNull(siteFriendlyURL)  && !Validator.isBlank(siteFriendlyURL)){
+            Group group = groupLocalService.fetchFriendlyURLGroup(companyId, siteFriendlyURL);
+            if(Validator.isNotNull(group)){
+                groupId = group.getGroupId();
+            }
+            else{
+                LOG.error(String.format("Site %s can not be found, webcontent is added to global group", siteFriendlyURL));
+            }
+        }
+		return groupId;
+	}
 
     @Override
     public void deleteWebContent(String urlTitle) {
