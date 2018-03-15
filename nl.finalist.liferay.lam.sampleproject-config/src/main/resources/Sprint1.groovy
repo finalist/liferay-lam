@@ -29,8 +29,9 @@ create.site(
 )
 
 /* Minimalistic page: only the required parameters */
-create.page(
+createOrUpdate.page(
        siteKey: "Fictional Bank",
+       friendlyUrlMap: ["nl_NL": "/home", "en_US": "/home"],
        privatePage: false,
        nameMap: ["en_US": "Fictional bank Home", "nl_NL": "Fictieve bank Home"]
 )

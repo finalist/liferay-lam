@@ -40,20 +40,28 @@ public class PageImpl implements Page {
     	Group site = groupService.fetchGroup(defaultValue.getDefaultCompany().getCompanyId(), siteKey);
         Layout layout = null;
         try {
-            layout = layoutService.addLayout(defaultValue.getDefaultUserId(), site.getGroupId(), page.isPrivatePage(),
-                determineParentLayoutId(site.getGroupId(), page),
-                LocaleMapConverter.convert(page.getNameMap()),
-                page.getTitleMap(),
-                page.getDescriptionMap(), null, null,
-                determinePageType(page), determineTypeSettings(page, site), page.isHiddenPage(),
-                LocaleMapConverter.convert(page.getFriendlyUrlMap()),
-                new ServiceContext());
+        	Layout oldLayout = layoutService.fetchLayoutByFriendlyURL(site.getGroupId(), page.isPrivatePage(), page.getFriendlyUrlMap().get(LocaleUtil.getDefault().toString()));
+        	if (oldLayout == null) {
+        		layout = layoutService.addLayout(defaultValue.getDefaultUserId(), site.getGroupId(), page.isPrivatePage(),
+	                determineParentLayoutId(site.getGroupId(), page),
+	                LocaleMapConverter.convert(page.getNameMap()),
+	                page.getTitleMap(),
+	                page.getDescriptionMap(), null, null,
+	                determinePageType(page), determineTypeSettings(page, site), page.isHiddenPage(),
+	                LocaleMapConverter.convert(page.getFriendlyUrlMap()),
+	                new ServiceContext());
+        		LOG.debug(String.format("Page '%s' with url '%s' added", 
+        	            layout.getName(LocaleUtil.getDefault()), layout.getFriendlyURL()));
+        	} else {
+        		layout = layoutService.updateLayout(site.getGroupId(), page.isPrivatePage(), oldLayout.getLayoutId(), determineParentLayoutId(site.getGroupId(), page), 
+        				LocaleMapConverter.convert(page.getNameMap()), page.getTitleMap(), page.getDescriptionMap(), null, null, determinePageType(page), page.isHiddenPage(), 
+        				LocaleMapConverter.convert(page.getFriendlyUrlMap()), false, null, new ServiceContext());
+        		LOG.debug(String.format("Page '%s' with url '%s' updated", 
+        	            layout.getName(LocaleUtil.getDefault()), layout.getFriendlyURL()));
+        	}
         } catch (PortalException e) {
             LOG.error("While adding page: " + page, e);
         }
-
-        LOG.info(String.format("Page '%s' with url '%s' added", 
-            layout.getName(LocaleUtil.getDefault()), layout.getFriendlyURL()));
 
         Map<String, String> customFields = page.getCustomFields();
         if (customFields != null) {

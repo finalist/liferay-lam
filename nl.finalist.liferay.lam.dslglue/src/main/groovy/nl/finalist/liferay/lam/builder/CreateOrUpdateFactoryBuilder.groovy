@@ -1,5 +1,7 @@
-package nl.finalist.liferay.lam.builder;
+package nl.finalist.liferay.lam.builder
 
+import nl.finalist.liferay.lam.api.Page
+import nl.finalist.liferay.lam.builder.factory.CreateOrUpdatePageFactory;
 import org.osgi.framework.Bundle;
 
 import groovy.util.FactoryBuilderSupport;
@@ -15,10 +17,13 @@ import nl.finalist.liferay.lam.builder.factory.CreateOrUpdateWebcontentFactory;
 class CreateOrUpdateFactoryBuilder extends FactoryBuilderSupport {
 
 
-    CreateOrUpdateFactoryBuilder(Structure structureService, Template templateService, ADT adtService, WebContent webContentService, Bundle bundle){
+    CreateOrUpdateFactoryBuilder(Structure structureService, Template templateService, ADT adtService, WebContent webContentService, Bundle bundle, Page
+        pageService){
         registerFactory("structure", new CreateOrUpdateStructureFactory(structureService, bundle));
         registerFactory("template", new CreateOrUpdateTemplateFactory(templateService, bundle));
         registerFactory("ADT", new CreateOrUpdateADTFactory(adtService, bundle));
         registerFactory("webcontent", new CreateOrUpdateWebcontentFactory(webContentService, bundle));
+        registerFactory("page", new CreateOrUpdatePageFactory(pageService));
+
     }
 }

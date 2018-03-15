@@ -1,6 +1,6 @@
 import nl.finalist.liferay.lam.dslglue.Templates
 
-create.page(
+createOrUpdate.page(
         siteKey: "Fictional Bank",
         privatePage: false,
         nameMap: ["nl_NL": "De Nederlandsche Bank", "en_US": "De Nederlandsche Bank"],
@@ -10,7 +10,7 @@ create.page(
 )
 
 // TODO: create a useful/sensible example from this
-create.page( 
+createOrUpdate.page( 
         siteKey: "Fictional Bank",
         privatePage: true,
         nameMap: ["nl_NL": "verborgen pagina", "en_US": "hidden page"],
@@ -22,7 +22,7 @@ create.page(
 )
 
 // TODO: create a useful/sensible example from this
-create.page(
+createOrUpdate.page(
         siteKey: "Fictional Bank",
         privatePage: false,
         nameMap: ["nl_NL": "paginalink", "en_US": "linked page"],
