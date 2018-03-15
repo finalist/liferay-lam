@@ -61,7 +61,7 @@ public class DocumentImpl implements Document {
         try {
             bytes = getBytesFromBundle(fileUrl, bundle);
         } catch (IOException e) {
-            LOG.error("IOException while getting bytes from bundle " + e);
+            LOG.error("IOException while getting bytes from bundle ", e);
         }
 
         FileEntry fileEntry = null;
@@ -89,7 +89,7 @@ public class DocumentImpl implements Document {
                         bytes,
                         new ServiceContext());
             } catch (PortalException e) {
-                LOG.error("PortalException while adding document, document not added " + e);
+                LOG.error("PortalException while adding document, document not added ", e);
             }
         } else {
             try {
@@ -105,7 +105,7 @@ public class DocumentImpl implements Document {
                         bytes,
                         new ServiceContext());
             } catch (PortalException e) {
-                LOG.error("PortalException while updating document, document not updated " + e);
+                LOG.error("PortalException while updating document, document not updated ", e);
             }
         }
 
@@ -117,7 +117,7 @@ public class DocumentImpl implements Document {
             assetEntry = AssetEntryLocalServiceUtil.updateEntry(userId, groupId, FileEntry.class.getName(),
                     fileEntry.getFileEntryId(), new long[0], new String[0]);
         } catch (PortalException e) {
-            LOG.error("PortalException while creating assetEntry for document, assetEntry not created " + e);
+            LOG.error("PortalException while creating assetEntry for document, assetEntry not created ", e);
         }
 
         if (Validator.isNotNull(assetEntry)) {
@@ -168,7 +168,7 @@ public class DocumentImpl implements Document {
                     ResourceConstants.SCOPE_INDIVIDUAL, resource.getPrimKey(), role.getRoleId(),
                     new String[] { ActionKeys.VIEW });
         } catch (PortalException e) {
-            LOG.error("PortalException while setting document resource permissions, permissions are not set " + e);
+            LOG.error("PortalException while setting document resource permissions, permissions are not set ", e);
         }
     }
 
