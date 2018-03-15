@@ -69,57 +69,34 @@ public class WebContentImpl implements WebContent {
     public void createOrUpdateWebcontent(String articleId, String siteFriendlyURL, Map<Locale,String> titleMap, String fileUrl, Bundle bundle,
                     String urlTitle, String structureKey, String templateKey){
         long globalGroupId = defaultValue.getGlobalGroupId();
-        long groupId = globalGroupId;
         long companyId = defaultValue.getDefaultCompany().getCompanyId();
         long userId = defaultValue.getDefaultUserId();
         String xmlContent = getContentFromBundle(fileUrl, bundle);
         long classNameId = classNameLocalService.getClassNameId(JournalArticle.class.getName());
-        if(Validator.isNull(structureKey)|| Validator.isBlank(structureKey)){
-            structureKey = "BASIC-WEB-CONTENT";
-        }
-        if(Validator.isNull(templateKey) || Validator.isBlank(templateKey)){
-            templateKey = "BASIC-WEB-CONTENT";
-        }
+        structureKey = addDefaultKeyIfNeeded(structureKey);
+        templateKey = addDefaultKeyIfNeeded(templateKey);
         DDMStructure ddmStructure = getStructure(structureKey, globalGroupId, classNameId);
-        if(Validator.isNotNull(siteFriendlyURL)  && !Validator.isBlank(siteFriendlyURL)){
-            Group group = groupLocalService.fetchFriendlyURLGroup(companyId, siteFriendlyURL);
-            if(Validator.isNotNull(group)){
-                groupId = group.getGroupId();
-            }
-            else{
-                LOG.error(String.format("Site %s can not be found, webcontent %s is added to global group", siteFriendlyURL, articleId));
-            }
-        }
-        JournalArticle webcontent = null;
-        try {
-            webcontent = journalArticleService.getArticle(groupId, articleId);
-        } catch (PortalException e) {
-            LOG.debug(String.format("PortalException while retrieving webcontent %s, creating. Exception: %s",
-                articleId, e.getMessage()));
-        }
+        long groupId = determineGroupId(siteFriendlyURL, globalGroupId, companyId);
+        JournalArticle webcontent = journalArticleService.fetchArticle(groupId, articleId);
         if(webcontent == null){
-            webcontent = journalArticleService.createJournalArticle(counterLocalService.increment());
-            LOG.info(String.format("Webcontent %s does not exist, Creating new webcontent", articleId));
-            webcontent.setGroupId(groupId);
-            webcontent.setUserId(userId);
-            webcontent.setArticleId(articleId);
-            webcontent.setCompanyId(companyId);
-            webcontent.setCreateDate(new Date());
-            webcontent.setVersion(MathUtil.format(1.0, 1, 1));
-
-            JournalArticleResource resource;
-            resource = journalArticleResourceLocalService.fetchArticleResource(groupId, articleId);
-
-            if(resource == null){
-                LOG.debug(String.format("Resource doesn't exist for webcontent %s , creating new resource", articleId));
-                resource = journalArticleResourceLocalService.createJournalArticleResource(counterLocalService.increment());
-                resource.setGroupId(groupId);
-                resource.setArticleId(articleId);
-                resource.persist();
-            }
-            webcontent.setResourcePrimKey(resource.getResourcePrimKey());
+            webcontent = createNewWebcontent(articleId, companyId, userId, groupId);
         }
-        webcontent.setDDMStructureKey(structureKey);
+        updateWebcontent(titleMap, urlTitle, structureKey, templateKey, userId, xmlContent, ddmStructure, groupId,
+				webcontent);
+        LOG.debug(String.format("Article creation/update process completed for article with id '%s'", articleId));
+    }
+
+	private String addDefaultKeyIfNeeded(String key) {
+		if(Validator.isNull(key)|| Validator.isBlank(key)){
+            key = "BASIC-WEB-CONTENT";
+        }
+		return key;
+	}
+
+	private void updateWebcontent(Map<Locale, String> titleMap, String urlTitle, String structureKey,
+			String templateKey, long userId, String xmlContent, DDMStructure ddmStructure, long groupId,
+			JournalArticle webcontent) {
+		webcontent.setDDMStructureKey(structureKey);
         webcontent.setDDMTemplateKey(templateKey);
         webcontent.setTitleMap(titleMap);
         webcontent.setUrlTitle(urlTitle);
@@ -133,19 +110,20 @@ public class WebContentImpl implements WebContent {
 
         AssetEntry assetEntry = null;
         try {
-            assetEntry = AssetEntryLocalServiceUtil.updateEntry(
-                            userId,
-                            groupId,
-                            JournalArticle.class.getName(),
+            assetEntry = AssetEntryLocalServiceUtil.updateEntry(userId,
+                            groupId, JournalArticle.class.getName(),
                             webcontent.getResourcePrimKey(),
-                            new long[0],
-                            new String[0]
-                            );
+                            new long[0], new String[0]);
         } catch (PortalException e) {
-            LOG.error("PortalException while creating assetEntry for webcontent, assetentry not created" + e);
+            LOG.error("PortalException while creating assetEntry for webcontent, assetentry not created", e);
         }
 
-        webcontent.setStatus(WorkflowConstants.STATUS_APPROVED);
+        publishWebcontent(titleMap, ddmStructure, webcontent, assetEntry);
+	}
+
+	private void publishWebcontent(Map<Locale, String> titleMap, DDMStructure ddmStructure, JournalArticle webcontent,
+			AssetEntry assetEntry) {
+		webcontent.setStatus(WorkflowConstants.STATUS_APPROVED);
         webcontent.persist();
         if(Validator.isNotNull(assetEntry)){
             assetEntry.setPublishDate(new Date());
@@ -154,10 +132,49 @@ public class WebContentImpl implements WebContent {
             assetEntry.setTitleMap(titleMap);
             AssetEntryLocalServiceUtil.updateAssetEntry(assetEntry);
         }
+        // This is how Liferay determines the version in 'JournalArticleLocalServiceImpl' 
         webcontent.setVersion((MathUtil.format(webcontent.getVersion() + 0.1, 1, 1)));
         journalArticleService.updateJournalArticle(webcontent);
-        LOG.debug(String.format("Article creation/update process completed for article with id '%s'", articleId));
-    }
+	}
+
+	private JournalArticle createNewWebcontent(String articleId, long companyId, long userId, long groupId) {
+		JournalArticle webcontent;
+		webcontent = journalArticleService.createJournalArticle(counterLocalService.increment());
+		LOG.info(String.format("Webcontent %s does not exist, creating new webcontent", articleId));
+		webcontent.setGroupId(groupId);
+		webcontent.setUserId(userId);
+		webcontent.setArticleId(articleId);
+		webcontent.setCompanyId(companyId);
+		webcontent.setCreateDate(new Date());
+		webcontent.setVersion(1.0d);
+
+		JournalArticleResource resource;
+		resource = journalArticleResourceLocalService.fetchArticleResource(groupId, articleId);
+
+		if(resource == null){
+		    LOG.debug(String.format("Resource doesn't exist for webcontent %s, creating new resource", articleId));
+		    resource = journalArticleResourceLocalService.createJournalArticleResource(counterLocalService.increment());
+		    resource.setGroupId(groupId);
+		    resource.setArticleId(articleId);
+		    resource.persist();
+		}
+		webcontent.setResourcePrimKey(resource.getResourcePrimKey());
+		return webcontent;
+	}
+
+	private long determineGroupId(String siteFriendlyURL, long globalGroupId, long companyId) {
+		long groupId = globalGroupId;
+        if(Validator.isNotNull(siteFriendlyURL)  && !Validator.isBlank(siteFriendlyURL)){
+            Group group = groupLocalService.fetchFriendlyURLGroup(companyId, siteFriendlyURL);
+            if(Validator.isNotNull(group)){
+                groupId = group.getGroupId();
+            }
+            else{
+                LOG.error(String.format("Site %s can not be found, webcontent is added to global group", siteFriendlyURL));
+            }
+        }
+		return groupId;
+	}
 
     @Override
     public void deleteWebContent(String urlTitle) {
@@ -187,7 +204,7 @@ public class WebContentImpl implements WebContent {
                             new String[]{ActionKeys.VIEW}
                             );
         } catch (PortalException e) {
-            LOG.error("PortalException while setting webcontent resource permissions, permissions are not set" + e);
+            LOG.error("PortalException while setting webcontent resource permissions, permissions are not set", e);
         }
 
 
@@ -206,7 +223,7 @@ public class WebContentImpl implements WebContent {
             }
         }
         catch (IOException e) {
-            LOG.error("IOException while reading input for xmlContent " + fileUrl + " " + e);
+            LOG.error(String.format("IOException while reading input for xmlContent %s", fileUrl), e);
         }
         return xmlContent;
     }
@@ -215,7 +232,7 @@ public class WebContentImpl implements WebContent {
         try {
             ddmStructure = ddmStructureLocalService.getStructure(groupId, classNameId, structureKey);
         } catch (PortalException e) {
-            LOG.error(String.format("PortalException while retrieving %s ", structureKey) + e);
+            LOG.error(String.format("PortalException while retrieving %s ", structureKey), e);
         }
         return ddmStructure;
     }

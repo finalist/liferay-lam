@@ -26,7 +26,7 @@ public class PortalPropertiesImpl implements PortalProperties {
      */
     @Override
     public boolean validatePortalProperties(Map<String, String> propertyValues) {
-        LOG.debug(String.format("Start comparing the portal property values"));
+        LOG.debug("Start comparing the portal property values");
 
         int count = 0;
         Set<String> keys = propertyValues.keySet();
@@ -36,16 +36,14 @@ public class PortalPropertiesImpl implements PortalProperties {
                             && PropsUtil.get(key).equals(propertyValues.get(key))) {
                 LOG.debug(String.format("Property %s has expected value", key));
             } else {
+                count++;
                 if (PropsUtil.get(key) == null) {
                     LOG.info(String.format("Property %s doesn't exist in portal-ext.properties", key));
-                    count++;
                 } else if (propertyValues.get(key) == null) {
                     LOG.info(String.format("Property %s was expected not to have a value, check your configuration", key));
-                    count++;
                 } else {
                     LOG.info(String.format("Property %s should have value %s but value is %s instead", key, propertyValues.get(key),
                                     PropsUtil.get(key)));
-                    count++;
                 }
             }
         }

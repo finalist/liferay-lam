@@ -1,22 +1,20 @@
 package nl.finalist.liferay.lam.api;
 
+import com.liferay.asset.kernel.exception.DuplicateVocabularyException;
+import com.liferay.asset.kernel.model.AssetVocabulary;
+import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.Validator;
+
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-
-import com.liferay.asset.kernel.exception.DuplicateVocabularyException;
-import com.liferay.asset.kernel.model.AssetVocabulary;
-import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
-import com.liferay.counter.kernel.service.CounterLocalService;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.util.Validator;
 /**
  * Implementation for {@link nl.finalist.liferay.lam.api.Vocabulary}
  */
@@ -25,11 +23,6 @@ public class VocabularyImpl implements Vocabulary {
 
     @Reference
     private AssetVocabularyLocalService vocabularyService;
-    @Reference
-    private CounterLocalService counterService;
-   
-    @Reference
-    private UserLocalService userService;
 
     @Reference
     private DefaultValue defaultValue;
@@ -49,7 +42,7 @@ public class VocabularyImpl implements Vocabulary {
             LOG.debug(String.format("Vocabulary Name to be addded is %s", vocabularyName));
            
             vocabularyService.addVocabulary(userId, groupId, null, vocabularyName,
-                            new HashMap<Locale, String>(), "", new ServiceContext());
+                new HashMap<>(), "", new ServiceContext());
             LOG.info(String.format("Added vocabulary %s to group %d", vocabularyName, groupId));
         } catch (DuplicateVocabularyException e) {
         	LOG.info(String.format("Vocabulary %s already exists in group %d", vocabularyName, groupId));
