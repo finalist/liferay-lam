@@ -17,8 +17,8 @@ import nl.finalist.liferay.lam.builder.factory.CreateOrUpdateWebcontentFactory
 
 class CreateOrUpdateFactoryBuilder extends FactoryBuilderSupport {
 
-    CreateOrUpdateFactoryBuilder(Structure structureService, Template templateService, ADT adtService, WebContent webContentService, , Page
-        pageServiceDocument documentService, Bundle bundle){
+    CreateOrUpdateFactoryBuilder(Structure structureService, Template templateService, ADT adtService, WebContent webContentService, Page
+        pageService, Document documentService, Bundle bundle){
         registerFactory("structure", new CreateOrUpdateStructureFactory(structureService, bundle));
         registerFactory("template", new CreateOrUpdateTemplateFactory(templateService, bundle));
         registerFactory("ADT", new CreateOrUpdateADTFactory(adtService, bundle));
