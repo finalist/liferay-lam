@@ -68,8 +68,7 @@ public class DocumentImpl implements Document {
         try {
             fileEntry = dlAppLocalService.getFileEntry(groupId, DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, title);
         } catch (PortalException e) {
-            LOG.debug(String.format("PortalException while retrieving document %s, creating. Exception: %s", title,
-                    e.getMessage()));
+            LOG.error(String.format("PortalException while retrieving document %s", title), e);
         }
         String sourceFileName = title;  
         String description = title;  
