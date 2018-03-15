@@ -96,7 +96,7 @@ public class DslExecutor implements Executor {
         sharedData.setVariable("LOG", LOG);
 
         sharedData.setVariable("create", new CreateFactoryBuilder(customFieldsService, vocabularyService, siteService,
-                        categoryService, userGroupsService, roleAndPermissionsService, pageService, tagService,
+                        categoryService, userGroupsService, roleAndPermissionsService, tagService,
                         userService));
 
         sharedData.setVariable("update", new UpdateFactoryBuilder(portalSettingsService, vocabularyService,
@@ -105,7 +105,7 @@ public class DslExecutor implements Executor {
         sharedData.setVariable("delete", new DeleteFactoryBuilder(customFieldsService, vocabularyService,
                         siteService, categoryService, webContentService, tagService, userService));
         sharedData.setVariable("createOrUpdate", new CreateOrUpdateFactoryBuilder(structureService,templateService,
-                        adtService, webContentService, documentService, bundle));
+                        adtService, webContentService, pageService, documentService, bundle));
 
         sharedData.setVariable("Roles", new Roles());
         sharedData.setVariable("Entities", new Entities());
