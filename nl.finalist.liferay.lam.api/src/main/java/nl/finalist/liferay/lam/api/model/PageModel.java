@@ -1,6 +1,8 @@
 package nl.finalist.liferay.lam.api.model;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -18,13 +20,15 @@ public class PageModel {
 	private boolean hiddenPage;
 	private String linkedPageUrl;
 	private String externalUrl;
-	
+	private List<Column> columns = new ArrayList<>();
+
 	public PageModel(LinkedHashMap<String, Object> map) {
 		this((String)map.get("siteKey"), (Boolean)map.get("privatePage"), (Map)map.get("nameMap"), (Map)map.get("titleMap"),
 				(Map)map.get("descriptionMap"), (Map)map.get("friendlyUrlMap"), (String)map.get("typeSettings"), 
 				(Map)map.get("customFields"), (String)map.get("parentUrl"), (String)map.get("linkedPageUrl"),
 				(String)map.get("externalUrl"));
 	}
+	
     public PageModel(String siteKey, boolean privatePage, Map<String, String> nameMap, Map<Locale, String> titleMap,
             Map<Locale, String> descriptionMap, Map<String, String> friendlyUrlMap, String typeSettings, 
             Map<String, String> customFields, String parentUrl, String linkedPageUrl, String externalUrl) {
@@ -39,7 +43,7 @@ public class PageModel {
         this.linkedPageUrl = linkedPageUrl;
         this.setExternalUrl(externalUrl);
     }
-
+    
 	public boolean isPrivatePage() {
 		return privatePage;
 	}
@@ -122,6 +126,16 @@ public class PageModel {
 	public void setExternalUrl(String externalUrl) {
 		this.externalUrl = externalUrl;
 	}
+	public List<Column> getColumns() {
+		return columns;
+	}
+	public void setColumns(List<Column> columns) {
+		this.columns = columns;
+	}
+	public void addColumn(Column column) {
+		this.columns.add(column);
+	}
+	
 	@Override
 	public String toString() {
 		return "PageModel [privatePage=" + privatePage + ", nameMap=" + nameMap + ", titleMap=" + titleMap

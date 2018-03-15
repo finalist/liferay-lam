@@ -19,6 +19,7 @@ class CreateFactoryBuilder extends FactoryBuilderSupport {
         registerFactory("tag", new CreateTagFactory(tagService));
         
         registerFactory("user", new CreateUserFactory(userService));
+        registerFactory("column", new CreateColumnFactory());
     }
    
 }

@@ -1,5 +1,12 @@
 package nl.finalist.liferay.lam.api;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+
 import com.liferay.portal.kernel.exception.NoSuchLayoutException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
@@ -11,12 +18,9 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 
-import java.util.Map;
-
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
+import nl.finalist.liferay.lam.api.model.Column;
 import nl.finalist.liferay.lam.api.model.PageModel;
 import nl.finalist.liferay.lam.util.LocaleMapConverter;
 
@@ -77,18 +81,56 @@ public class PageImpl implements Page {
     }
     
     private String determineTypeSettings(PageModel page, Group site) {
-    	String addedTypeSettings = "";
+    	List<String> addedTypeSettings = new ArrayList<>();
 
-        if (page.getLinkedPageUrl() != null) {
-        	addedTypeSettings = determineTypeSettingsForLinkedLayout(page, site);
-        } else if(page.getExternalUrl() != null) {
-        	addedTypeSettings = "url="+page.getExternalUrl();
+    	// add typesettings from the script
+    	if(page.getTypeSettings() != null) {
+    		addedTypeSettings.add(page.getTypeSettings());
+    	}
+    	
+    	// add typesettings for the page type
+        String pageTypeSettings = determinePageTypeSettings(page, site);
+        if (!pageTypeSettings.equals("")) {
+        	addedTypeSettings.add(pageTypeSettings);
+        }
+        
+        // add typesettings for the columns
+        if (page.getColumns() != null) {
+        	addedTypeSettings.add(determineTypeSettingsForColumns(page));
         }
 
-        return page.getTypeSettings() == null
-        		? addedTypeSettings
-        		: page.getTypeSettings()+addedTypeSettings;
+        LOG.info("TEST:"+StringUtil.merge(addedTypeSettings));
+        return StringUtil.merge(addedTypeSettings);
     }
+
+	private String determinePageTypeSettings(PageModel page, Group site) {
+    	String pageTypeSettings = "";
+		if (page.getLinkedPageUrl() != null) {
+        	pageTypeSettings = determineTypeSettingsForLinkedLayout(page, site);
+        } else if(page.getExternalUrl() != null) {
+        	pageTypeSettings = "url="+page.getExternalUrl();
+        }
+		return pageTypeSettings;
+	}
+
+    /**
+     * Generates a String of the format column-1=portletId-1, portletId-2, column-2=portletId-3
+     * 
+     * @param page Page containing the columns we want to add
+     * @return
+     */
+	private String determineTypeSettingsForColumns(PageModel page) {
+		StringBuilder columnSettings = new StringBuilder();
+		for (int i = 0; i < page.getColumns().size(); i++) {
+			Column column = page.getColumns().get(i);
+			// the column counter starts at 1, and not at 0
+			columnSettings.append("column-"+(i+1));
+			columnSettings.append("=");
+			columnSettings.append(StringUtil.merge(column.getPortletIds()));
+			columnSettings.append("\n");
+		}
+		return columnSettings.toString();
+	}
 
 	private String determineTypeSettingsForLinkedLayout(PageModel page, Group site) {
 		String linkedLayoutTypeSettings = "";
