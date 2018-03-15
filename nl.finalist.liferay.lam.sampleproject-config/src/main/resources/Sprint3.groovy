@@ -5,7 +5,7 @@ create.page(
         privatePage: false,
         nameMap: ["nl_NL": "De Nederlandsche Bank", "en_US": "De Nederlandsche Bank"],
         titleMap: ["nl_NL": "De Nederlandsche Bank"],
-        friendlyUrlMap: ["nl_NL": "/dnb", "en_US": "/dnb"],
+        friendlyUrlMap: ["nl_NL": "/dnb", "en_US": "/dnb_us"],
         externalUrl: "https://www.dnb.nl"
 )
 
