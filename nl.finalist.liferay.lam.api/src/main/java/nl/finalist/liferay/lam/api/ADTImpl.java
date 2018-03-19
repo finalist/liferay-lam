@@ -38,7 +38,6 @@ public class ADTImpl implements ADT{
     @Reference
     private DefaultValue defaultValue;
 
-
     protected DDMTemplateLocalService ddmTemplateLocalService;
 
     protected DDMTemplateVersionLocalService ddmTemplateVersionLocalService;

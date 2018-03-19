@@ -66,7 +66,7 @@ public class TemplateImpl extends ADTImpl implements Template {
 
             LOG.info(String.format("Template %s succesfully created", adtKey));
         } catch (PortalException e) {
-            LOG.error(String.format("PortalException while creating template %s: %s", adtKey, e.getMessage()));
+            LOG.error("PortalException while creating template " + adtKey, e);
         }
     }
 
@@ -97,11 +97,13 @@ public class TemplateImpl extends ADTImpl implements Template {
     }
 
 
+    @Override
     @Reference
     public void setDdmTemplateLocalService(DDMTemplateLocalService ddmTemplateLocalService) {
         this.ddmTemplateLocalService = ddmTemplateLocalService;
     }
 
+    @Override
     @Reference
     public void setDdmTemplateVersionLocalService(
         DDMTemplateVersionLocalService ddmTemplateVersionLocalService) {
