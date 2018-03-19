@@ -34,19 +34,19 @@ public class TemplateImpl extends ADTImpl implements Template {
     private DDMStructureLocalService ddmStructureLocalService;
 
     @Override
-    public void createOrUpdateTemplate(String adtKey, String fileUrl, Bundle bundle, String structureKey, Map<Locale, String> nameMap,
+    public void createOrUpdateTemplate(String templateKey, String fileUrl, Bundle bundle, String structureKey, Map<Locale, String> nameMap,
                     Map<Locale, String> descriptionMap) {
         long journalArticleClassNameId = classNameLocalService.getClassNameId(JournalArticle.class.getName());
         long structureClassNameId = classNameLocalService.getClassNameId(DDMStructure.class.getName());
         long groupId = defaultValue.getGlobalGroupId();
         long classPK = getClassPk(structureKey, groupId, journalArticleClassNameId);
-        DDMTemplate adt = getADT(adtKey, groupId, structureClassNameId);
+        DDMTemplate adt = getADT(templateKey, groupId, structureClassNameId);
         if (Validator.isNull(adt)) {
-            LOG.info(String.format("Template %s does not exist, creating template", adtKey));
-            super.createTemplate(adtKey,fileUrl, bundle, nameMap, descriptionMap, groupId, structureClassNameId, journalArticleClassNameId,classPK);
+            LOG.info(String.format("Template %s does not exist, creating template", templateKey));
+            super.createTemplate(templateKey,fileUrl, bundle, nameMap, descriptionMap, groupId, structureClassNameId, journalArticleClassNameId,classPK);
         } else {
-            LOG.info(String.format("Template %s already exist, updating template", adtKey));
-            super.updateTemplate(fileUrl, bundle,  nameMap, descriptionMap, classPK, adt, adtKey);
+            LOG.info(String.format("Template %s already exist, updating template", templateKey));
+            super.updateTemplate(fileUrl, bundle,  nameMap, descriptionMap, classPK, adt, templateKey);
         }
     }
 
