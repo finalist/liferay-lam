@@ -28,7 +28,8 @@ dependencies {
     
     testCompile "javax.servlet:javax.servlet-api:3.1.0"
     testCompile "javax.portlet:portlet-api:3.0.0"
-
+    testCompile group: "org.osgi", name: "org.osgi.core", version: "6.0.0"
+    
 	testCompile 'junit:junit:4.12'
     testCompile 'org.powermock:powermock-core:1.6.1'
     testCompile 'org.powermock:powermock-module-junit4:1.6.1'
@@ -37,7 +38,7 @@ dependencies {
 
 
     // https://mvnrepository.com/artifact/com.liferay/com.liferay.dynamic.data.mapping.api
-testCompile  'com.liferay:com.liferay.dynamic.data.mapping.api:3.5.5'
+    testCompile  'com.liferay:com.liferay.dynamic.data.mapping.api:3.5.5'
     
     
 	compile group: "com.liferay", name:"com.liferay.journal.api", version:"2.1.0"

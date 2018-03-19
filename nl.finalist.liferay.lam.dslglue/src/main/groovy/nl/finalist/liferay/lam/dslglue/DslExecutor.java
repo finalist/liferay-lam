@@ -18,6 +18,7 @@ import groovy.lang.GroovyShell;
 import nl.finalist.liferay.lam.api.ADT;
 import nl.finalist.liferay.lam.api.Category;
 import nl.finalist.liferay.lam.api.CustomFields;
+import nl.finalist.liferay.lam.api.Document;
 import nl.finalist.liferay.lam.api.Page;
 import nl.finalist.liferay.lam.api.PortalProperties;
 import nl.finalist.liferay.lam.api.PortalSettings;
@@ -30,7 +31,11 @@ import nl.finalist.liferay.lam.api.User;
 import nl.finalist.liferay.lam.api.UserGroups;
 import nl.finalist.liferay.lam.api.Vocabulary;
 import nl.finalist.liferay.lam.api.WebContent;
-import nl.finalist.liferay.lam.builder.*;
+import nl.finalist.liferay.lam.builder.CreateFactoryBuilder;
+import nl.finalist.liferay.lam.builder.CreateOrUpdateFactoryBuilder;
+import nl.finalist.liferay.lam.builder.DeleteFactoryBuilder;
+import nl.finalist.liferay.lam.builder.UpdateFactoryBuilder;
+import nl.finalist.liferay.lam.builder.ValidateFactoryBuilder;
 
 
 
@@ -70,6 +75,8 @@ public class DslExecutor implements Executor {
     @Reference
     private WebContent webContentService;
     @Reference
+    private Document documentService;
+    @Reference
     private User userService;
     @Reference
     private Tag tagService;
@@ -89,7 +96,7 @@ public class DslExecutor implements Executor {
         sharedData.setVariable("LOG", LOG);
 
         sharedData.setVariable("create", new CreateFactoryBuilder(customFieldsService, vocabularyService, siteService,
-                        categoryService, userGroupsService, roleAndPermissionsService, pageService, tagService,
+                        categoryService, userGroupsService, roleAndPermissionsService, tagService,
                         userService));
 
         sharedData.setVariable("update", new UpdateFactoryBuilder(portalSettingsService, vocabularyService,
@@ -98,7 +105,7 @@ public class DslExecutor implements Executor {
         sharedData.setVariable("delete", new DeleteFactoryBuilder(customFieldsService, vocabularyService,
                         siteService, categoryService, webContentService, tagService, userService));
         sharedData.setVariable("createOrUpdate", new CreateOrUpdateFactoryBuilder(structureService,templateService,
-                        adtService, webContentService, bundle));
+                        adtService, webContentService, pageService, documentService, bundle));
 
         sharedData.setVariable("Roles", new Roles());
         sharedData.setVariable("Entities", new Entities());

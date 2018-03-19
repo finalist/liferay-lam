@@ -1,6 +1,5 @@
 package nl.finalist.liferay.lam.api;
 
-import com.liferay.counter.kernel.service.CounterLocalService;
 import com.liferay.dynamic.data.mapping.exception.NoSuchStructureException;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormLayout;
@@ -39,8 +38,6 @@ public class StructureImpl implements Structure {
     private DDMStructureLocalService ddmStructureLocalService;
     @Reference
     private ClassNameLocalService classNameLocalService;
-    @Reference
-    private CounterLocalService counterLocalService;
     @Reference
     private DDMStructureVersionLocalService ddmStructureVersionLocalService;
     @Reference

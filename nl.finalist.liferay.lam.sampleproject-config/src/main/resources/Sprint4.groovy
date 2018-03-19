@@ -1,12 +1,10 @@
-import nl.finalist.liferay.lam.dslglue.Templates
-
-create.page(
-	siteKey: "Fictional Bank",
-	privatePage: false,
-	nameMap:["nl_NL": "Pagina met kolommen", "en_US": "Page with columns"],
-    titleMap: ["nl_NL": "Pagina met kolommen"],
-    friendlyUrlMap: ["nl_NL": "/kolommen"],
-) {
-	column(id:1, portletIds:["com_liferay_login_web_portlet_LoginPortlet"])
-	column(id:2, portletIds:["com_liferay_site_navigation_language_web_portlet_SiteNavigationLanguagePortlet", "com_liferay_social_activities_web_portlet_SocialActivitiesPortlet"])
-}
+createOrUpdate.page( 
+        siteKey: "Fictional Bank",
+        privatePage: true,
+        nameMap: ["nl_NL": "Verborgen pagina (NL)", "en_US": "Hidden page (US)"],
+        titleMap: ["nl_NL": "Titel verborgen pagina"],
+        descriptionMap: ["nl_NL": "Omschrijving verborgen pagina"],
+        friendlyUrlMap: ["nl_NL": "/verborgenpagina", "en_US": "/hiddenpage"],
+        typeSettings: Templates.one_column,
+        hiddenPage: true
+)

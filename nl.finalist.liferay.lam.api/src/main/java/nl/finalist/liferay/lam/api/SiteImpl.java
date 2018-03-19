@@ -92,18 +92,17 @@ public class SiteImpl implements Site {
 			}
 			for (PageModel page : pages) {
 				Set<String> locales = page.getFriendlyUrlMap().keySet();
-			for (String locale : locales) {
-				Layout existingPage = pageService.fetchLayout(group.getGroupId(), false, page.getFriendlyUrlMap().get(locale));
-				if (existingPage != null) {					
-					pageService.updatePage(existingPage.getLayoutId(), group.getGroupId(), group.getPrimaryKey(), page);
-					LOG.info(String.format("page %s is updated ", page.getNameMap().get(locale)));
-					break;
-				} else {
-					pageService.addPage(groupKey, page);
-                    LOG.info(String.format("page doesn't exists so it has been added: %s", page.getNameMap().get(locale)));
+				for (String locale : locales) {
+					Layout existingPage = pageService.fetchLayout(group.getGroupId(), false, page.getFriendlyUrlMap().get(locale));
+					if (existingPage != null) {
+						pageService.updatePage(existingPage.getLayoutId(), group.getGroupId(), group.getPrimaryKey(), page);
+						LOG.info(String.format("page %s is updated ", page.getNameMap().get(locale)));
+						break;
+					} else {
+						pageService.addPage(groupKey, page);
+						LOG.info(String.format("page doesn't exists so it has been added: %s", page.getNameMap().get(locale)));
+					}
 				}
-			}
-				
 			}
 		} catch (PortalException e) {
 			LOG.error("The group was not updated.", e);
@@ -121,6 +120,4 @@ public class SiteImpl implements Site {
 			LOG.error("The group was not deleted.");
 		}
 	}
-
-	
 }

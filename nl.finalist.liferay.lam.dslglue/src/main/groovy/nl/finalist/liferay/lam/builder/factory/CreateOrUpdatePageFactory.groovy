@@ -4,11 +4,11 @@ import nl.finalist.liferay.lam.api.Page
 import nl.finalist.liferay.lam.api.model.PageModel
 import nl.finalist.liferay.lam.dslglue.model.SiteModel
 
-class CreatePageFactory extends AbstractFactory {
+class CreateOrUpdatePageFactory extends AbstractFactory {
 
     Page pageService;
 
-    CreatePageFactory(Page pageService) {
+    CreateOrUpdatePageFactory(Page pageService) {
         this.pageService = pageService;
     }
 

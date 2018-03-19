@@ -5,7 +5,6 @@ import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.model.DDMTemplate;
 import com.liferay.dynamic.data.mapping.model.DDMTemplateConstants;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
-import com.liferay.dynamic.data.mapping.service.DDMTemplateLinkLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMTemplateLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMTemplateVersionLocalService;
 import com.liferay.journal.model.JournalArticle;
@@ -30,11 +29,9 @@ public class TemplateImpl extends ADTImpl implements Template {
 
     @Reference
     private ClassNameLocalService classNameLocalService;
-    @Reference
-    private DefaultValue defaultValue;
 
     @Reference
-    private DDMTemplateLinkLocalService dDMTemplateLinkLocalService;
+    private DefaultValue defaultValue;
 
     @Reference
     private DDMStructureLocalService ddmStructureLocalService;
