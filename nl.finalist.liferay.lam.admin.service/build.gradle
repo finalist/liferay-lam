@@ -29,7 +29,7 @@ sonarqube {
                 'src/main/java/**/model/impl/*CacheModel.java,' +
                 'src/main/java/**/model/impl/*ModelImpl.java,' +
                 'src/main/java/**/service/base/*.java,' +
-                'src/main/java/**/service/persistence/impl/*.java',
+                'src/main/java/**/service/persistence/impl/*.java,' +
                 'src/main/java/**/util/PropsUtil.java'
     }
 }
