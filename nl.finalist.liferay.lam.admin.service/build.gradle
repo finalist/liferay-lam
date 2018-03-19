@@ -21,3 +21,14 @@ buildService {
 	osgiModule = true
 	propsUtil = "nl.finalist.liferay.lam.admin.service.util.PropsUtil"
 }
+
+sonarqube {
+	properties {
+		property 'sonar.exclusions',
+						'src/main/java/**/model/impl/*BaseImpl.java,' +
+						'src/main/java/**/model/impl/*CacheModel.java,' +
+						'src/main/java/**/model/impl/*ModelImpl.java,' +
+						'src/main/java/**/service/base/*.java,' +
+						'src/main/java/**/service/persistence/impl/*.java'
+	}
+}

@@ -37,28 +37,27 @@ subprojects {
             url "https://www.intranet.finalist.com/nexus/content/repositories/public"
 		}
 	}
+
     sonarqube {
         properties {
             property 'sonar.sources', 'src/main'
         }
     }
 
-
-
-
     uploadArchives {
         repositories {
             mavenDeployer {
-                repository(url: project.finalistnexusrepository) {
+                repository(url: "https://www.intranet.finalist.com/nexus/content/repositories/releases") {
                     authentication(userName: credentials.userid, password: credentials.password)
                 }
-                def bnd = new Properties()
-                file("bnd.bnd").withInputStream {
-                    bnd.load(it)
-                    project.version =bnd."Bundle-Version"
-                }
 
-                println "project.version for  " + project.name + ": " + project.version
+                // Read project.version from bnd.bnd, this is possible because all modules in this project use bnd for
+                // JAR packaging
+                file("bnd.bnd").withInputStream {
+                    def bnd = new Properties()
+                    bnd.load(it)
+                    project.version = bnd."Bundle-Version"
+                }
 
                 pom.version = project.version
                 pom.artifactId = project.name
