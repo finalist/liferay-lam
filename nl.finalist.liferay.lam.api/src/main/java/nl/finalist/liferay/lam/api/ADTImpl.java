@@ -51,29 +51,33 @@ public class ADTImpl implements ADT{
         DDMTemplate adt = getADT(adtKey, groupId, classNameId);
         if (Validator.isNull(adt)) {
             LOG.info(String.format("ADT %s does not exist, creating ADT",adtKey));
-            createADT(adtKey, fileUrl, bundle, nameMap, descriptionMap, groupId, classNameId, resourceClassNameId);
+            createTemplate(adtKey, fileUrl, bundle, nameMap, descriptionMap, groupId, classNameId, resourceClassNameId, 0L);
         } else {
             LOG.info(String.format("ADT %s already exist, updating ADT", adtKey));
-            updateADT(fileUrl, bundle,  nameMap, descriptionMap, 0, adt, adtKey);
+            updateTemplate(fileUrl, bundle,  nameMap, descriptionMap, 0, adt, adtKey);
         }
     }
-    void createADT(String adtKey,String fileUrl, Bundle bundle, Map<Locale, String> nameMap,
-                    Map<Locale, String> descriptionMap, long groupId, long classNameId, long resourceClassNameId) {
+
+    void createTemplate(String adtKey, String fileUrl, Bundle bundle, Map<Locale, String> nameMap,
+                        Map<Locale, String> descriptionMap, long groupId, long classNameId,
+                        long resourceClassNameId, long classPk) {
 
         String scriptLanguage = FilenameUtils.getExtension(fileUrl);
         String script = getContentFromBundle(fileUrl, bundle);
         try {
-            ddmTemplateLocalService.addTemplate(defaultValue.getDefaultUserId(), groupId, classNameId,0, resourceClassNameId,adtKey, nameMap, descriptionMap,
-                            DDMTemplateConstants.TEMPLATE_TYPE_DISPLAY, null, scriptLanguage, script,
-                            false,false, null, null, new ServiceContext());
+            ddmTemplateLocalService.addTemplate(defaultValue.getDefaultUserId(), groupId, classNameId, classPk,
+                resourceClassNameId,adtKey, nameMap, descriptionMap,
+                DDMTemplateConstants.TEMPLATE_TYPE_DISPLAY, DDMTemplateConstants.TEMPLATE_MODE_CREATE, scriptLanguage, script,
+                false,false, null, null,
+                new ServiceContext());
             LOG.info(String.format("ADT %s succesfully created", adtKey));
         } catch (PortalException e) {
             LOG.error(String.format("PortalException while creating ADT %s ",adtKey)+ e);
         }
     }
 
-    void updateADT(String fileUrl, Bundle bundle,Map<Locale, String> nameMap,
-                    Map<Locale, String> descriptionMap, long classPK, DDMTemplate adt,String adtKey) {
+    void updateTemplate(String fileUrl, Bundle bundle, Map<Locale, String> nameMap,
+                        Map<Locale, String> descriptionMap, long classPK, DDMTemplate adt, String adtKey) {
         String scriptLanguage = FilenameUtils.getExtension(fileUrl);
         String script = getContentFromBundle(fileUrl, bundle);
         String newVersion = String.valueOf(MathUtil.format(Double.valueOf(adt.getVersion()) + 0.1, 1, 1));
