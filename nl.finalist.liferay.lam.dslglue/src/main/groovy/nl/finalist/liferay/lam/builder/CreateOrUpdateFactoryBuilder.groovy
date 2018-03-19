@@ -8,13 +8,14 @@ import nl.finalist.liferay.lam.api.Page
 import nl.finalist.liferay.lam.api.Structure
 import nl.finalist.liferay.lam.api.Template
 import nl.finalist.liferay.lam.api.WebContent
-import nl.finalist.liferay.lam.builder.factory.CreateOrUpdateColumnFactory
-import nl.finalist.liferay.lam.builder.factory.CreateOrUpdateADTFactory
-import nl.finalist.liferay.lam.builder.factory.CreateOrUpdateDocumentFactory
-import nl.finalist.liferay.lam.builder.factory.CreateOrUpdatePageFactory
-import nl.finalist.liferay.lam.builder.factory.CreateOrUpdateStructureFactory
-import nl.finalist.liferay.lam.builder.factory.CreateOrUpdateTemplateFactory
-import nl.finalist.liferay.lam.builder.factory.CreateOrUpdateWebcontentFactory
+import nl.finalist.liferay.lam.builder.factory.createOrUpdate.ColumnFactory
+import nl.finalist.liferay.lam.builder.factory.createOrUpdate.PortletFactory
+import nl.finalist.liferay.lam.builder.factory.createOrUpdate.CreateOrUpdateADTFactory
+import nl.finalist.liferay.lam.builder.factory.createOrUpdate.CreateOrUpdateDocumentFactory
+import nl.finalist.liferay.lam.builder.factory.createOrUpdate.CreateOrUpdatePageFactory
+import nl.finalist.liferay.lam.builder.factory.createOrUpdate.CreateOrUpdateStructureFactory
+import nl.finalist.liferay.lam.builder.factory.createOrUpdate.CreateOrUpdateTemplateFactory
+import nl.finalist.liferay.lam.builder.factory.createOrUpdate.CreateOrUpdateWebcontentFactory
 
 class CreateOrUpdateFactoryBuilder extends FactoryBuilderSupport {
 
@@ -26,6 +27,7 @@ class CreateOrUpdateFactoryBuilder extends FactoryBuilderSupport {
         registerFactory("webcontent", new CreateOrUpdateWebcontentFactory(webContentService, bundle));
         registerFactory("page", new CreateOrUpdatePageFactory(pageService));
         registerFactory("document", new CreateOrUpdateDocumentFactory(documentService, bundle));
-        registerFactory("column", new CreateOrUpdateColumnFactory());
+        registerFactory("column", new ColumnFactory());
+        registerFactory("portlet", new PortletFactory());
     }
 }

@@ -1,25 +1,25 @@
-package nl.finalist.liferay.lam.builder.factory
+package nl.finalist.liferay.lam.builder.factory.createOrUpdate
 
-import nl.finalist.liferay.lam.api.model.PageModel
 import nl.finalist.liferay.lam.api.model.Column
+import nl.finalist.liferay.lam.api.model.Portlet
 
-class CreateOrUpdateColumnFactory extends AbstractFactory {
+class PortletFactory extends AbstractFactory {
 
-    CreateOrUpdateColumnFactory() {
+    PortletFactory() {
     }
 
     @Override
     Object newInstance(FactoryBuilderSupport builder, Object objectName, Object value, Map attributes)
                     throws InstantiationException, IllegalAccessException {
-        new Column(attributes)
+        new Portlet(attributes)
     }
 
     @Override
     void onNodeCompleted(FactoryBuilderSupport builder, Object parent, Object node) {
         super.onNodeCompleted(builder, parent, node);
-        if (parent instanceof PageModel) {
-            PageModel page = (PageModel)parent;
-            page.addColumn((Column)node);
+        if (parent instanceof Column) {
+            Column column = (Column)parent;
+            column.addPortlet((Portlet)node);
         } 
     }
 }

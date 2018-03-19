@@ -240,7 +240,7 @@ The following script shows how you can create a vocabulary:
 		)	
 	}
 
-To create a site, you have to specify a map of names for the available locales. Make sure the default locale is present, as this will be the siteKey that you will later use for updating and deleting. You also have to specify a map of descriptions and a friendly URL. If you try to add a site that already exists, an error message will be logged.
+To create a site, you have to specify a map of names for the available locales. Make sure the default locale is present, as this will be the siteKey that you will later use for updating and deleting. You also have to specify a map of descriptions and a friendly URL. If you try to add a site that already exists, an error message will be logged. If you don't add the default locale for the friendly URL, you will not be able to update the layout later, as it won't find the layout based on the friendly url (as it then automatically creates a friendly url for the default locale based on the title and this generated url is the only one that can be used for fetchLayoutByFriendlyURL).
 
 It is also possible to give a value to a custom field. Of course this custom field has to exist before you can give it a value here. CustomFields is a map where the key is the name of the custom field, and the value is the actual value you want to give it.
 

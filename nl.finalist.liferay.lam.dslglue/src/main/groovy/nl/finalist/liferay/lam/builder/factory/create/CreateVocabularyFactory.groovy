@@ -1,4 +1,4 @@
-package nl.finalist.liferay.lam.builder.factory
+package nl.finalist.liferay.lam.builder.factory.create
 
 import nl.finalist.liferay.lam.api.Vocabulary;
 import nl.finalist.liferay.lam.dslglue.model.VocabularyModel;

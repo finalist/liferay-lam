@@ -1,4 +1,4 @@
-package nl.finalist.liferay.lam.builder.factory
+package nl.finalist.liferay.lam.builder.factory.createOrUpdate
 import nl.finalist.liferay.lam.api.Structure;
 import nl.finalist.liferay.lam.util.LocaleMapConverter;
 import nl.finalist.liferay.lam.dslglue.model.StructureModel;

@@ -1,4 +1,4 @@
-package nl.finalist.liferay.lam.builder.factory
+package nl.finalist.liferay.lam.builder.factory.delete
 
 import nl.finalist.liferay.lam.api.User
 import nl.finalist.liferay.lam.dslglue.model.UserModel;

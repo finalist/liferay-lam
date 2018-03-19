@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.portlet.PortletPreferences;
+import javax.portlet.ReadOnlyException;
+
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -14,14 +17,18 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
+import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.StringUtil;
 
 import nl.finalist.liferay.lam.api.model.Column;
 import nl.finalist.liferay.lam.api.model.PageModel;
+import nl.finalist.liferay.lam.api.model.Portlet;
 import nl.finalist.liferay.lam.util.LocaleMapConverter;
 
 @Component(immediate = true, service = Page.class)
@@ -38,6 +45,9 @@ public class PageImpl implements Page {
 
     @Reference
     private GroupLocalService groupService;
+    @Reference
+    private PortletPreferencesLocalService portletPreferencesLocalService;
+    
 
     @Override
     public void addPage(String siteKey, PageModel page) {
@@ -54,6 +64,9 @@ public class PageImpl implements Page {
 	                determinePageType(page), determineTypeSettings(page, site), page.isHiddenPage(),
 	                LocaleMapConverter.convert(page.getFriendlyUrlMap()),
 	                new ServiceContext());
+        		
+        		updatePortletPreferences(page, layout);
+        		
         		LOG.debug(String.format("Page '%s' with url '%s' added", 
         	            layout.getName(LocaleUtil.getDefault()), layout.getFriendlyURL()));
         	} else {
@@ -77,6 +90,28 @@ public class PageImpl implements Page {
             }
         }
     }
+
+	private void updatePortletPreferences(PageModel page, Layout layout) {
+		for (Column column : page.getColumns()) {
+			for (Portlet portlet : column.getPortlets()) {
+				if (portlet.getPreferences() != null) {
+					PortletPreferences preferences = PortletPreferencesFactoryUtil
+							.getLayoutPortletSetup(layout, portlet.getId());
+						
+					for (String key: portlet.getPreferences().keySet()) {
+						try {
+							preferences.setValue(key, portlet.getPreferences().get(key));
+						} catch (ReadOnlyException e) {
+							LOG.error(String.format("Preference %s is read only and cannot be set", key));
+						}
+					}
+					
+					portletPreferencesLocalService.updatePreferences(PortletKeys.PREFS_OWNER_ID_DEFAULT, PortletKeys.PREFS_OWNER_TYPE_LAYOUT, 
+							layout.getPlid(), portlet.getId(), preferences);
+				} 
+			}
+		}
+	}
     
     private String determinePageType (PageModel page) {
     	String type = "portlet";
@@ -107,7 +142,6 @@ public class PageImpl implements Page {
         	addedTypeSettings.add(determineTypeSettingsForColumns(page));
         }
 
-        LOG.info("TEST:"+StringUtil.merge(addedTypeSettings));
         return StringUtil.merge(addedTypeSettings);
     }
 

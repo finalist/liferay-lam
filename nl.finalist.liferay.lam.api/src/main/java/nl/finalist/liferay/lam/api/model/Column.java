@@ -1,34 +1,42 @@
 package nl.finalist.liferay.lam.api.model;
 
-import java.util.LinkedHashMap;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Column {
-	private List<String> portletIds;
-	private int id;
+	private List<Portlet> portlets = new ArrayList<>();
 	
-	
-	public Column(LinkedHashMap<String, Object> map) {
-		this.portletIds = (List<String>)map.get("portletIds");
-		this.setId((Integer)map.get("id"));
+	public Column() {
 	}
 	
-	public Column(int id, List<String> portletIds) {
-		this.id = id;
-		this.portletIds = portletIds;
+	public Column(List<Portlet> portlets) {
+		this.portlets = portlets;
 	}
 	
+	public List<Portlet> getPortlets() {
+		return portlets;
+	}
+	public void setPortlets(List<Portlet> portlets) {
+		this.portlets = portlets;
+	}
+	
+	/**
+	 * Add a portlet to the list
+	 * @param portlet
+	 */
+	public void addPortlet(Portlet portlet) {
+		this.portlets.add(portlet);
+	}
+	
+	/**
+	 * Return a list of all the ids contained in the list of portlets
+	 * @return
+	 */
 	public List<String> getPortletIds() {
-		return portletIds;
-	}
-	public void setPortletIds(List<String> portletIds) {
-		this.portletIds = portletIds;
-	}
-
-	public int getId() {
-		return id;
-	}
-	public void setId(int id) {
-		this.id = id;
+		List<String> ids = new ArrayList<>();
+		for (Portlet portlet : portlets) {
+			ids.add(portlet.getId());
+		}
+		return ids;
 	}
 }

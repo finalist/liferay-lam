@@ -1,4 +1,4 @@
-package nl.finalist.liferay.lam.builder.factory
+package nl.finalist.liferay.lam.builder.factory.delete
 
 import nl.finalist.liferay.lam.api.Site
 import nl.finalist.liferay.lam.dslglue.model.SiteModel

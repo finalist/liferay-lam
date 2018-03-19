@@ -5,8 +5,21 @@ createOrUpdate.page(
 	privatePage: false,
 	nameMap:["nl_NL": "Pagina met kolommen", "en_US": "Page with columns"],
     titleMap: ["nl_NL": "Pagina met kolommen"],
-    friendlyUrlMap: ["nl_NL": "/kolommen"],
+    friendlyUrlMap: ["nl_NL": "/kolommen", "en_US": "/columns"],
 ) {
-	column(id:1, portletIds:["com_liferay_login_web_portlet_LoginPortlet"])
-	column(id:2, portletIds:["com_liferay_site_navigation_language_web_portlet_SiteNavigationLanguagePortlet", "com_liferay_social_activities_web_portlet_SocialActivitiesPortlet"])
+	column() {
+		portlet(
+			id:"com_liferay_login_web_portlet_LoginPortlet", 
+			preferences:["portletSetupPortletDecoratorId": "decorate"]
+		)
+	}
+	column() {
+		portlet(
+			id:"com_liferay_site_navigation_language_web_portlet_SiteNavigationLanguagePortlet", 
+			preferences:["portletSetupPortletDecoratorId": "decorate"]
+		)
+		portlet(
+			id:"com_liferay_social_activities_web_portlet_SocialActivitiesPortlet"
+		)
+	}
 }
