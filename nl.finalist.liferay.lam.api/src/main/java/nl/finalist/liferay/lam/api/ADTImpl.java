@@ -72,7 +72,7 @@ public class ADTImpl implements ADT{
                 new ServiceContext());
             LOG.info(String.format("ADT %s succesfully created", adtKey));
         } catch (PortalException e) {
-            LOG.error(String.format("PortalException while creating ADT %s ",adtKey)+ e);
+            LOG.error("PortalException while creating ADT " + adtKey, e);
         }
     }
 
@@ -105,7 +105,8 @@ public class ADTImpl implements ADT{
             }
 
         } catch (PortalException e) {
-            LOG.error("PortalException while retrieving ddmtemplateversion, template is not updated" + e);
+            LOG.error(String.format("PortalException while retrieving ddmtemplateversion," +
+                " template %s is not updated", adtKey), e);
         }
         LOG.info(String.format("ADT %s succesfully updated", adtKey));
     }
@@ -137,7 +138,7 @@ public class ADTImpl implements ADT{
             }
         }
         catch (IOException e) {
-            LOG.error("IOException while reading input for ADT " + fileUrl + " " + e);
+            LOG.error("IOException while reading input for ADT " + fileUrl, e);
         }
         return template;
     }
@@ -152,6 +153,5 @@ public class ADTImpl implements ADT{
         DDMTemplateVersionLocalService ddmTemplateVersionLocalService) {
         this.ddmTemplateVersionLocalService = ddmTemplateVersionLocalService;
     }
-
 }
 
