@@ -3,9 +3,9 @@ package nl.finalist.liferay.lam.builder.factory
 import nl.finalist.liferay.lam.api.model.PageModel
 import nl.finalist.liferay.lam.api.model.Column
 
-class CreateColumnFactory extends AbstractFactory {
+class CreateOrUpdateColumnFactory extends AbstractFactory {
 
-    CreateColumnFactory() {
+    CreateOrUpdateColumnFactory() {
     }
 
     @Override

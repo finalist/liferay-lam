@@ -1,6 +1,6 @@
 import nl.finalist.liferay.lam.dslglue.Templates
 
-create.page(
+createOrUpdate.page(
 	siteKey: "Fictional Bank",
 	privatePage: false,
 	nameMap:["nl_NL": "Pagina met kolommen", "en_US": "Page with columns"],

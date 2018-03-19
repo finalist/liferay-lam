@@ -15,9 +15,7 @@ class CreateFactoryBuilder extends FactoryBuilderSupport {
         registerFactory("userGroup", new CreateUserGroupFactory(userGroupsService));
         registerFactory("role", new CreateRoleAndPermissionsFactory(roleAndPermissionsService));
         registerFactory("tag", new CreateTagFactory(tagService));
-        
         registerFactory("user", new CreateUserFactory(userService));
-        registerFactory("column", new CreateColumnFactory());
     }
    
 }
