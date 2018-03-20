@@ -171,7 +171,7 @@ public class DocumentImplTest {
     @Test
     public void testGuess() throws IOException {
         String mime = URLConnection.guessContentTypeFromName("unibank.png");
-        assertEquals(mime, "image/png");
+        assertEquals("image/png", mime);
     }
 
     @Test
@@ -179,6 +179,6 @@ public class DocumentImplTest {
         ClassLoader classLoader = this.getClass().getClassLoader();
         Path path = Paths.get(classLoader.getResource("unibank.png").toURI());
         String mime = Files.probeContentType(path);
-        assertEquals(mime, "image/png");
+        assertEquals("image/png", mime);
     }
 }
