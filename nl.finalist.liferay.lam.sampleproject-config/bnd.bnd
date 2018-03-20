@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Groovy sampleproject-config
 Bundle-SymbolicName: nl.finalist.liferay.lam.sampleprojectconfig
-Bundle-Version: 0.4.3
+Bundle-Version: 0.4.4
 Export-Package: nl.finalist.liferay.lam.sampleproject

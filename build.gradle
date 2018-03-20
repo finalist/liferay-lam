@@ -1,5 +1,31 @@
-allprojects {
+plugins {
+    id "org.sonarqube" version "2.5"
+    id 'nu.studer.credentials' version '1.0.1'
 
+}
+
+subprojects {
+
+    apply plugin: 'maven'
+    apply plugin: 'nu.studer.credentials'
+    apply plugin: "jacoco"
+
+    buildscript {
+        repositories {
+            mavenLocal()
+            mavenCentral()
+
+            maven {
+                url "https://cdn.lfrs.sl/repository.liferay.com/nexus/content/groups/public"
+            }
+            maven {
+                url "https://www.intranet.finalist.com/nexus/content/repositories/public"
+            }
+        }
+        dependencies {
+            classpath 'com.liferay:com.liferay.gradle.plugins:3.4.74'
+        }
+    }
 	repositories {
 		mavenLocal()
 	    mavenCentral()
@@ -7,20 +33,39 @@ allprojects {
 		maven {
 			url "https://cdn.lfrs.sl/repository.liferay.com/nexus/content/groups/public"
 		}
-	}
-	
-	buildscript {
-		dependencies {
-			classpath group: "com.liferay", name: "com.liferay.gradle.plugins", version: "3.4.63"
-		}
-	
-		repositories {
-			mavenLocal()
-	
-			maven {
-				url "https://cdn.lfrs.sl/repository.liferay.com/nexus/content/groups/public"
-			}
+		maven {
+            url "https://www.intranet.finalist.com/nexus/content/repositories/public"
 		}
 	}
-	
+
+    sonarqube {
+        properties {
+            property 'sonar.sources', 'src/main'
+        }
+    }
+
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                repository(url: "https://www.intranet.finalist.com/nexus/content/repositories/releases") {
+                    authentication(userName: credentials.userid, password: credentials.password)
+                }
+
+                // Read project.version from bnd.bnd, this is possible because all modules in this project use bnd for
+                // JAR packaging
+                file("bnd.bnd").withInputStream {
+                    def bnd = new Properties()
+                    bnd.load(it)
+                    project.version = bnd."Bundle-Version"
+                }
+
+                pom.version = project.version
+                pom.artifactId = project.name
+                pom.groupId = "nl.finalist.liferay.lam"
+            }
+        }
+    }
 }
+
+
+

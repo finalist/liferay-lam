@@ -27,46 +27,37 @@ import nl.finalist.liferay.lam.admin.service.service.ChangelogLocalService;
  * @author danielle.ardon
  */
 @Component(
-                immediate = true,
-                property = {
-                                "com.liferay.portlet.add-default-resource=true",
-                                "com.liferay.portlet.render-weight=100",
-                                "com.liferay.portlet.display-category=category.hidden",
-                                "javax.portlet.display-name=LAM - Migration Logs",
-                                "javax.portlet.name=nl_finalist_liferay_lam_admin_web_LamAdminWebPortlet",
-                                "javax.portlet.init-param.template-path=/",
-                                "javax.portlet.expiration-cache=0",
-                                "javax.portlet.init-param.view-template=/view.jsp",
-                                "javax.portlet.resource-bundle=content.Language",
-                                "javax.portlet.security-role-ref=administrator"
-                },
-                service = Portlet.class
-                )
+    immediate = true,
+    property = {
+        "com.liferay.portlet.add-default-resource=true",
+        "com.liferay.portlet.render-weight=100",
+        "com.liferay.portlet.display-category=category.hidden",
+        "javax.portlet.display-name=LAM - Migration Logs",
+        "javax.portlet.name=nl_finalist_liferay_lam_admin_web_LamAdminWebPortlet",
+        "javax.portlet.init-param.template-path=/",
+        "javax.portlet.expiration-cache=0",
+        "javax.portlet.init-param.view-template=/view.jsp",
+        "javax.portlet.resource-bundle=content.Language",
+        "javax.portlet.security-role-ref=administrator"
+    },
+    service = Portlet.class
+)
 public class LamAdminWebPortlet extends MVCPortlet {
 
-
+    private static final Log LOG = LogFactoryUtil.getLog(LamAdminWebPortlet.class);
     private ChangelogLocalService changelogLocalService;
-    private Log LOG = LogFactoryUtil.getLog(LamAdminWebPortlet.class);
 
     @Reference(unbind = "-")
     protected void setChangelogLocalService(ChangelogLocalService changelogLocalService) {
         this.changelogLocalService = changelogLocalService;
     }
 
-    public ChangelogLocalService getChangelogLocalService(){
-        return changelogLocalService;
-    }
 
     @Override
-    public void render(RenderRequest request, RenderResponse response)
-                    throws IOException, PortletException {
-
-
-        List<Changelog> changelogs = getChangelogLocalService().getChangelogs(0, getChangelogLocalService().getChangelogsCount());
+    public void render(RenderRequest request, RenderResponse response) throws IOException, PortletException {
+        List<Changelog> changelogs = changelogLocalService.getChangelogs(0, changelogLocalService.getChangelogsCount());
         LOG.debug("Number of changelog entries: " + changelogs.size());
-        //set service bean
         request.setAttribute("changelogs", changelogs);
-
         super.render(request, response);
     }
 
@@ -82,18 +73,9 @@ public class LamAdminWebPortlet extends MVCPortlet {
     @Override
     public void init(PortletConfig portletConfig) throws PortletException {
         super.init(portletConfig);
-
-        LiferayPortletConfig liferayPortletConfig =
-                        (LiferayPortletConfig)portletConfig;
-
-        com.liferay.portal.kernel.model.Portlet portlet =
-                        liferayPortletConfig.getPortlet();
-
+        LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
+        com.liferay.portal.kernel.model.Portlet portlet = liferayPortletConfig.getPortlet();
         PortletApp portletApp = portlet.getPortletApp();
-
-        ServletContextPool.put(
-                        portletApp.getServletContextName(), portletApp.getServletContext());
+        ServletContextPool.put(portletApp.getServletContextName(), portletApp.getServletContext());
     }
-
-
 }

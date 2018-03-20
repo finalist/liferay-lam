@@ -1,11 +1,4 @@
-plugins {
- 
-   	id 'nu.studer.credentials' version '1.0.1'
-}
-apply plugin: 'java'
 apply plugin: "com.liferay.plugin"
-apply plugin: 'maven'
-apply plugin: 'nu.studer.credentials'
 
 dependencies {
 	compileOnly group: "org.osgi", name: "org.osgi.core", version: "6.0.0"
@@ -17,20 +10,6 @@ dependencies {
     compileOnly "com.liferay.portal:com.liferay.portal.kernel:2.15.0"
     testCompile "com.liferay.portal:com.liferay.portal.kernel:2.15.0"
 
-    
 	compile project(":nl.finalist.liferay.lam.dslglue")
 	compile project(":nl.finalist.liferay.lam.api")
-}
-
-uploadArchives {
-    repositories {
-       mavenDeployer {
-             repository(url: project.finalistnexusrepository) {
-             	authentication(userName: credentials.userid, password: credentials.password)
-				}
-             	pom.version = project.version
-             	pom.artifactId = project.name
-             	pom.groupId = project.mavenGroupId
-       }
-    }
 }
