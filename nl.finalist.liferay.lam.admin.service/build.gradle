@@ -1,55 +1,35 @@
-
 buildscript {
-	dependencies {
-		classpath group: "com.liferay", name: "com.liferay.gradle.plugins.service.builder", version: "latest.release"
-	}
+    dependencies {
+        classpath group: "com.liferay", name: "com.liferay.gradle.plugins.service.builder", version: "latest.release"
+    }
 }
 
-plugins {
- 
-   	id 'nu.studer.credentials' version '1.0.1'
-}
-
-
-apply plugin: 'maven'
-apply plugin: 'nu.studer.credentials'
 apply plugin: "com.liferay.portal.tools.service.builder"
 apply plugin: "com.liferay.plugin"
 
 dependencies {
-	compile project(":nl.finalist.liferay.lam.admin.api")
-	compileOnly group: "biz.aQute.bnd", name: "biz.aQute.bndlib", version: "3.1.0"
-	compileOnly group: "com.liferay", name: "com.liferay.osgi.service.tracker.collections", version: "2.0.0"
-	compileOnly group: "com.liferay", name: "com.liferay.osgi.util", version: "3.0.0"
-	compileOnly group: "com.liferay", name: "com.liferay.portal.spring.extender", version: "2.0.0"
-	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "2.6.0"
-}
-
-repositories {
-	mavenLocal()
-
-	maven {
-		url "https://cdn.lfrs.sl/repository.liferay.com/nexus/content/groups/public"
-		url "https://www.intranet.finalist.com/nexus/content/repositories/public/"
-	}
+    compile project(":nl.finalist.liferay.lam.admin.api")
+    compileOnly group: "biz.aQute.bnd", name: "biz.aQute.bndlib", version: "3.1.0"
+    compileOnly group: "com.liferay", name: "com.liferay.osgi.service.tracker.collections", version: "2.0.0"
+    compileOnly group: "com.liferay", name: "com.liferay.osgi.util", version: "3.0.0"
+    compileOnly group: "com.liferay", name: "com.liferay.portal.spring.extender", version: "2.0.0"
+    compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "2.6.0"
 }
 
 buildService {
-	apiDir = "../nl.finalist.liferay.lam.admin.api/src/main/java"
-	osgiModule = true
-	propsUtil = "nl.finalist.liferay.lam.admin.service.util.PropsUtil"
+    apiDir = "../nl.finalist.liferay.lam.admin.api/src/main/java"
+    osgiModule = true
+    propsUtil = "nl.finalist.liferay.lam.admin.service.util.PropsUtil"
 }
 
-
-uploadArchives {
-    repositories {
-       mavenDeployer {
-             repository(url: project.finalistnexusrepository) {
-             	authentication(userName: credentials.userid, password: credentials.password)
-				}
-             	pom.version = project.version
-             	pom.artifactId = project.name
-             	pom.groupId = project.mavenGroupId
-       }
+sonarqube {
+    properties {
+        property 'sonar.exclusions',
+                'src/main/java/**/model/impl/*BaseImpl.java,' +
+                'src/main/java/**/model/impl/*CacheModel.java,' +
+                'src/main/java/**/model/impl/*ModelImpl.java,' +
+                'src/main/java/**/service/base/*.java,' +
+                'src/main/java/**/service/persistence/impl/*.java,' +
+                'src/main/java/**/util/PropsUtil.java'
     }
 }

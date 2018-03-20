@@ -1,13 +1,4 @@
-plugins {
- 
-   	id 'nu.studer.credentials' version '1.0.1'
-}
-
 apply plugin: "com.liferay.plugin"
-apply plugin: 'maven'
-apply plugin: 'nu.studer.credentials'
-apply plugin: "java"
-
 
 dependencies {
 	// Gradle's take on the Maven 'provided' type is that compileOnly does not make the dep available
@@ -34,19 +25,5 @@ dependencies {
     testCompile 'org.powermock:powermock-core:1.6.1'
     testCompile 'org.powermock:powermock-module-junit4:1.6.1'
     testCompile 'org.powermock:powermock-api-mockito:1.6.1'
-    testCompile "org.javassist:javassist:3.15.0-GA"
-    
-}
-
-uploadArchives {
-    repositories {
-       mavenDeployer {
-             repository(url: project.finalistnexusrepository) {
-             	authentication(userName: credentials.userid, password: credentials.password)
-				}
-             	pom.version = project.version
-             	pom.artifactId = project.name
-             	pom.groupId = project.mavenGroupId
-       }
-    }
+    testCompile "org.javassist:javassist:3.15.0-GA"   
 }
