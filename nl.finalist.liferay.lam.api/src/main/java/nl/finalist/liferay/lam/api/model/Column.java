@@ -5,6 +5,7 @@ import java.util.List;
 
 public class Column {
 	private List<Portlet> portlets = new ArrayList<>();
+	private List<Content> content = new ArrayList<>();
 	
 	public Column() {
 	}
@@ -20,12 +21,26 @@ public class Column {
 		this.portlets = portlets;
 	}
 	
+	public List<Content> getContent() {
+		return content;
+	}
+	public void setContent(List<Content> content) {
+		this.content = content;
+	}
 	/**
-	 * Add a portlet to the list
+	 * Add a portlet to the list of portlets
 	 * @param portlet
 	 */
 	public void addPortlet(Portlet portlet) {
 		this.portlets.add(portlet);
+	}
+	
+	/**
+	 * Add content to the list of content
+	 * @param content
+	 */
+	public void addContent(Content content) {
+		this.content.add(content);
 	}
 	
 	/**

@@ -14,6 +14,10 @@ public class Portlet {
 		}
 	}
 	
+	public Portlet(String id) {
+		this.id = id;
+	}
+	
 	public String getId() {
 		return id;
 	}

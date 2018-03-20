@@ -21,5 +21,9 @@ createOrUpdate.page(
 		portlet(
 			id:"com_liferay_social_activities_web_portlet_SocialActivitiesPortlet"
 		)
+		content(
+			siteKey:"Fictional Bank",
+			articleId:"NEWS1"
+		)
 	}
 }

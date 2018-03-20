@@ -8,14 +8,7 @@ import nl.finalist.liferay.lam.api.Page
 import nl.finalist.liferay.lam.api.Structure
 import nl.finalist.liferay.lam.api.Template
 import nl.finalist.liferay.lam.api.WebContent
-import nl.finalist.liferay.lam.builder.factory.createOrUpdate.ColumnFactory
-import nl.finalist.liferay.lam.builder.factory.createOrUpdate.PortletFactory
-import nl.finalist.liferay.lam.builder.factory.createOrUpdate.CreateOrUpdateADTFactory
-import nl.finalist.liferay.lam.builder.factory.createOrUpdate.CreateOrUpdateDocumentFactory
-import nl.finalist.liferay.lam.builder.factory.createOrUpdate.CreateOrUpdatePageFactory
-import nl.finalist.liferay.lam.builder.factory.createOrUpdate.CreateOrUpdateStructureFactory
-import nl.finalist.liferay.lam.builder.factory.createOrUpdate.CreateOrUpdateTemplateFactory
-import nl.finalist.liferay.lam.builder.factory.createOrUpdate.CreateOrUpdateWebcontentFactory
+import nl.finalist.liferay.lam.builder.factory.createOrUpdate.*
 
 class CreateOrUpdateFactoryBuilder extends FactoryBuilderSupport {
 
@@ -29,5 +22,6 @@ class CreateOrUpdateFactoryBuilder extends FactoryBuilderSupport {
         registerFactory("document", new CreateOrUpdateDocumentFactory(documentService, bundle));
         registerFactory("column", new ColumnFactory());
         registerFactory("portlet", new PortletFactory());
+        registerFactory("content", new ContentFactory());
     }
 }

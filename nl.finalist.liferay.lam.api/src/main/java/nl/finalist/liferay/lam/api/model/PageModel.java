@@ -44,6 +44,20 @@ public class PageModel {
         this.setExternalUrl(externalUrl);
     }
     
+    /**
+	 * Return a list of all the portlet ids contained in all the columns
+	 * @return
+	 */
+	public List<String> getPortletIds() {
+		List<String> ids = new ArrayList<>();
+		for (Column column : columns) {
+			for (Portlet portlet : column.getPortlets()) {
+				ids.add(portlet.getId());
+			}
+		}
+		return ids;
+	}
+    
 	public boolean isPrivatePage() {
 		return privatePage;
 	}

@@ -500,6 +500,39 @@ Defining pages is useful, but you most likely also want to add portlets and cont
 
 As you can see, we have tried to mimic the resource importer a bit by allowing you to define columns. In those columns you can add portlets. Each portlet has and id (which contains the portletId of the portlet) and preferences. The preferences are a map of keys and values. These are the portlet preferences that Liferay defines, and each portlet has their own set of allowed preferences. So describing them all would be hard to do here, but we might add a few examples to give you an idea of what can be accomplished. The first example that was given here was portletSetupPortletDecoratorId which can have the values of decorate, borderless or barebone.
 
+## Adding content to the page
+In order to add content more easily to the page (which is technically possible by adding a portlet with the correct preferences), we have created a more convenient method of doing so.
+
+	createOrUpdate.page(
+		siteKey: "Fictional Bank",
+		privatePage: false,
+		nameMap:["nl_NL": "Pagina met kolommen", "en_US": "Page with columns"],
+	    titleMap: ["nl_NL": "Pagina met kolommen"],
+	    friendlyUrlMap: ["nl_NL": "/kolommen", "en_US": "/columns"],
+	) {
+		column() {
+			portlet(
+				id:"com_liferay_login_web_portlet_LoginPortlet", 
+				preferences:["portletSetupPortletDecoratorId": "decorate"]
+			)
+		}
+		column() {
+			portlet(
+				id:"com_liferay_site_navigation_language_web_portlet_SiteNavigationLanguagePortlet", 
+				preferences:["portletSetupPortletDecoratorId": "decorate"]
+			)
+			portlet(
+				id:"com_liferay_social_activities_web_portlet_SocialActivitiesPortlet"
+			)
+			content(
+				siteKey:"Fictional Bank",
+				articleId:"NEWS1"
+			)
+		}
+	}
+
+As you can see beside portlets you can also add a content element to a column, this element requires a siteKey and an articleId to identify which content you want to add.
+
 # Structures and templates
 You can create or update templates, structures and ADT's as well.
 

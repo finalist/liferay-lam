@@ -1,6 +1,7 @@
 package nl.finalist.liferay.lam.api;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,8 +19,10 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
+import com.liferay.portal.kernel.portlet.PortletProvider;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.service.PortletLocalService;
 import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -27,6 +30,7 @@ import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.StringUtil;
 
 import nl.finalist.liferay.lam.api.model.Column;
+import nl.finalist.liferay.lam.api.model.Content;
 import nl.finalist.liferay.lam.api.model.PageModel;
 import nl.finalist.liferay.lam.api.model.Portlet;
 import nl.finalist.liferay.lam.util.LocaleMapConverter;
@@ -48,11 +52,13 @@ public class PageImpl implements Page {
     @Reference
     private PortletPreferencesLocalService portletPreferencesLocalService;
     
-
     @Override
     public void addPage(String siteKey, PageModel page) {
     	Group site = groupService.fetchGroup(defaultValue.getDefaultCompany().getCompanyId(), siteKey);
         Layout layout = null;
+        
+        convertContentToPortlets(page, site.getGroupId());
+        
         try {
         	Layout oldLayout = layoutService.fetchLayoutByFriendlyURL(site.getGroupId(), page.isPrivatePage(), page.getFriendlyUrlMap().get(LocaleUtil.getDefault().toString()));
         	if (oldLayout == null) {
@@ -90,6 +96,28 @@ public class PageImpl implements Page {
             }
         }
     }
+
+	private void convertContentToPortlets(PageModel page, long groupId) {
+		for (Column column : page.getColumns()) {
+			for (Content content : column.getContent()) {
+				String portletId = "com_liferay_journal_content_web_portlet_JournalContentPortlet_INSTANCE_" + 
+						StringUtil.randomString(12);
+				while (page.getPortletIds().contains(portletId)) {
+					// the portletId already exists in the page, create a new one
+					portletId = "com_liferay_journal_content_web_portlet_JournalContentPortlet_INSTANCE_" + 
+							StringUtil.randomString(12);
+				}
+				Portlet portlet = new Portlet(portletId);
+				Map<String, String> preferences = new HashMap<>();
+		    	Group contentGroup = groupService.fetchGroup(defaultValue.getDefaultCompany().getCompanyId(), content.getSiteKey());
+				preferences.put("groupId", Long.toString(contentGroup.getGroupId()));
+				preferences.put("articleId", content.getArticleId());
+				portlet.setPreferences(preferences);
+				column.addPortlet(portlet);
+				LOG.info(String.format("Added content %s", content.getArticleId()));
+			}
+		}
+	}
 
 	private void updatePortletPreferences(PageModel page, Layout layout) {
 		for (Column column : page.getColumns()) {
