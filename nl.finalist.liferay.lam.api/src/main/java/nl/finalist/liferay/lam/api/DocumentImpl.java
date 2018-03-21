@@ -14,15 +14,19 @@ import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.RoleConstants;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceLocalServiceUtil;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -48,6 +52,7 @@ public class DocumentImpl implements Document {
     @Reference
     private DefaultValue defaultValue;
 
+    private static final String TEMP_LAM_SUBDIR = System.getProperty("java.io.tmpdir") + "/lam";
     private static final Log LOG = LogFactoryUtil.getLog(DocumentImpl.class);
 
     @Override
@@ -59,17 +64,21 @@ public class DocumentImpl implements Document {
 
         byte[] bytes = null;
         try {
-            bytes = getBytesFromBundle(fileUrl, bundle);
+            bytes = getBytesFromFile(fileUrl, bundle);
         } catch (IOException e) {
             LOG.error("IOException while getting bytes from bundle ", e);
         }
 
         FileEntry fileEntry = null;
         try {
+            Folder folderEntry = dlAppLocalService.getFolder(DLFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+            System.out.println("folderEntry" + folderEntry);
+            
             fileEntry = dlAppLocalService.getFileEntry(groupId, DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, title);
         } catch (PortalException e) {
-            LOG.error(String.format("PortalException while retrieving document %s", title), e);
+            LOG.error(String.format("PortalException while retrieving document %s in group %s", title, groupId), e);
         }
+
         String sourceFileName = title;  
         String description = title;  
         String mimeType = URLConnection.guessContentTypeFromName(fileUrl);
@@ -171,9 +180,16 @@ public class DocumentImpl implements Document {
         }
     }
 
-    private byte[] getBytesFromBundle(String fileUrl, Bundle bundle) throws IOException {
+    private byte[] getBytesFromFile(String fileUrl, Bundle bundle) throws IOException {
         URL url = bundle.getResource(fileUrl);
-        byte[] bytes = extract(url.openStream());
+        byte[] bytes = null;
+        if (url != null) {
+            bytes = extract(url.openStream());
+        } else {
+            File script = new File(TEMP_LAM_SUBDIR + StringPool.SLASH + fileUrl);
+            InputStream is = new FileInputStream(script);
+            bytes = extract(is);
+        }
         
         return bytes;
     }
