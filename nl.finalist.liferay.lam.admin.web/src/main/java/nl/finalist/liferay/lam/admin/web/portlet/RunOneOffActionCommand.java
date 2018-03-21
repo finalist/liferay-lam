@@ -31,6 +31,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 import nl.finalist.liferay.lam.dslglue.Executor;
+import nl.finalist.liferay.lam.util.Constants;
 
 @Component(
 	    immediate = true,
@@ -41,7 +42,6 @@ import nl.finalist.liferay.lam.dslglue.Executor;
 	    service = MVCActionCommand.class
 )
 public class RunOneOffActionCommand implements MVCActionCommand {
-    private static final String TEMP_LAM_SUBDIR = System.getProperty("java.io.tmpdir") + "/lam";
     private static final Log LOG = LogFactoryUtil.getLog(RunOneOffActionCommand.class);
 
     @Reference
@@ -69,7 +69,7 @@ public class RunOneOffActionCommand implements MVCActionCommand {
 				for (FileItem fileItem : item) {
 					String fileName = fileItem.getFileName();
 					InputStream is = fileItem.getInputStream();
-					File dir = new File(TEMP_LAM_SUBDIR);
+					File dir = new File(Constants.TEMP_LAM_SUBDIR);
 					dir.mkdir();
 				    
 			        File file;
@@ -77,7 +77,7 @@ public class RunOneOffActionCommand implements MVCActionCommand {
 	                    file = File.createTempFile("tmp", ".groovy", dir);
 	                    scriptName = file.getName();
 					} else {
-                        file = new File(TEMP_LAM_SUBDIR +  StringPool.SLASH + fileName);
+                        file = new File(Constants.TEMP_LAM_SUBDIR +  StringPool.SLASH + fileName);
 					}
 
 					OutputStream os = new FileOutputStream(file);
@@ -97,7 +97,7 @@ public class RunOneOffActionCommand implements MVCActionCommand {
 	
     private File runScript(String scriptName) {
 	    Bundle bundle = FrameworkUtil.getBundle(this.getClass());
-	    File script = new File(TEMP_LAM_SUBDIR + StringPool.SLASH + scriptName);
+	    File script = new File(Constants.TEMP_LAM_SUBDIR + StringPool.SLASH + scriptName);
 	    try {
 	        InputStream is = new FileInputStream(script);
 	        executor.runScripts(bundle, new InputStreamReader(is));

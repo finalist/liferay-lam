@@ -1,8 +1,8 @@
 create.user(
-	screenName:"joe.baker",
-	firstName:"Joe",
-	lastName:"Baker",
-	emailAddress: "joebaker@cryptoex.com",
+	screenName:"cyrill.minera",
+	firstName:"Cyrill",
+	lastName:"Minera",
+	emailAddress: "cyrillminera@cryptoex.com",
 	roles:[Roles.admin],
 	sites:["/cryptoex"],
 	userGroups:["miners"]

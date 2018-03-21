@@ -27,7 +27,6 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -43,6 +42,8 @@ import java.util.stream.Collectors;
 import org.osgi.framework.Bundle;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+
+import nl.finalist.liferay.lam.util.Constants;
 
 /**
  * Implementation for {@link nl.finalist.liferay.lam.api.WebContent}
@@ -67,7 +68,6 @@ public class WebContentImpl implements WebContent {
     @Reference
     private DDMStructureLocalService ddmStructureLocalService;
 
-    private static final String TEMP_LAM_SUBDIR = "/lam";
     private static final Log LOG = LogFactoryUtil.getLog(WebContentImpl.class);
 
     @Override
@@ -223,7 +223,7 @@ public class WebContentImpl implements WebContent {
             if (url != null) {
                 input = url.openStream();
             } else {
-                File script = new File(System.getProperty("java.io.tmpdir") + TEMP_LAM_SUBDIR + StringPool.SLASH + fileUrl);
+                File script = new File(Constants.TEMP_LAM_SUBDIR + StringPool.SLASH + fileUrl);
                 input = new FileInputStream(script);
             }
             try (BufferedReader br = new BufferedReader(new InputStreamReader(input, Charset.defaultCharset()))) {

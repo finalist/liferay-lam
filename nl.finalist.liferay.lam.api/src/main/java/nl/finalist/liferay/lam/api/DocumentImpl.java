@@ -37,6 +37,8 @@ import org.osgi.framework.Bundle;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+import nl.finalist.liferay.lam.util.Constants;
+
 /**
  * Implementation for {@link nl.finalist.liferay.lam.api.Document}
  */
@@ -52,7 +54,6 @@ public class DocumentImpl implements Document {
     @Reference
     private DefaultValue defaultValue;
 
-    private static final String TEMP_LAM_SUBDIR = System.getProperty("java.io.tmpdir") + "/lam";
     private static final Log LOG = LogFactoryUtil.getLog(DocumentImpl.class);
 
     @Override
@@ -186,7 +187,7 @@ public class DocumentImpl implements Document {
         if (url != null) {
             bytes = extract(url.openStream());
         } else {
-            File script = new File(TEMP_LAM_SUBDIR + StringPool.SLASH + fileUrl);
+            File script = new File(Constants.TEMP_LAM_SUBDIR + StringPool.SLASH + fileUrl);
             InputStream is = new FileInputStream(script);
             bytes = extract(is);
         }
