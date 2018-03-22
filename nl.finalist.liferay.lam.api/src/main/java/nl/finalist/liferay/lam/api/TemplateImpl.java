@@ -25,12 +25,6 @@ public class TemplateImpl extends ADTImpl implements Template {
     private static final Log LOG = LogFactoryUtil.getLog(TemplateImpl.class);
 
     @Reference
-    private ClassNameLocalService classNameLocalService;
-
-    @Reference
-    private DefaultValue defaultValue;
-
-    @Reference
     private DDMStructureLocalService ddmStructureLocalService;
 
     @Override
@@ -89,8 +83,15 @@ public class TemplateImpl extends ADTImpl implements Template {
         this.ddmTemplateVersionLocalService = ddmTemplateVersionLocalService;
     }
 
+    @Override
+    @Reference
     public void setClassNameLocalService(ClassNameLocalService classNameLocalService) {
         this.classNameLocalService = classNameLocalService;
     }
 
+    @Override
+    @Reference
+    public void setDefaultValue(DefaultValue defaultValue) {
+    	this.defaultValue = defaultValue;
+    }
 }
