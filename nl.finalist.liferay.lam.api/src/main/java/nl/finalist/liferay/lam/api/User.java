@@ -1,5 +1,7 @@
 package nl.finalist.liferay.lam.api;
 
+import java.util.Map;
+
 public interface User {
 
     /**
@@ -11,9 +13,10 @@ public interface User {
      * @param roles
      * @param groups
      * @param userGroups
+     * @param customFields
      */
     void createUser(String screenName, String emailAddress, String firstName, String lastName,
-                    String[] roles, String[] groups, String[] userGroups);
+                    String[] roles, String[] groups, String[] userGroups, Map<String, String> customFields);
     /**
      * Updates a user
      * @param screenName
@@ -24,9 +27,11 @@ public interface User {
      * @param roles
      * @param groups
      * @param userGroups
+     * @param customFields
      */
     void updateUser(String screenName, String newScreenName, String emailAddress,
-                    String firstName, String lastName, String[] roles, String[] groups, String[] userGroups);
+                    String firstName, String lastName, String[] roles, String[] groups, String[] userGroups, 
+                    Map<String, String> customFields);
     /**
      * Deletes a user based on a screen name
      * @param screenName    The screen name of the user

@@ -21,6 +21,6 @@ class CreateUserFactory extends AbstractFactory {
     void onNodeCompleted(FactoryBuilderSupport builder, Object parent, Object node) {
         super.onNodeCompleted(builder, parent, node);
         UserModel model = (UserModel) node;
-        userService.createUser(model.screenName, model.emailAddress, model.firstName, model.lastName, model.roles,model.sites,model.userGroups);
+        userService.createUser(model.screenName, model.emailAddress, model.firstName, model.lastName, model.roles, model.sites, model.userGroups, model.customFields);
     }
 }

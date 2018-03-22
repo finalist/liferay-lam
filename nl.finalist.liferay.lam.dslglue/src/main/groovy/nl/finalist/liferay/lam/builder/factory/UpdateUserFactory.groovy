@@ -21,6 +21,6 @@ class UpdateUserFactory extends AbstractFactory {
     void onNodeCompleted(FactoryBuilderSupport builder, Object parent, Object node) {
         super.onNodeCompleted(builder, parent, node);
         UserModel model = (UserModel) node;
-        userService.updateUser(model.screenName, model.newScreenName, model.emailAddress, model.firstName, model.lastName, model.roles,model.sites,model.userGroups);
+        userService.updateUser(model.screenName, model.newScreenName, model.emailAddress, model.firstName, model.lastName, model.roles, model.sites, model.userGroups, model.customFields);
     }
 }

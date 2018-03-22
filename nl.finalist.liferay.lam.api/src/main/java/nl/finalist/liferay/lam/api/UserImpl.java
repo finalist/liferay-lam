@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -38,10 +39,13 @@ public class UserImpl implements User {
     private RoleLocalService roleLocalService;
     @Reference
     private ContactLocalService contactLocalService;
-
+    
+    @Reference
+    private CustomFields customFieldsService;
+    
     @Override
     public void createUser(String screenName, String emailAddress, String firstName, String lastName,
-                    String[] roles, String[] groups, String[] userGroups) {
+                    String[] roles, String[] groups, String[] userGroups, Map<String, String> customFields) {
         Company company = defaultValue.getDefaultCompany();
         long companyId = company.getCompanyId();
         Locale locale = LocaleUtil.getDefault();
@@ -55,10 +59,17 @@ public class UserImpl implements User {
         long[] userGroupIds = getIdsFromNames(userGroups, "USERGROUP");
         boolean sendEmail = true;
         try {
-            userLocalService.addUser(creatorUserId, companyId, autoPassword, password1, password2, false, screenName,
+            com.liferay.portal.kernel.model.User user = userLocalService.addUser(creatorUserId, companyId, autoPassword, password1, password2, false, screenName,
                             emailAddress, 0, null, locale, firstName, null, lastName, 0L, 0L, true, 1, 1, 1970, null,
                             groupIds, organizationIds, roleIds, userGroupIds, sendEmail, new ServiceContext());
             LOG.info(String.format("User %s successfully added.", screenName));
+            
+            if (customFields != null) {
+	            for (String fieldName : customFields.keySet()) {
+	                customFieldsService.addCustomFieldValue(com.liferay.portal.kernel.model.User.class.getName(), fieldName, user.getPrimaryKey(), customFields.get(fieldName));
+	                LOG.info(String.format("Adding value %s to custom field %s of user %s was successful", customFields.get(fieldName), fieldName, screenName));
+	            }
+        	}
         } catch (PortalException e) {
             LOG.error(String.format("PortalException while adding user %s", screenName) + e);
         }
@@ -66,7 +77,8 @@ public class UserImpl implements User {
 
     @Override
     public void updateUser(String screenName, String newScreenName, String emailAddress,
-                    String firstName, String lastName,String[] roles, String[] groups, String[] userGroups) {
+                    String firstName, String lastName,String[] roles, String[] groups, String[] userGroups, 
+                    Map<String, String> customFields) {
         com.liferay.portal.kernel.model.User user = getUserIfExists(screenName);
         if (Validator.isNotNull(user)) {
             long[] roleIds = user.getRoleIds();
@@ -87,6 +99,14 @@ public class UserImpl implements User {
                     LOG.info(String.format("PortalException while updating roles for user %s. Roles not updated", screenName)+e);
                 }
             }
+            if (customFields != null) {
+				for (String fieldName : customFields.keySet()) {
+					customFieldsService.updateCustomFieldValue(com.liferay.portal.kernel.model.User.class.getName(), fieldName, user.getPrimaryKey(),
+							customFields.get(fieldName));
+					LOG.debug(
+							String.format("Custom field %s now has value %s", fieldName, customFields.get(fieldName)));
+				}
+			}
             if(!ArrayUtil.isEmpty(userGroups)){
                 userGroupIds = getIdsFromNames(userGroups, "USERGROUP");
                 usergroupLocalService.addUserUserGroups(user.getUserId(), userGroupIds);

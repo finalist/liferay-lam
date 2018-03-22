@@ -143,7 +143,7 @@ As you can see, all you have to specify is the name of the vocabulary. If the vo
 You can create, update and delete sites.
 
 ## Create
-The following script shows how you can create a vocabulary:
+The following script shows how you can create a site:
 
 	create.site(
 		nameMap: [
@@ -577,14 +577,20 @@ The following script shows you can create users:
 		roles: [Roles.admin],
 		sites: ["/sitefriendlyurl1", "/siteFriendlyUrl2"],
 		userGroups: ["usergroup1"]
+		customFields: [
+            "someField": "another value"
+        ]
 	)
 
 As you can see, you have to define a screenname, a first name, a last name and an emailaddress. These fields are all required to add a user.
-Then there are some association fields like roles, sites & userGroups, these fields aren't required.
+Then there are some association fields like roles, sites, userGroups and customFields, these fields aren't required.
 The field roles contains an array of the roles you want added for the user. See the chapter Roles on which roles you can use.
 The field sites contains an array of site friendly urls of the sites the user has to be a member of.
-The field userGroups contains an array of userGroup names that the user will be added to. If a role, site or userGroup can't be found with the provided name, it will not be added to the user.
-If these fields aren't used at all the standard roles, sites & userGroups for a user are added as defined in the instance settings.
+The field userGroups contains an array of userGroup names that the user will be added to. If a role, site or userGroup can't be found with the 
+provided name, it will not be added to the user.
+It is also possible to give a value to a custom field. Of course this custom field has to exist before you can give it a value here. CustomFields
+is a map where the key is the name of the custom field, and the value is the actual value you want to give it.
+If these fields aren't used at all, the standard roles, sites & userGroups for a user are added as defined in the instance settings.
 So for example, the following script is also correct: 
 	
 	create.user(
@@ -606,9 +612,9 @@ The following script shows how you can update users:
 		lastName:"testinga"
 	)
 
-The only required field is screenName, since this is used to find the user. All other fields are only updated if they are added in the script.
-If you want to update the screenName you have to add the field newScreenName. The old screenname has to be entered into the screenName field,
-so the user can still be found.
+The only required field is screenName, since this is used to find the user. All other fields are only updated if they are added in the script. 
+All fields that were available when adding a user can be updated. If you want to update the screenName you have to add the field newScreenName. 
+The old screenname has to be entered into the screenName field, so the user can still be found. 
 
 ##Delete
 
