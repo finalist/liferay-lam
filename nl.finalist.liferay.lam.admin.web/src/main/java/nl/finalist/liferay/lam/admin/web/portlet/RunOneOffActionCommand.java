@@ -68,6 +68,9 @@ public class RunOneOffActionCommand implements MVCActionCommand {
 			try {
 				for (FileItem fileItem : item) {
 					String fileName = fileItem.getFileName();
+					if (fileName.equals("")) {
+					    break;
+					}
 					InputStream is = fileItem.getInputStream();
 					File dir = new File(Constants.TEMP_LAM_SUBDIR);
 					dir.mkdir();
@@ -79,7 +82,7 @@ public class RunOneOffActionCommand implements MVCActionCommand {
 					} else {
                         file = new File(Constants.TEMP_LAM_SUBDIR +  StringPool.SLASH + fileName);
 					}
-
+					
 					OutputStream os = new FileOutputStream(file);
 	                byte[] buffer = new byte[4096];
 	                int bytesRead = -1;
