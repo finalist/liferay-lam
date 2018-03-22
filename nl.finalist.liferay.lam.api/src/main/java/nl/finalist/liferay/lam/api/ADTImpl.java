@@ -33,13 +33,9 @@ import org.osgi.service.component.annotations.Reference;
 public class ADTImpl implements ADT{
     private static final Log LOG = LogFactoryUtil.getLog(ADTImpl.class);
 
-    @Reference
-    private ClassNameLocalService classNameLocalService;
-    @Reference
-    private DefaultValue defaultValue;
-
+    protected ClassNameLocalService classNameLocalService;
+    protected DefaultValue defaultValue;
     protected DDMTemplateLocalService ddmTemplateLocalService;
-
     protected DDMTemplateVersionLocalService ddmTemplateVersionLocalService;
 
     @Override
@@ -153,5 +149,16 @@ public class ADTImpl implements ADT{
         DDMTemplateVersionLocalService ddmTemplateVersionLocalService) {
         this.ddmTemplateVersionLocalService = ddmTemplateVersionLocalService;
     }
+    
+    @Reference
+    public void setDefaultValue(DefaultValue defaultValue) {
+    	this.defaultValue = defaultValue;
+    }
+    
+    @Reference
+    public void setClassNameLocalService(ClassNameLocalService classNameLocalService) {
+    	this.classNameLocalService = classNameLocalService;
+    }
+    
 }
 
