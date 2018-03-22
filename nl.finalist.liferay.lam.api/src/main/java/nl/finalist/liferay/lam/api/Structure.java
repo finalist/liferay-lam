@@ -14,5 +14,5 @@ public interface Structure {
      * @param nameMap   The Map<Locale, String> nameMap containing the localized titles of the structure
      * @param descriptionMap    The Map<Locale, String> descriptionMap containing the localized descriptions of the structure
      */
-    void createOrUpdateStructure(String structureKey, String fileUrl, Bundle bundle, Map<Locale, String> nameMap, Map<Locale, String> descriptionMap);
+    void createOrUpdateStructure(String structureKey, String fileUrl, Bundle bundle, Map<Locale, String> nameMap, Map<Locale, String> descriptionMap, String siteKey);
 }

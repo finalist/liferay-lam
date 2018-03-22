@@ -61,7 +61,7 @@ public class TemplateImplTest {
         String templateKey = "myADTKey";
 
         template.createOrUpdateTemplate(templateKey, "/TemplateImplTestCreateADT_template.html", bundle, null, null,
-            null);
+            null, null);
         verify(ddmTemplateLocalService).addTemplate(anyLong(), anyLong(), anyLong(), anyLong(),
             anyLong(), eq(templateKey), any(), any(),  eq(DDMTemplateConstants.TEMPLATE_TYPE_DISPLAY),
             eq(DDMTemplateConstants.TEMPLATE_MODE_CREATE), anyString(),
@@ -85,7 +85,7 @@ public class TemplateImplTest {
         when(bundle.getResource(any()))
             .thenReturn(TemplateImplTest.class.getResource("/TemplateImplTestCreateADT_template.html"));
 
-        template.createOrUpdateTemplate(existingTemplateKey, "/TemplateImplTestCreateADT_template.html", bundle, null, null, null);
+        template.createOrUpdateTemplate(existingTemplateKey, "/TemplateImplTestCreateADT_template.html", bundle, null, null, null, null);
 
         verify(ddmTemplateLocalService).updateDDMTemplate(existingTemplate);
     }

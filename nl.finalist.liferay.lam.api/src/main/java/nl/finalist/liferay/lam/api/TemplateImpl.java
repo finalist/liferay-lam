@@ -10,7 +10,9 @@ import com.liferay.journal.model.JournalArticle;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Locale;
@@ -26,13 +28,22 @@ public class TemplateImpl extends ADTImpl implements Template {
 
     @Reference
     private DDMStructureLocalService ddmStructureLocalService;
+    @Reference
+    private GroupLocalService groupService;
 
     @Override
     public void createOrUpdateTemplate(String templateKey, String fileUrl, Bundle bundle, String structureKey, Map<Locale, String> nameMap,
-                    Map<Locale, String> descriptionMap) {
+                    Map<Locale, String> descriptionMap, String siteKey) {
         long journalArticleClassNameId = classNameLocalService.getClassNameId(JournalArticle.class.getName());
         long structureClassNameId = classNameLocalService.getClassNameId(DDMStructure.class.getName());
         long groupId = defaultValue.getGlobalGroupId();
+    	if (siteKey != null) {
+	        Group site = groupService.fetchGroup(defaultValue.getDefaultCompany().getCompanyId(), siteKey);
+	    	if (site != null) {
+	    		groupId = site.getGroupId();
+	    	}
+    	}
+
         long classPK = getClassPk(structureKey, groupId, journalArticleClassNameId);
         DDMTemplate adt = getADT(templateKey, groupId, structureClassNameId);
         if (Validator.isNull(adt)) {

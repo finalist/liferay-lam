@@ -12,7 +12,9 @@ import com.liferay.journal.model.JournalArticle;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.MathUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -42,11 +44,19 @@ public class StructureImpl implements Structure {
     private DDMStructureVersionLocalService ddmStructureVersionLocalService;
     @Reference
     private DefaultValue defaultValue;
-
+    @Reference
+    private GroupLocalService groupService;
+    
     @Override
-    public void createOrUpdateStructure(String structureKey, String fileUrl, Bundle bundle, Map<Locale, String> nameMap, Map<Locale, String> descriptionMap){
+    public void createOrUpdateStructure(String structureKey, String fileUrl, Bundle bundle, Map<Locale, String> nameMap, Map<Locale, String> descriptionMap, String siteKey){
         long classNameId = classNameLocalService.getClassNameId(JournalArticle.class.getName());
         long groupId = defaultValue.getGlobalGroupId();
+        if (siteKey != null) {
+        	Group site = groupService.fetchGroup(defaultValue.getDefaultCompany().getCompanyId(), siteKey);
+	    	if (site != null) {
+	    		groupId = site.getGroupId();
+	    	}
+        }
         DDMStructure structure = getStructure(structureKey, groupId, classNameId);
         if(Validator.isNull(structure)){
             LOG.info(String.format("Structure %s does not exist, creating structure", structureKey));
