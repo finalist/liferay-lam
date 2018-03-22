@@ -2,6 +2,7 @@ package nl.finalist.liferay.lam.api;
 
 import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.service.AssetEntryLocalServiceUtil;
+import com.liferay.document.library.kernel.exception.NoSuchFolderException;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
@@ -14,7 +15,6 @@ import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.RoleConstants;
 import com.liferay.portal.kernel.repository.model.FileEntry;
-import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceLocalServiceUtil;
@@ -72,10 +72,9 @@ public class DocumentImpl implements Document {
 
         FileEntry fileEntry = null;
         try {
-            Folder folderEntry = dlAppLocalService.getFolder(DLFolderConstants.DEFAULT_PARENT_FOLDER_ID);
-            System.out.println("folderEntry" + folderEntry);
-            
             fileEntry = dlAppLocalService.getFileEntry(groupId, DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, title);
+        } catch (NoSuchFolderException e) {
+            LOG.info(String.format("No folder with key %s found while retrieving document %s in group %s", DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, title, groupId));
         } catch (PortalException e) {
             LOG.error(String.format("PortalException while retrieving document %s in group %s", title, groupId), e);
         }

@@ -17,7 +17,7 @@
             <liferay-portlet:actionURL name="runoneoff" var="runoneoffURL" />
             <aui:form action="<%=runoneoffURL%>" method="post" name="fm" enctype="multipart/form-data">
                 <aui:input type="file" name="dslscript" label="Indicate the script here" />
-                <!-- aui:input type="file" name="content"  multiple="true" / -->
+                <aui:input type="file" name="content"  multiple="true" />
                 <aui:button type="submit" value="Run" />
             </aui:form>
         </div>
