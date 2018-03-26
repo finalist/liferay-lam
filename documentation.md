@@ -230,10 +230,12 @@ The following script shows how you can update a site:
 		]
 	)
 
-To update a site, you have to specify the siteKey, which is the title associated with the default locale. You will also have to specify a map of names and one of descriptions per locale and a friendlyURL.
+To update a site, you have to specify the siteKey, which is the title associated with the default locale. Beware that if you update the name, Liferay will also update de siteKey. You can also specify a map of names and one of descriptions per locale and a friendlyURL. 
 
 It is also possible to add or update the value of a custom field. Of course this custom field has to exist before you can give it a value here. CustomFields is a map where the key is the name of the custom field, and the value is the actual value you want to give it.
 Updating the existing page or adding a page is also possible.
+
+Except for the siteKey, all fields are optional (although it doesn't make any sense if you have none of them). A field that is left out will not be overwritten.
 
 ## Delete
 The following script shows how you can delete a site:

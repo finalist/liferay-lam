@@ -77,10 +77,20 @@ public class SiteImpl implements Site {
 		Group group;
 		try {
 			group = groupService.getGroup(PortalUtil.getDefaultCompanyId(), groupKey);
+			if (nameMap == null || nameMap.isEmpty()) {
+				nameMap = group.getNameMap();
+			}
+			if (descriptionMap == null || descriptionMap.isEmpty()) {
+				descriptionMap = group.getDescriptionMap();
+			}
+			if (friendlyURL == null || friendlyURL.isEmpty()) {
+				friendlyURL = group.getFriendlyURL();
+			}
+
 			groupService.updateGroup(group.getGroupId(), GroupConstants.DEFAULT_PARENT_GROUP_ID, nameMap,
 					descriptionMap, GroupConstants.TYPE_SITE_OPEN, true, GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION,
 					friendlyURL, false, true, null);
-			LOG.info(String.format("Group (aka site) %s was updated", nameMap.get(LocaleUtil.getSiteDefault())));
+			LOG.info(String.format("Group (aka site) %s was updated", group.getGroupKey()));
 
 			if (customFields != null) {
 				for (String fieldName : customFields.keySet()) {
