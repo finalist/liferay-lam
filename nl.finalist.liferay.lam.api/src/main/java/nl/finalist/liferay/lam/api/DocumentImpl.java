@@ -2,6 +2,7 @@ package nl.finalist.liferay.lam.api;
 
 import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.service.AssetEntryLocalServiceUtil;
+import com.liferay.document.library.kernel.exception.NoSuchFolderException;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
@@ -67,6 +68,8 @@ public class DocumentImpl implements Document {
         FileEntry fileEntry = null;
         try {
             fileEntry = dlAppLocalService.getFileEntry(groupId, DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, title);
+        } catch (NoSuchFolderException e) {
+            LOG.info(String.format("No folder with key %s found while retrieving document %s in group %s", DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, title, groupId));
         } catch (PortalException e) {
             LOG.error(String.format("PortalException while retrieving document %s", title), e);
         }
