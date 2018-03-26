@@ -15,5 +15,5 @@ public interface Template {
      * @param nameMap The Map<Locale, String> nameMap containing the localized titles of the template
      * @param descriptionMap The Map<Locale, String> description containing the localized descriptions of the template
      */
-    void createOrUpdateTemplate(String templateKey, String fileUrl, Bundle bundle, String structureKey, Map<Locale, String> nameMap, Map<Locale, String> descriptionMap);
+    void createOrUpdateTemplate(String templateKey, String fileUrl, Bundle bundle, String structureKey, Map<Locale, String> nameMap, Map<Locale, String> descriptionMap, String siteKey);
 }

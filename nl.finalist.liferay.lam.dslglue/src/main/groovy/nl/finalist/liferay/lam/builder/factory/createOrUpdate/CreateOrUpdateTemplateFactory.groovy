@@ -27,6 +27,6 @@ class CreateOrUpdateTemplateFactory extends AbstractFactory {
         TemplateModel model = (TemplateModel) node;
         
       
-        templateService.createOrUpdateTemplate(model.templateKey, model.file, bundle ,model.forStructure, LocaleMapConverter.convert(model.nameMap), LocaleMapConverter.convert(model.descriptionMap));
+        templateService.createOrUpdateTemplate(model.templateKey, model.file, bundle ,model.forStructure, LocaleMapConverter.convert(model.nameMap), LocaleMapConverter.convert(model.descriptionMap), model.siteKey);
     }
 }

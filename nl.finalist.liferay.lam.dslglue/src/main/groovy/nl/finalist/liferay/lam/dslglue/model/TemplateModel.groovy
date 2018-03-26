@@ -5,4 +5,5 @@ class TemplateModel {
 	Map<String, String> nameMap
 	Map<String, String> descriptionMap
 	String templateKey
+	String siteKey
 }
