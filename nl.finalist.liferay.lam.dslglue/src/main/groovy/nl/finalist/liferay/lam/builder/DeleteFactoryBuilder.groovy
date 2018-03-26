@@ -1,7 +1,13 @@
 package nl.finalist.liferay.lam.builder
 
 import nl.finalist.liferay.lam.api.*
-import nl.finalist.liferay.lam.builder.factory.*
+import nl.finalist.liferay.lam.builder.factory.delete.DeleteCategoryFactory
+import nl.finalist.liferay.lam.builder.factory.delete.DeleteCustomFieldsFactory
+import nl.finalist.liferay.lam.builder.factory.delete.DeleteSiteFactory
+import nl.finalist.liferay.lam.builder.factory.delete.DeleteTagFactory
+import nl.finalist.liferay.lam.builder.factory.delete.DeleteUserFactory
+import nl.finalist.liferay.lam.builder.factory.delete.DeleteVocabularyFactory
+import nl.finalist.liferay.lam.builder.factory.delete.DeleteWebContentFactory
 
 class DeleteFactoryBuilder  extends FactoryBuilderSupport {
 
