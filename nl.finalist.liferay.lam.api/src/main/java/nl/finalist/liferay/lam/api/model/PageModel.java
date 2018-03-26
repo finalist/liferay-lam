@@ -20,7 +20,7 @@ public class PageModel {
 	private boolean hiddenPage;
 	private String linkedPageUrl;
 	private String externalUrl;
-	private List<Column> columns = new ArrayList<>();
+	private List<ColumnModel> columns = new ArrayList<>();
 
 	public PageModel(LinkedHashMap<String, Object> map) {
 		this((String)map.get("siteKey"), (Boolean)map.get("privatePage"), (Map)map.get("nameMap"), (Map)map.get("titleMap"),
@@ -50,8 +50,8 @@ public class PageModel {
 	 */
 	public List<String> getPortletIds() {
 		List<String> ids = new ArrayList<>();
-		for (Column column : columns) {
-			for (Portlet portlet : column.getPortlets()) {
+		for (ColumnModel column : columns) {
+			for (PortletModel portlet : column.getPortlets()) {
 				ids.add(portlet.getId());
 			}
 		}
@@ -140,13 +140,13 @@ public class PageModel {
 	public void setExternalUrl(String externalUrl) {
 		this.externalUrl = externalUrl;
 	}
-	public List<Column> getColumns() {
+	public List<ColumnModel> getColumns() {
 		return columns;
 	}
-	public void setColumns(List<Column> columns) {
+	public void setColumns(List<ColumnModel> columns) {
 		this.columns = columns;
 	}
-	public void addColumn(Column column) {
+	public void addColumn(ColumnModel column) {
 		this.columns.add(column);
 	}
 	
@@ -155,7 +155,7 @@ public class PageModel {
 		return "PageModel [privatePage=" + privatePage + ", nameMap=" + nameMap + ", titleMap=" + titleMap
 				+ ", descriptionMap=" + descriptionMap + ", friendlyUrlMap=" + friendlyUrlMap + ", typeSettings="
 				+ typeSettings + ", customFields=" + customFields + ", parentUrl="+parentUrl+
-				", hidden = "+ hiddenPage + "]";
+				", hidden = "+ hiddenPage + ", "+ columns.size() +" columns ]";
 	}
 
 }

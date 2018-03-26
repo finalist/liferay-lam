@@ -2,11 +2,11 @@ package nl.finalist.liferay.lam.api.model;
 
 import java.util.LinkedHashMap;
 
-public class Content {
+public class ContentModel {
 	private String siteKey;
 	private String articleId;
 	
-	public Content(LinkedHashMap<String, Object> map) {
+	public ContentModel(LinkedHashMap<String, Object> map) {
 		this.siteKey = (String)map.get("siteKey");
 		this.articleId = (String)map.get("articleId");
 	}

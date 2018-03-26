@@ -1,7 +1,7 @@
 package nl.finalist.liferay.lam.builder.factory.createOrUpdate
 
 import nl.finalist.liferay.lam.api.model.PageModel
-import nl.finalist.liferay.lam.api.model.Column
+import nl.finalist.liferay.lam.api.model.ColumnModel
 
 class ColumnFactory extends AbstractFactory {
 
@@ -11,7 +11,7 @@ class ColumnFactory extends AbstractFactory {
     @Override
     Object newInstance(FactoryBuilderSupport builder, Object objectName, Object value, Map attributes)
                     throws InstantiationException, IllegalAccessException {
-        new Column(attributes)
+        new ColumnModel(attributes)
     }
 
     @Override
@@ -19,7 +19,7 @@ class ColumnFactory extends AbstractFactory {
         super.onNodeCompleted(builder, parent, node);
         if (parent instanceof PageModel) {
             PageModel page = (PageModel)parent;
-            page.addColumn((Column)node);
+            page.addColumn((ColumnModel)node);
         } 
     }
 }

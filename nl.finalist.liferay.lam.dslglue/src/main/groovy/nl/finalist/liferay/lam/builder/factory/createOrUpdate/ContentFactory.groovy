@@ -1,7 +1,7 @@
 package nl.finalist.liferay.lam.builder.factory.createOrUpdate
 
-import nl.finalist.liferay.lam.api.model.Content
-import nl.finalist.liferay.lam.api.model.Column
+import nl.finalist.liferay.lam.api.model.ColumnModel
+import nl.finalist.liferay.lam.api.model.ContentModel
 
 class ContentFactory extends AbstractFactory {
 
@@ -11,15 +11,15 @@ class ContentFactory extends AbstractFactory {
     @Override
     Object newInstance(FactoryBuilderSupport builder, Object objectName, Object value, Map attributes)
                     throws InstantiationException, IllegalAccessException {
-        new Content(attributes)
+        new ContentModel(attributes)
     }
 
     @Override
     void onNodeCompleted(FactoryBuilderSupport builder, Object parent, Object node) {
         super.onNodeCompleted(builder, parent, node);
-        if (parent instanceof Column) {
-            Column column = (Column)parent;
-            column.addContent((Content)node);
+        if (parent instanceof ColumnModel) {
+            ColumnModel column = (ColumnModel)parent;
+            column.addContent((ContentModel)node);
         } 
     }
 }

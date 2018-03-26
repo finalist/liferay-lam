@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.portlet.PortletPreferences;
 import javax.portlet.ReadOnlyException;
 
+import nl.finalist.liferay.lam.api.model.ColumnModel;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -19,20 +20,17 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
-import com.liferay.portal.kernel.portlet.PortletProvider;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
-import com.liferay.portal.kernel.service.PortletLocalService;
 import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.StringUtil;
 
-import nl.finalist.liferay.lam.api.model.Column;
-import nl.finalist.liferay.lam.api.model.Content;
+import nl.finalist.liferay.lam.api.model.ContentModel;
 import nl.finalist.liferay.lam.api.model.PageModel;
-import nl.finalist.liferay.lam.api.model.Portlet;
+import nl.finalist.liferay.lam.api.model.PortletModel;
 import nl.finalist.liferay.lam.util.LocaleMapConverter;
 
 @Component(immediate = true, service = Page.class)
@@ -98,8 +96,8 @@ public class PageImpl implements Page {
     }
 
 	private void convertContentToPortlets(PageModel page, long groupId) {
-		for (Column column : page.getColumns()) {
-			for (Content content : column.getContent()) {
+		for (ColumnModel column : page.getColumns()) {
+			for (ContentModel content : column.getContent()) {
 				String portletId = "com_liferay_journal_content_web_portlet_JournalContentPortlet_INSTANCE_" + 
 						StringUtil.randomString(12);
 				while (page.getPortletIds().contains(portletId)) {
@@ -107,7 +105,7 @@ public class PageImpl implements Page {
 					portletId = "com_liferay_journal_content_web_portlet_JournalContentPortlet_INSTANCE_" + 
 							StringUtil.randomString(12);
 				}
-				Portlet portlet = new Portlet(portletId);
+				PortletModel portlet = new PortletModel(portletId);
 				Map<String, String> preferences = new HashMap<>();
 		    	Group contentGroup = groupService.fetchGroup(defaultValue.getDefaultCompany().getCompanyId(), content.getSiteKey());
 				preferences.put("groupId", Long.toString(contentGroup.getGroupId()));
@@ -120,8 +118,8 @@ public class PageImpl implements Page {
 	}
 
 	private void updatePortletPreferences(PageModel page, Layout layout) {
-		for (Column column : page.getColumns()) {
-			for (Portlet portlet : column.getPortlets()) {
+		for (ColumnModel column : page.getColumns()) {
+			for (PortletModel portlet : column.getPortlets()) {
 				if (portlet.getPreferences() != null) {
 					PortletPreferences preferences = PortletPreferencesFactoryUtil
 							.getLayoutPortletSetup(layout, portlet.getId());
@@ -192,7 +190,7 @@ public class PageImpl implements Page {
 	private String determineTypeSettingsForColumns(PageModel page) {
 		StringBuilder columnSettings = new StringBuilder();
 		for (int i = 0; i < page.getColumns().size(); i++) {
-			Column column = page.getColumns().get(i);
+			ColumnModel column = page.getColumns().get(i);
 			// the column counter starts at 1, and not at 0
 			columnSettings.append("column-"+(i+1));
 			columnSettings.append("=");
