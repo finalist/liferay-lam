@@ -10,4 +10,5 @@ class UserModel {
 	String[] roles
 	String[] sites
 	String[] userGroups
+	Map<String, String> customFields
 }
