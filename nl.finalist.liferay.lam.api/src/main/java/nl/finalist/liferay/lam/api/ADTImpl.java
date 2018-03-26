@@ -12,9 +12,12 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.MathUtil;
+import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -28,6 +31,8 @@ import org.apache.commons.io.FilenameUtils;
 import org.osgi.framework.Bundle;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+
+import nl.finalist.liferay.lam.util.Constants;
 
 @Component(immediate = true, service = ADT.class)
 public class ADTImpl implements ADT{
@@ -126,7 +131,12 @@ public class ADTImpl implements ADT{
         InputStream input;
 
         try {
-            input = url.openStream();
+            if (url != null) {
+                input = url.openStream();
+            } else {
+                File script = new File(Constants.TEMP_LAM_SUBDIR + StringPool.SLASH + fileUrl);
+                input = new FileInputStream(script);
+            }
             try (BufferedReader br = new BufferedReader(new InputStreamReader(input, Charset.defaultCharset()))) {
                 template = br.lines().collect(Collectors.joining(System.lineSeparator()));
             } finally {

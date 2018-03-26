@@ -21,9 +21,12 @@ import com.liferay.portal.kernel.service.ResourceLocalServiceUtil;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -33,6 +36,8 @@ import java.util.Date;
 import org.osgi.framework.Bundle;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+
+import nl.finalist.liferay.lam.util.Constants;
 
 /**
  * Implementation for {@link nl.finalist.liferay.lam.api.Document}
@@ -60,7 +65,7 @@ public class DocumentImpl implements Document {
 
         byte[] bytes = null;
         try {
-            bytes = getBytesFromBundle(fileUrl, bundle);
+            bytes = getBytesFromFile(fileUrl, bundle);
         } catch (IOException e) {
             LOG.error("IOException while getting bytes from bundle ", e);
         }
@@ -71,8 +76,9 @@ public class DocumentImpl implements Document {
         } catch (NoSuchFolderException e) {
             LOG.info(String.format("No folder with key %s found while retrieving document %s in group %s", DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, title, groupId));
         } catch (PortalException e) {
-            LOG.error(String.format("PortalException while retrieving document %s", title), e);
+            LOG.error(String.format("PortalException while retrieving document %s in group %s", title, groupId), e);
         }
+
         String sourceFileName = title;  
         String description = title;  
         String mimeType = URLConnection.guessContentTypeFromName(fileUrl);
@@ -174,9 +180,16 @@ public class DocumentImpl implements Document {
         }
     }
 
-    private byte[] getBytesFromBundle(String fileUrl, Bundle bundle) throws IOException {
+    private byte[] getBytesFromFile(String fileUrl, Bundle bundle) throws IOException {
         URL url = bundle.getResource(fileUrl);
-        byte[] bytes = extract(url.openStream());
+        byte[] bytes = null;
+        if (url != null) {
+            bytes = extract(url.openStream());
+        } else {
+            File script = new File(Constants.TEMP_LAM_SUBDIR + StringPool.SLASH + fileUrl);
+            InputStream is = new FileInputStream(script);
+            bytes = extract(is);
+        }
         
         return bytes;
     }
