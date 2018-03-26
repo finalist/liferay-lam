@@ -22,10 +22,13 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.util.MathUtil;
+import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -39,6 +42,8 @@ import java.util.stream.Collectors;
 import org.osgi.framework.Bundle;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+
+import nl.finalist.liferay.lam.util.Constants;
 
 /**
  * Implementation for {@link nl.finalist.liferay.lam.api.WebContent}
@@ -215,7 +220,12 @@ public class WebContentImpl implements WebContent {
         InputStream input;
 
         try {
-            input = url.openStream();
+            if (url != null) {
+                input = url.openStream();
+            } else {
+                File script = new File(Constants.TEMP_LAM_SUBDIR + StringPool.SLASH + fileUrl);
+                input = new FileInputStream(script);
+            }
             try (BufferedReader br = new BufferedReader(new InputStreamReader(input, Charset.defaultCharset()))) {
                 xmlContent = br.lines().collect(Collectors.joining(System.lineSeparator()));
             } finally {
@@ -225,8 +235,10 @@ public class WebContentImpl implements WebContent {
         catch (IOException e) {
             LOG.error(String.format("IOException while reading input for xmlContent %s", fileUrl), e);
         }
+        
         return xmlContent;
     }
+
     private DDMStructure getStructure(String structureKey, long groupId, long classNameId){
         DDMStructure ddmStructure = null;
         try {
