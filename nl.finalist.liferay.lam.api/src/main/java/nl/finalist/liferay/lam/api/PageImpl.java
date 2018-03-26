@@ -1,5 +1,17 @@
 package nl.finalist.liferay.lam.api;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.portlet.PortletPreferences;
+import javax.portlet.ReadOnlyException;
+
+import nl.finalist.liferay.lam.api.model.ColumnModel;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+
 import com.liferay.portal.kernel.exception.NoSuchLayoutException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
@@ -7,17 +19,18 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
+import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PortletKeys;
+import com.liferay.portal.kernel.util.StringUtil;
 
-import java.util.Map;
-
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
+import nl.finalist.liferay.lam.api.model.ContentModel;
 import nl.finalist.liferay.lam.api.model.PageModel;
+import nl.finalist.liferay.lam.api.model.PortletModel;
 import nl.finalist.liferay.lam.util.LocaleMapConverter;
 
 @Component(immediate = true, service = Page.class)
@@ -34,11 +47,16 @@ public class PageImpl implements Page {
 
     @Reference
     private GroupLocalService groupService;
-
+    @Reference
+    private PortletPreferencesLocalService portletPreferencesLocalService;
+    
     @Override
     public void addPage(String siteKey, PageModel page) {
     	Group site = groupService.fetchGroup(defaultValue.getDefaultCompany().getCompanyId(), siteKey);
         Layout layout = null;
+        
+        convertContentToPortlets(page, site.getGroupId());
+        
         try {
         	Layout oldLayout = layoutService.fetchLayoutByFriendlyURL(site.getGroupId(), page.isPrivatePage(), page.getFriendlyUrlMap().get(LocaleUtil.getDefault().toString()));
         	if (oldLayout == null) {
@@ -50,6 +68,9 @@ public class PageImpl implements Page {
 	                determinePageType(page), determineTypeSettings(page, site), page.isHiddenPage(),
 	                LocaleMapConverter.convert(page.getFriendlyUrlMap()),
 	                new ServiceContext());
+        		
+        		updatePortletPreferences(page, layout);
+        		
         		LOG.debug(String.format("Page '%s' with url '%s' added", 
         	            layout.getName(LocaleUtil.getDefault()), layout.getFriendlyURL()));
         	} else {
@@ -73,6 +94,50 @@ public class PageImpl implements Page {
             }
         }
     }
+
+	private void convertContentToPortlets(PageModel page, long groupId) {
+		for (ColumnModel column : page.getColumns()) {
+			for (ContentModel content : column.getContent()) {
+				String portletId = "com_liferay_journal_content_web_portlet_JournalContentPortlet_INSTANCE_" + 
+						StringUtil.randomString(12);
+				while (page.getPortletIds().contains(portletId)) {
+					// the portletId already exists in the page, create a new one
+					portletId = "com_liferay_journal_content_web_portlet_JournalContentPortlet_INSTANCE_" + 
+							StringUtil.randomString(12);
+				}
+				PortletModel portlet = new PortletModel(portletId);
+				Map<String, String> preferences = new HashMap<>();
+		    	Group contentGroup = groupService.fetchGroup(defaultValue.getDefaultCompany().getCompanyId(), content.getSiteKey());
+				preferences.put("groupId", Long.toString(contentGroup.getGroupId()));
+				preferences.put("articleId", content.getArticleId());
+				portlet.setPreferences(preferences);
+				column.addPortlet(portlet);
+				LOG.info(String.format("Added content %s", content.getArticleId()));
+			}
+		}
+	}
+
+	private void updatePortletPreferences(PageModel page, Layout layout) {
+		for (ColumnModel column : page.getColumns()) {
+			for (PortletModel portlet : column.getPortlets()) {
+				if (portlet.getPreferences() != null) {
+					PortletPreferences preferences = PortletPreferencesFactoryUtil
+							.getLayoutPortletSetup(layout, portlet.getId());
+						
+					for (String key: portlet.getPreferences().keySet()) {
+						try {
+							preferences.setValue(key, portlet.getPreferences().get(key));
+						} catch (ReadOnlyException e) {
+							LOG.error(String.format("Preference %s is read only and cannot be set", key));
+						}
+					}
+					
+					portletPreferencesLocalService.updatePreferences(PortletKeys.PREFS_OWNER_ID_DEFAULT, PortletKeys.PREFS_OWNER_TYPE_LAYOUT, 
+							layout.getPlid(), portlet.getId(), preferences);
+				} 
+			}
+		}
+	}
     
     private String determinePageType (PageModel page) {
     	String type = "portlet";
@@ -85,18 +150,55 @@ public class PageImpl implements Page {
     }
     
     private String determineTypeSettings(PageModel page, Group site) {
-    	String addedTypeSettings = "";
+    	List<String> addedTypeSettings = new ArrayList<>();
 
-        if (page.getLinkedPageUrl() != null) {
-        	addedTypeSettings = determineTypeSettingsForLinkedLayout(page, site);
-        } else if(page.getExternalUrl() != null) {
-        	addedTypeSettings = "url="+page.getExternalUrl();
+    	// add typesettings from the script
+    	if(page.getTypeSettings() != null) {
+    		addedTypeSettings.add(page.getTypeSettings());
+    	}
+    	
+    	// add typesettings for the page type
+        String pageTypeSettings = determinePageTypeSettings(page, site);
+        if (!pageTypeSettings.equals("")) {
+        	addedTypeSettings.add(pageTypeSettings);
+        }
+        
+        // add typesettings for the columns
+        if (page.getColumns() != null) {
+        	addedTypeSettings.add(determineTypeSettingsForColumns(page));
         }
 
-        return page.getTypeSettings() == null
-        		? addedTypeSettings
-        		: page.getTypeSettings()+addedTypeSettings;
+        return StringUtil.merge(addedTypeSettings);
     }
+
+	private String determinePageTypeSettings(PageModel page, Group site) {
+    	String pageTypeSettings = "";
+		if (page.getLinkedPageUrl() != null) {
+        	pageTypeSettings = determineTypeSettingsForLinkedLayout(page, site);
+        } else if(page.getExternalUrl() != null) {
+        	pageTypeSettings = "url="+page.getExternalUrl();
+        }
+		return pageTypeSettings;
+	}
+
+    /**
+     * Generates a String of the format column-1=portletId-1, portletId-2, column-2=portletId-3
+     * 
+     * @param page Page containing the columns we want to add
+     * @return
+     */
+	private String determineTypeSettingsForColumns(PageModel page) {
+		StringBuilder columnSettings = new StringBuilder();
+		for (int i = 0; i < page.getColumns().size(); i++) {
+			ColumnModel column = page.getColumns().get(i);
+			// the column counter starts at 1, and not at 0
+			columnSettings.append("column-"+(i+1));
+			columnSettings.append("=");
+			columnSettings.append(StringUtil.merge(column.getPortletIds()));
+			columnSettings.append("\n");
+		}
+		return columnSettings.toString();
+	}
 
 	private String determineTypeSettingsForLinkedLayout(PageModel page, Group site) {
 		String linkedLayoutTypeSettings = "";

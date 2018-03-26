@@ -180,36 +180,6 @@ The following script shows how you can create a vocabulary:
 			    "customFieldPage": "customFieldPageValue"
 			]
 		)
-		
-		page( 
-			privatePage: true,
-			nameMap: ["nl_NL": "privatepageNL", 
-						"en_US": "private page"],
-			titleMap: ["nl_NL": "titel prive pagina", 
-						"en_US": "title private page"],
-			descriptionMap: ["nl_NL": "omschrijving prive pagina", 
-								"en_US": "description private page"],
-			friendlyUrlMap: ["nl_NL": "/privepagina", 
-								"en_US": "/privatepage"],
-			typeSettings: Templates.one_column,
-			customFields: [
-			    "customFieldPage": "customFieldPageValuePrivate"
-			]
-		)
-					
-		page( 
-			privatePage: true,
-			nameMap: ["nl_NL": "privatepageChildNL", 
-						"en_US": "private child page"],
-			titleMap: ["nl_NL": "titel prive subpagina", 
-						"en_US": "private child page"],
-			descriptionMap: ["nl_NL": "omschrijving prive subpagina", 
-								"en_US": "private child page"],
-			friendlyUrlMap: ["nl_NL": "/privesubpagina", 
-								"en_US": "/private-child-page"],
-			typeSettings: Templates.one_column,
-			parentUrl: "/privatepage"
-		)
 		 
 		page( 
 			privatePage: true,
@@ -221,34 +191,13 @@ The following script shows how you can create a vocabulary:
 			hiddenPage: true
 		)	
 		
-		page( 
-			privatePage: true,
-			nameMap: ["nl_NL": "paginalink", "en_US": "linked page"],
-			titleMap: ["nl_NL": "titel paginalink"],
-			descriptionMap: ["nl_NL": "omschrijving paginalink"],
-			friendlyUrlMap: ["nl_NL": "/paginalink", "en_US": "/linkedpage"],
-			linkedPageUrl: "/privatepage"
-		)	
-		
-		page( 
-			privatePage: true,
-			nameMap: ["nl_NL": "url pagina", "en_US": "url page"],
-			titleMap: ["nl_NL": "titel url pagina"],
-			descriptionMap: ["nl_NL": "omschrijving url pagina"],
-			friendlyUrlMap: ["nl_NL": "/urlpagina", "en_US": "/urlpage"],
-			externalUrl: "http://www.nu.nl"
-		)	
 	}
 
-To create a site, you have to specify a map of names for the available locales. Make sure the default locale is present, as this will be the siteKey that you will later use for updating and deleting. You also have to specify a map of descriptions and a friendly URL. If you try to add a site that already exists, an error message will be logged.
+To create a site, you have to specify a map of names for the available locales. Make sure the default locale is present, as this will be the siteKey that you will later use for updating and deleting. You also have to specify a map of descriptions and a friendly URL. If you try to add a site that already exists, an error message will be logged. If you don't add the default locale for the friendly URL, you will not be able to update the layout later, as it won't find the layout based on the friendly url (as it then automatically creates a friendly url for the default locale based on the title and this generated url is the only one that can be used for fetchLayoutByFriendlyURL).
 
 It is also possible to give a value to a custom field. Of course this custom field has to exist before you can give it a value here. CustomFields is a map where the key is the name of the custom field, and the value is the actual value you want to give it.
 
-Pages can be added to the site, as you can see in the example above. Pages also have a map of names, titles, descriptions and friendly URLS. Both the map of names and the map of friendly urls _always_ need an "en_US" translation, even if that language is not available on your Liferay instance. (This is due to a bug in Liferay.) You also have to specify what kind of template to use in a field called typeSettings. (This can theoretically also be used to specify what portlets to deploy on the page.) You can also specify a parentURL. This is the friendly URL of the parent page. Mind you that the code assumes that your child page has the same access level as the parent (i.e. it is private or public just like the parent). It is also possible to give a value to a custom field of the page. Of course this custom field has to exist before you can give it a value here. CustomFields is a map where the key is the name of the custom field, and the value is the actual value you want to give it. If you want to hide a page from the navigation menu, you can add the hiddenPage property.
-
-If you want to create a link to another page on your site, you can specify the linkedPageUrl property. Mind you that the code assumes that your link has the same access level as the page you are linking to (i.e. it is private or public just like the linked page). 
-
-If you want to create a link to another url, you can specify the externalUrl property.
+Pages can be added to the site, as you can see in the example above. For details about the fields of a page, check out the documentation of pages.
 
 This site will be created at the top level, and will be an open site. It will have the default restrictions on membership, will not inherit content, and will be immediately active.
 
@@ -432,7 +381,7 @@ Of course this custom field has to exist before you can give it a value here. Cu
 the name of the custom field, and the value is the actual value you want to give it.
 
 # Pages
-Besides in the context of a site, you can also create, update and delete on their own. The syntax is mostly the same, but in this case you also have to pass along the siteKey. The following script gives a brief example of creating or updating a page:
+Besides in the context of a site, you can also create, update and delete on their own. The syntax is mostly the same, but in this case you also have to pass along the siteKey as well. The following script gives a brief example of creating or updating a page:
 
 	createOrUpdate.page(
         siteKey: "Fictional Bank",
@@ -444,6 +393,145 @@ Besides in the context of a site, you can also create, update and delete on thei
 	) 
 
 This is the most minimalistic way to create a page. You pass along the siteKey (which is the name of the site that you must have defined elsewhere), indicate whether the page is private or not and pass along the name map. 
+
+	createOrUpdate.page( 
+		siteKey: "Fictional Bank",
+        privatePage: false,
+		nameMap: ["nl_NL": "paginanaam", 
+					"en_US": "pagenameUS", 
+					"en_GB": "pagenameGB"],
+		titleMap: ["nl_NL": "pagina titel", 
+					"en_US": "page title US", 
+					"en_GB": "page titleGB"],
+		descriptionMap: ["nl_NL": "pagina omschrijving",
+							"en_US": "page description US", 
+							"en_GB": "page description GB"],
+		friendlyUrlMap: ["nl_NL": "/paginanaam", 
+							"en_US": "/pagenameUS", 
+							"en_GB": "/pagenameGB"],
+		typeSettings: Templates.one_column,
+		customFields: [
+		    "customFieldPage": "customFieldPageValue"
+		]
+	)
+	
+Pages also have a map of names, titles, descriptions and friendly URLS. Both the map of names and the map of friendly urls _always_ need an "en_US" translation, even if that language is not available on your Liferay instance. (This is due to a bug in Liferay.) You can also specify what kind of template to use in a field called typeSettings. (It's possible to fill this field with everything that is stored in the typeSettings field in the database, but we will try to capture most of it in more user friendly fields. Although that might not appear until future versions of LAM.) It is also possible to give a value to a custom field of the page. Of course this custom field has to exist before you can give it a value here. CustomFields is a map where the key is the name of the custom field, and the value is the actual value you want to give it. 
+				
+	createOrUpdate.page( 
+		siteKey: "Fictional Bank",
+        privatePage: true,
+		nameMap: ["nl_NL": "privatepageChildNL", 
+					"en_US": "private child page"],
+		titleMap: ["nl_NL": "titel prive subpagina", 
+					"en_US": "private child page"],
+		descriptionMap: ["nl_NL": "omschrijving prive subpagina", 
+							"en_US": "private child page"],
+		friendlyUrlMap: ["nl_NL": "/privesubpagina", 
+							"en_US": "/private-child-page"],
+		typeSettings: Templates.one_column,
+		parentUrl: "/privatepage"
+	)
+	
+You can also specify a parentURL. This is the friendly URL of the parent page. Mind you that the code assumes that your child page has the same access level as the parent (i.e. it is private or public just like the parent). 
+	 
+	createOrUpdate.page( 
+		siteKey: "Fictional Bank",
+        privatePage: true,
+		nameMap: ["nl_NL": "verborgen pagina", "en_US": "hidden page"],
+		titleMap: ["nl_NL": "titel verborgen pagina"],
+		descriptionMap: ["nl_NL": "omschrijving verborgen pagina"],
+		friendlyUrlMap: ["nl_NL": "/verborgenpagina", "en_US": "/hiddenpage"],
+		typeSettings: Templates.one_column,
+		hiddenPage: true
+	)	
+	
+If you want to hide a page from the navigation menu, you can add the hiddenPage property.
+	
+	createOrUpdate.page( 
+		siteKey: "Fictional Bank",
+        privatePage: true,
+		nameMap: ["nl_NL": "paginalink", "en_US": "linked page"],
+		titleMap: ["nl_NL": "titel paginalink"],
+		descriptionMap: ["nl_NL": "omschrijving paginalink"],
+		friendlyUrlMap: ["nl_NL": "/paginalink", "en_US": "/linkedpage"],
+		linkedPageUrl: "/privatepage"
+	)	
+
+If you want to create a link to another page on your site, you can specify the linkedPageUrl property. Mind you that the code assumes that your link has the same access level as the page you are linking to (i.e. it is private or public just like the linked page). 
+	
+	createOrUpdate.page( 
+		siteKey: "Fictional Bank",
+        privatePage: true,
+		nameMap: ["nl_NL": "url pagina", "en_US": "url page"],
+		titleMap: ["nl_NL": "titel url pagina"],
+		descriptionMap: ["nl_NL": "omschrijving url pagina"],
+		friendlyUrlMap: ["nl_NL": "/urlpagina", "en_US": "/urlpage"],
+		externalUrl: "http://www.nu.nl"
+	)	
+  
+If you want to create a link to another url, you can specify the externalUrl property.
+
+## Adding portlets to the page
+Defining pages is useful, but you most likely also want to add portlets and content to them. The following script gives an example of that.
+
+	createOrUpdate.page(
+		siteKey: "Fictional Bank",
+		privatePage: false,
+		nameMap:["nl_NL": "Pagina met kolommen", "en_US": "Page with columns"],
+	    titleMap: ["nl_NL": "Pagina met kolommen"],
+	    friendlyUrlMap: ["nl_NL": "/kolommen", "en_US": "/columns"],
+	) {
+		column() {
+			portlet(
+				id:"com_liferay_login_web_portlet_LoginPortlet", 
+				preferences:["portletSetupPortletDecoratorId": "decorate"]
+			)
+		}
+		column() {
+			portlet(
+				id:"com_liferay_site_navigation_language_web_portlet_SiteNavigationLanguagePortlet", 
+				preferences:["portletSetupPortletDecoratorId": "decorate"]
+			)
+			portlet(
+				id:"com_liferay_social_activities_web_portlet_SocialActivitiesPortlet"
+			)
+		}
+	}
+
+As you can see, we have tried to mimic the resource importer a bit by allowing you to define columns. In those columns you can add portlets. Each portlet has and id (which contains the portletId of the portlet) and preferences. The preferences are a map of keys and values. These are the portlet preferences that Liferay defines, and each portlet has their own set of allowed preferences. So describing them all would be hard to do here, but we might add a few examples to give you an idea of what can be accomplished. The first example that was given here was portletSetupPortletDecoratorId which can have the values of decorate, borderless or barebone.
+
+## Adding content to the page
+In order to add content more easily to the page (which is technically possible by adding a portlet with the correct preferences), we have created a more convenient method of doing so.
+
+	createOrUpdate.page(
+		siteKey: "Fictional Bank",
+		privatePage: false,
+		nameMap:["nl_NL": "Pagina met kolommen", "en_US": "Page with columns"],
+	    titleMap: ["nl_NL": "Pagina met kolommen"],
+	    friendlyUrlMap: ["nl_NL": "/kolommen", "en_US": "/columns"],
+	) {
+		column() {
+			portlet(
+				id:"com_liferay_login_web_portlet_LoginPortlet", 
+				preferences:["portletSetupPortletDecoratorId": "decorate"]
+			)
+		}
+		column() {
+			portlet(
+				id:"com_liferay_site_navigation_language_web_portlet_SiteNavigationLanguagePortlet", 
+				preferences:["portletSetupPortletDecoratorId": "decorate"]
+			)
+			portlet(
+				id:"com_liferay_social_activities_web_portlet_SocialActivitiesPortlet"
+			)
+			content(
+				siteKey:"Fictional Bank",
+				articleId:"NEWS1"
+			)
+		}
+	}
+
+As you can see beside portlets you can also add a content element to a column, this element requires a siteKey and an articleId to identify which content you want to add.
 
 # Structures and templates
 You can create or update templates, structures and ADT's as well.

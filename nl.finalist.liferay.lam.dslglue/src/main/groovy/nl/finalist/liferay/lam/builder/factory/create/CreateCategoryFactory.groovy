@@ -1,13 +1,13 @@
-package nl.finalist.liferay.lam.builder.factory
+package nl.finalist.liferay.lam.builder.factory.create
 
 import nl.finalist.liferay.lam.api.Category;
 import nl.finalist.liferay.lam.dslglue.model.CategoryModel;
+import nl.finalist.liferay.lam.util.LocaleMapConverter;
 
-
-class DeleteCategoryFactory extends AbstractFactory {
+class CreateCategoryFactory extends AbstractFactory {
 	Category categoryService;
 	
-	DeleteCategoryFactory(Category categoryService) {
+	CreateCategoryFactory(Category categoryService) {
 		this.categoryService = categoryService;
 	}
 	
@@ -21,6 +21,6 @@ class DeleteCategoryFactory extends AbstractFactory {
     void onNodeCompleted(FactoryBuilderSupport builder, Object parent, Object node) {
         super.onNodeCompleted(builder, parent, node);
         CategoryModel category = (CategoryModel) node;
-        categoryService.deleteCategory(category.title, category.vocabularyName);
+        categoryService.addCategory(LocaleMapConverter.convert(category.name), category.vocabularyName, category.title, category.parentCategoryName);
     }
 }

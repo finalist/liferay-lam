@@ -1,4 +1,4 @@
-package nl.finalist.liferay.lam.builder.factory
+package nl.finalist.liferay.lam.builder.factory.createOrUpdate
 
 import nl.finalist.liferay.lam.api.Page
 import nl.finalist.liferay.lam.api.model.PageModel
