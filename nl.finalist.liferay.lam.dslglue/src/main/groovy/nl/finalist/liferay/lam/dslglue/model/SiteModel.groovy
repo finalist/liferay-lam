@@ -9,7 +9,8 @@ class SiteModel {
 	String siteKey
 	Map<String, String> customFields
 	List<PageModel> pages = new ArrayList<>();
-	
+    Boolean stagingEnabled;
+    
 	void addPage(PageModel page) {
         pages += page
     }

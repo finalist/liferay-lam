@@ -1,6 +1,14 @@
 package nl.finalist.liferay.lam.api;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
+import static org.powermock.api.mockito.PowerMockito.whenNew;
+
 import com.liferay.counter.kernel.service.CounterLocalService;
+import com.liferay.exportimport.kernel.service.StagingLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
@@ -30,12 +38,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import nl.finalist.liferay.lam.api.model.PageModel;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
-
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ LocaleUtil.class, SiteImpl.class, PropsUtil.class, Locale.class, PortalUtil.class,
 		DefaultValueImpl.class })
@@ -52,6 +54,8 @@ public class SiteImplTest {
 	private UserLocalService userService;
 	@Mock
 	private CounterLocalService counterService;
+	@Mock
+	private StagingLocalService stagingLocalService;
 	
 	@Mock
 	private Group mockSite;
@@ -70,7 +74,8 @@ public class SiteImplTest {
 	private Layout pageLayout;
 	@InjectMocks
 	private SiteImpl siteImpl;
-
+    @Mock
+    private ServiceContext serviceContext;
 
 	Map<Locale, String> nameMap;
 	Map<Locale, String> descriptionMap;
@@ -168,7 +173,7 @@ public class SiteImplTest {
 		when(defaultValue.getDefaultUserId()).thenReturn(USER_ID);
 		when(mockSite.getGroupId()).thenReturn(SITE_ID);
 		List<PageModel> pages = createListWithOnePage();
-		siteImpl.updateSite(siteKey, nameMap, descriptionMap, friendlyURL, null, pages);
+		siteImpl.updateSite(siteKey, nameMap, descriptionMap, friendlyURL, null, pages, false);
 
 		verify(siteService).updateGroup(SITE_ID, GroupConstants.DEFAULT_PARENT_GROUP_ID, nameMap, descriptionMap,
 				GroupConstants.TYPE_SITE_OPEN, true, GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, friendlyURL, false,
@@ -187,13 +192,43 @@ public class SiteImplTest {
 				true, null)).thenReturn(mockSite);
 		when(mockSite.getPrimaryKey()).thenReturn(1L);
 
-		siteImpl.updateSite(siteKey, nameMap, descriptionMap, friendlyURL, createCustomFields(), createListWithOnePage());
+		siteImpl.updateSite(siteKey, nameMap, descriptionMap, friendlyURL, createCustomFields(), createListWithOnePage(), false);
 
 		verify(siteService).updateGroup(SITE_ID, GroupConstants.DEFAULT_PARENT_GROUP_ID, nameMap, descriptionMap,
 				GroupConstants.TYPE_SITE_OPEN, true, GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, friendlyURL, false,
 				true, null);
 		verify(customFieldsService).updateCustomFieldValue(Group.class.getName(), "someField", 1L, "someValue");
 	}
+
+    @Test
+    public void testEnableStagingForSite() throws Exception {
+        when(siteService.getGroup(0L, siteKey)).thenReturn(mockSite);
+        when(defaultValue.getDefaultUserId()).thenReturn(USER_ID);
+        when(mockSite.getGroupId()).thenReturn(SITE_ID);
+
+        when(siteService.fetchFriendlyURLGroup(0L, friendlyURL)).thenReturn(mockSite);
+        when(mockSite.hasStagingGroup()).thenReturn(false);
+        whenNew(ServiceContext.class).withNoArguments().thenReturn(serviceContext);
+        
+        siteImpl.updateSite(siteKey, nameMap, descriptionMap, friendlyURL, null, new ArrayList<PageModel>(), true);
+
+        verify(stagingLocalService).enableLocalStaging(USER_ID, mockSite, false, false, serviceContext);
+    }
+
+    @Test
+    public void testDisableStagingForSite() throws Exception {
+        when(siteService.getGroup(0L, siteKey)).thenReturn(mockSite);
+        when(defaultValue.getDefaultUserId()).thenReturn(USER_ID);
+        when(mockSite.getGroupId()).thenReturn(SITE_ID);
+
+        when(siteService.fetchFriendlyURLGroup(0L, friendlyURL)).thenReturn(mockSite);
+        when(mockSite.hasStagingGroup()).thenReturn(true);
+        whenNew(ServiceContext.class).withNoArguments().thenReturn(serviceContext);
+        
+        siteImpl.updateSite(siteKey, nameMap, descriptionMap, friendlyURL, null, new ArrayList<PageModel>(), false);
+
+        verify(stagingLocalService).disableStaging(mockSite, serviceContext);
+    }
 
 	private Map<String, String> createCustomFields() {
 		Map<String, String> customFields = new HashMap<>();
@@ -215,7 +250,7 @@ public class SiteImplTest {
 		pageLayout.setGroupId(SITE_ID);
 		when(pageService.fetchLayout(SITE_ID, false, friendlyURL)).thenReturn(pageLayout);
 
-		siteImpl.updateSite(siteKey, nameMap, descriptionMap, friendlyURL, createCustomFields(), createListWithOnePage());
+		siteImpl.updateSite(siteKey, nameMap, descriptionMap, friendlyURL, createCustomFields(), createListWithOnePage(), false);
 
 		verify(pageService).updatePage(any(), anyLong(), any(PageModel.class));
 		verify(pageService).updatePage(any(), anyLong(), any(PageModel.class));

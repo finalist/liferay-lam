@@ -32,7 +32,7 @@ public interface Site {
      *            a friendlyURL for the site
      */
 	void updateSite(String groupKey, Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
-			String friendlyURL, Map<String, String> customFields, List<PageModel> pages);
+			String friendlyURL, Map<String, String> customFields, List<PageModel> pages, Boolean stagingEnabled);
 	
 	 /**
      * Deletes a site

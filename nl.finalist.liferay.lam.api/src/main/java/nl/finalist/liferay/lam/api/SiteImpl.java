@@ -1,5 +1,6 @@
 package nl.finalist.liferay.lam.api;
 
+import com.liferay.exportimport.kernel.service.StagingLocalService;
 import com.liferay.portal.kernel.exception.DuplicateGroupException;
 import com.liferay.portal.kernel.exception.GroupFriendlyURLException;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -9,8 +10,10 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.List;
 import java.util.Locale;
@@ -27,6 +30,8 @@ public class SiteImpl implements Site {
 
 	@Reference
 	private GroupLocalService groupService;
+    @Reference
+    private StagingLocalService stagingLocalService;
 
 	@Reference
 	private CustomFields customFieldsService;
@@ -73,7 +78,7 @@ public class SiteImpl implements Site {
 
 	@Override
 	public void updateSite(String groupKey, Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
-			String friendlyURL, Map<String, String> customFields, List<PageModel> pages) {
+			String friendlyURL, Map<String, String> customFields, List<PageModel> pages, Boolean stagingEnabled) {
 		Group group;
 		try {
 			group = groupService.getGroup(PortalUtil.getDefaultCompanyId(), groupKey);
@@ -118,6 +123,28 @@ public class SiteImpl implements Site {
 		} catch (PortalException e) {
 			LOG.error("The group was not updated.", e);
 		}
+
+		group = null;
+		try {
+            group = determineGroupId(friendlyURL, PortalUtil.getDefaultCompanyId());
+            if (group != null && stagingEnabled != null) {
+                long groupId = group.getGroupId();
+                if (stagingEnabled) {
+                    if (!group.hasStagingGroup()) {
+                        stagingLocalService.enableLocalStaging(defaultValue.getDefaultUserId(), group, false, false, new ServiceContext());
+                        LOG.info(String.format("Staging was enabled for group %s", groupId));
+                    }
+                } else {
+                    if (group.hasStagingGroup()) {
+                        stagingLocalService.disableStaging(group, new ServiceContext());
+                        LOG.info(String.format("Staging was disabled for group %s", groupId));
+                    }
+                }
+            }
+        }
+        catch (PortalException e) {
+            LOG.error(String.format("PortalException while %s staging for group %s", stagingEnabled ? "enabling":"disabling", group == null ? 0 : group.getGroupId()), e);
+        }
 	}
 
 	@Override
@@ -131,4 +158,17 @@ public class SiteImpl implements Site {
 			LOG.error("The group was not deleted.");
 		}
 	}
+
+    private Group determineGroupId(String siteFriendlyURL, long companyId) {
+        if(Validator.isNotNull(siteFriendlyURL)  && !Validator.isBlank(siteFriendlyURL)){
+            Group group = groupService.fetchFriendlyURLGroup(companyId, siteFriendlyURL);
+            if(Validator.isNotNull(group)){
+                return group;
+            }
+            else{
+                LOG.error(String.format("Site %s cannot be found", siteFriendlyURL));
+            }
+        }
+        return null;
+    }
 }
