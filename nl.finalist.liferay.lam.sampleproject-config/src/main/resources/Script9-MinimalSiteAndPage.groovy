@@ -26,3 +26,53 @@ update.site(
 	siteKey: "Updated created site",
 	friendlyURL: "/updatedSite"
 )
+
+createOrUpdate.page(
+	siteKey: "Updated created site",
+	privatePage: true,
+	nameMap: [
+		"en_US": "Original name"
+	],
+	titleMap: [
+		"en_US": "Original title"
+	],
+	descriptionMap: [
+		"en_US": "Original description"
+	],
+	friendlyUrlMap: [
+		"en_US": "/originalurl"
+	]
+)
+
+createOrUpdate.page(
+	siteKey: "Updated created site",
+	privatePage: true,
+	nameMap: [
+		"en_US": "New name"
+	],
+	friendlyUrlMap: [
+		"en_US": "/originalurl"
+	]
+)
+
+createOrUpdate.page(
+	siteKey: "Updated created site",
+	privatePage: true,
+	titleMap: [
+		"en_US": "New title"
+	],
+	friendlyUrlMap: [
+		"en_US": "/originalurl"
+	]
+)
+
+createOrUpdate.page(
+	siteKey: "Updated created site",
+	privatePage: true,
+	descriptionMap: [
+		"en_US": "New description"
+	],
+	friendlyUrlMap: [
+		"en_US": "/originalUrl"
+	]
+)

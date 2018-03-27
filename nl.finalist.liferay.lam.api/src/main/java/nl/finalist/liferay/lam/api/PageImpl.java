@@ -3,6 +3,7 @@ package nl.finalist.liferay.lam.api;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.portlet.PortletPreferences;
@@ -74,11 +75,7 @@ public class PageImpl implements Page {
         		LOG.debug(String.format("Page '%s' with url '%s' added", 
         	            layout.getName(LocaleUtil.getDefault()), layout.getFriendlyURL()));
         	} else {
-        		layout = layoutService.updateLayout(site.getGroupId(), page.isPrivatePage(), oldLayout.getLayoutId(), determineParentLayoutId(site.getGroupId(), page), 
-        				LocaleMapConverter.convert(page.getNameMap()), page.getTitleMap(), page.getDescriptionMap(), null, null, determinePageType(page), page.isHiddenPage(), 
-        				LocaleMapConverter.convert(page.getFriendlyUrlMap()), false, null, new ServiceContext());
-        		LOG.debug(String.format("Page '%s' with url '%s' updated", 
-        	            layout.getName(LocaleUtil.getDefault()), layout.getFriendlyURL()));
+        		updatePage(oldLayout, site.getGroupId(), page);
         	}
         } catch (PortalException e) {
             LOG.error("While adding page: " + page, e);
@@ -243,12 +240,29 @@ public class PageImpl implements Page {
     }
 
     @Override
-    public void updatePage(long layoutId, long groupId, long groupPrimaryKey, PageModel page) throws PortalException {
+    public void updatePage(Layout layout, long groupId, PageModel page) throws PortalException {
         byte[] iconBytes = new byte[0];
-        layoutService.updateLayout(groupId, page.isPrivatePage(), layoutId, determineParentLayoutId(groupId, page),
-            LocaleMapConverter.convert(page.getNameMap()), page.getTitleMap(),
-            page.getDescriptionMap(), null, null, determinePageType(page), false, LocaleMapConverter.convert(page.getFriendlyUrlMap()), false, iconBytes, new ServiceContext());
-        LOG.info(String.format("Page %s updated", page.getNameMap().get(LocaleUtil.getSiteDefault())));
+        Map<Locale, String> nameMap = LocaleMapConverter.convert(page.getNameMap());
+        if (nameMap == null || nameMap.isEmpty()) {
+        	nameMap = layout.getNameMap();
+        }
+		Map<Locale, String> friendlyURLMap = LocaleMapConverter.convert(page.getFriendlyUrlMap());
+        
+		Map<Locale, String> descriptionMap = page.getDescriptionMap();
+		if (descriptionMap == null || descriptionMap.isEmpty()) {
+			descriptionMap = layout.getDescriptionMap();
+		}
+		long parentLayoutId = determineParentLayoutId(groupId, page);
+		if (parentLayoutId == 0L) {
+			parentLayoutId = layout.getParentLayoutId();
+		}
+		Map<Locale, String> titleMap = page.getTitleMap();
+		if (titleMap == null || titleMap.isEmpty()) {
+			titleMap = layout.getTitleMap();
+		}
+		layoutService.updateLayout(groupId, page.isPrivatePage(), layout.getLayoutId(), parentLayoutId, nameMap, titleMap,
+            descriptionMap, null, null, determinePageType(page), false, friendlyURLMap, false, iconBytes, new ServiceContext());
+        LOG.info(String.format("Page %s updated", nameMap.get(LocaleUtil.getSiteDefault())));
     }
 
     @Override

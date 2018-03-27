@@ -417,7 +417,9 @@ This is the most minimalistic way to create a page. You pass along the siteKey (
 		]
 	)
 	
-Pages also have a map of names, titles, descriptions and friendly URLS. Both the map of names and the map of friendly urls _always_ need an "en_US" translation, even if that language is not available on your Liferay instance. (This is due to a bug in Liferay.) You can also specify what kind of template to use in a field called typeSettings. (It's possible to fill this field with everything that is stored in the typeSettings field in the database, but we will try to capture most of it in more user friendly fields. Although that might not appear until future versions of LAM.) It is also possible to give a value to a custom field of the page. Of course this custom field has to exist before you can give it a value here. CustomFields is a map where the key is the name of the custom field, and the value is the actual value you want to give it. 
+Pages also have a map of names, titles, descriptions and friendly URLS. Both the map of names and the map of friendly urls _always_ need an "en_US" translation, even if that language is not available on your Liferay instance. (This is due to a bug in Liferay.) You can also specify what kind of template to use in a field called typeSettings. (It's possible to fill this field with everything that is stored in the typeSettings field in the database, but we will try to capture most of it in more user friendly fields. Although that might not appear until future versions of LAM.) It is also possible to give a value to a custom field of the page. Of course this custom field has to exist before you can give it a value here. CustomFields is a map where the key is the name of the custom field, and the value is the actual value you want to give it.
+
+When updating only the groupKey, the friendlyUrlMap and privatePage fields are required. (As these are needed to look up the existing page.) All other fields are not required and when left out will not overwrite the existing values.
 				
 	createOrUpdate.page( 
 		siteKey: "Fictional Bank",

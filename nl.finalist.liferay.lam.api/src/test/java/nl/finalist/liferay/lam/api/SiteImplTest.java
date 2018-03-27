@@ -217,8 +217,8 @@ public class SiteImplTest {
 
 		siteImpl.updateSite(siteKey, nameMap, descriptionMap, friendlyURL, createCustomFields(), createListWithOnePage());
 
-		verify(pageService).updatePage(anyLong(), anyLong(), anyLong(), any(PageModel.class));
-		verify(pageService).updatePage(anyLong(), anyLong(), anyLong(), any(PageModel.class));
+		verify(pageService).updatePage(any(), anyLong(), any(PageModel.class));
+		verify(pageService).updatePage(any(), anyLong(), any(PageModel.class));
 
 	}
 

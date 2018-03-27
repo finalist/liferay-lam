@@ -24,15 +24,15 @@ public interface Page {
 	 * 
 	 * Mind you, this method does not update the typesettings at the moment!
 	 *
-	 * @param layoutId
-	 *            Id of the page to be update
+	 * @param layout
+	 *            The existing page
 	 * @param groupId
 	 *            Id of the site the page belongs to
 	 * @param page
 	 *            Contains all the information of the page
 	 * @throws PortalException
 	 */
-	void updatePage(long layoutId, long groupId, long groupPrimaryKey, PageModel page) throws PortalException;
+	void updatePage(Layout layout, long groupId, PageModel page) throws PortalException;
 
 	/**
 	 * fetch a page (in Liferay called layout) to a site (in Liferay called

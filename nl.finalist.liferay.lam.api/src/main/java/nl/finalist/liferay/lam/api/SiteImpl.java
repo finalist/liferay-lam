@@ -102,10 +102,11 @@ public class SiteImpl implements Site {
 			}
 			for (PageModel page : pages) {
 				Set<String> locales = page.getFriendlyUrlMap().keySet();
+				// TODO: I don't think this for-loop is correct. It now adds pages for each locale, whereas it should just add a page for the default locale
 				for (String locale : locales) {
 					Layout existingPage = pageService.fetchLayout(group.getGroupId(), false, page.getFriendlyUrlMap().get(locale));
 					if (existingPage != null) {
-						pageService.updatePage(existingPage.getLayoutId(), group.getGroupId(), group.getPrimaryKey(), page);
+						pageService.updatePage(existingPage, group.getGroupId(), page);
 						LOG.info(String.format("page %s is updated ", page.getNameMap().get(locale)));
 						break;
 					} else {
