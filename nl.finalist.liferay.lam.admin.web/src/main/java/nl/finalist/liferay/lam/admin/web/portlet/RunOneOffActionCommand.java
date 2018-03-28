@@ -68,7 +68,7 @@ public class RunOneOffActionCommand implements MVCActionCommand {
 			try {
 				for (FileItem fileItem : item) {
 					String fileName = fileItem.getFileName();
-					if (fileName.equals("")) {
+					if (fileName.trim().equals("")) {
 					    break;
 					}
 					InputStream is = fileItem.getInputStream();
