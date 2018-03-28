@@ -2,6 +2,7 @@ package nl.finalist.liferay.lam.api;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -206,7 +207,6 @@ public class SiteImplTest {
         when(defaultValue.getDefaultUserId()).thenReturn(USER_ID);
         when(mockSite.getGroupId()).thenReturn(SITE_ID);
 
-        when(siteService.fetchFriendlyURLGroup(0L, friendlyURL)).thenReturn(mockSite);
         when(mockSite.hasStagingGroup()).thenReturn(false);
         whenNew(ServiceContext.class).withNoArguments().thenReturn(serviceContext);
         
@@ -216,18 +216,45 @@ public class SiteImplTest {
     }
 
     @Test
+    public void testEnableStagingAttemptForStagedSite() throws Exception {
+        when(siteService.getGroup(0L, siteKey)).thenReturn(mockSite);
+        when(defaultValue.getDefaultUserId()).thenReturn(USER_ID);
+        when(mockSite.getGroupId()).thenReturn(SITE_ID);
+
+        when(mockSite.hasStagingGroup()).thenReturn(true);
+        whenNew(ServiceContext.class).withNoArguments().thenReturn(serviceContext);
+        
+        siteImpl.updateSite(siteKey, nameMap, descriptionMap, friendlyURL, null, new ArrayList<PageModel>(), true);
+
+        verify(stagingLocalService, never()).enableLocalStaging(USER_ID, mockSite, false, false, serviceContext);
+    }
+
+    @Test
     public void testDisableStagingForSite() throws Exception {
         when(siteService.getGroup(0L, siteKey)).thenReturn(mockSite);
         when(defaultValue.getDefaultUserId()).thenReturn(USER_ID);
         when(mockSite.getGroupId()).thenReturn(SITE_ID);
 
-        when(siteService.fetchFriendlyURLGroup(0L, friendlyURL)).thenReturn(mockSite);
         when(mockSite.hasStagingGroup()).thenReturn(true);
         whenNew(ServiceContext.class).withNoArguments().thenReturn(serviceContext);
         
         siteImpl.updateSite(siteKey, nameMap, descriptionMap, friendlyURL, null, new ArrayList<PageModel>(), false);
 
         verify(stagingLocalService).disableStaging(mockSite, serviceContext);
+    }
+
+    @Test
+    public void testDisableStagingAttemptForNonStagedSite() throws Exception {
+        when(siteService.getGroup(0L, siteKey)).thenReturn(mockSite);
+        when(defaultValue.getDefaultUserId()).thenReturn(USER_ID);
+        when(mockSite.getGroupId()).thenReturn(SITE_ID);
+
+        when(mockSite.hasStagingGroup()).thenReturn(false);
+        whenNew(ServiceContext.class).withNoArguments().thenReturn(serviceContext);
+        
+        siteImpl.updateSite(siteKey, nameMap, descriptionMap, friendlyURL, null, new ArrayList<PageModel>(), false);
+
+        verify(stagingLocalService, never()).disableStaging(mockSite, serviceContext);
     }
 
 	private Map<String, String> createCustomFields() {

@@ -13,7 +13,6 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 import java.util.List;
 import java.util.Locale;
@@ -120,31 +119,28 @@ public class SiteImpl implements Site {
 					}
 				}
 			}
-		} catch (PortalException e) {
-			LOG.error("The group was not updated.", e);
-		}
-
-		group = null;
-		try {
-            group = determineGroupId(friendlyURL, PortalUtil.getDefaultCompanyId());
+			
             if (group != null && stagingEnabled != null) {
                 long groupId = group.getGroupId();
                 if (stagingEnabled) {
                     if (!group.hasStagingGroup()) {
                         stagingLocalService.enableLocalStaging(defaultValue.getDefaultUserId(), group, false, false, new ServiceContext());
                         LOG.info(String.format("Staging was enabled for group %s", groupId));
+                    } else {
+                        LOG.info(String.format("No changes propagated; staging was already enabled for group %s", groupId));
                     }
                 } else {
                     if (group.hasStagingGroup()) {
                         stagingLocalService.disableStaging(group, new ServiceContext());
                         LOG.info(String.format("Staging was disabled for group %s", groupId));
+                    } else {
+                        LOG.info(String.format("No changes propagated; staging was already disabled for group %s", groupId));
                     }
                 }
             }
-        }
-        catch (PortalException e) {
-            LOG.error(String.format("PortalException while %s staging for group %s", stagingEnabled ? "enabling":"disabling", group == null ? 0 : group.getGroupId()), e);
-        }
+		} catch (PortalException e) {
+			LOG.error("The group was not updated.", e);
+		}
 	}
 
 	@Override
@@ -158,17 +154,4 @@ public class SiteImpl implements Site {
 			LOG.error("The group was not deleted.");
 		}
 	}
-
-    private Group determineGroupId(String siteFriendlyURL, long companyId) {
-        if(Validator.isNotNull(siteFriendlyURL)  && !Validator.isBlank(siteFriendlyURL)){
-            Group group = groupService.fetchFriendlyURLGroup(companyId, siteFriendlyURL);
-            if(Validator.isNotNull(group)){
-                return group;
-            }
-            else{
-                LOG.error(String.format("Site %s cannot be found", siteFriendlyURL));
-            }
-        }
-        return null;
-    }
 }
