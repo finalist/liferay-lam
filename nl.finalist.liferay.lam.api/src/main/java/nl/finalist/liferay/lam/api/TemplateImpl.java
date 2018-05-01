@@ -39,12 +39,15 @@ public class TemplateImpl extends ADTImpl implements Template {
     @Reference
     private DDMStructureLocalService ddmStructureLocalService;
 
+    @Reference
+    private ScopeHelper scopeHelper;
+
     @Override
-    public void createOrUpdateTemplate(String adtKey, String fileUrl, Bundle bundle, String structureKey, Map<Locale, String> nameMap,
+    public void createOrUpdateTemplate(String siteKey,String adtKey, String fileUrl, Bundle bundle, String structureKey, Map<Locale, String> nameMap,
                     Map<Locale, String> descriptionMap) {
         long resourceClassNameId = classNameLocalService.getClassNameId(JournalArticle.class.getName());
         long classNameId = classNameLocalService.getClassNameId(DDMStructure.class.getName());
-        long groupId = defaultValue.getGlobalGroupId();
+        long groupId = scopeHelper.getGroupIdByName(siteKey);
         long classPK = getClassPk(structureKey, groupId, resourceClassNameId);
         DDMTemplate adt = getADT(adtKey, groupId, classNameId);
         if (Validator.isNull(adt)) {

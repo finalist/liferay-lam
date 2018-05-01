@@ -45,11 +45,13 @@ public class StructureImpl implements Structure {
     private DDMStructureVersionLocalService ddmStructureVersionLocalService;
     @Reference
     private DefaultValue defaultValue;
+    @Reference
+    private ScopeHelper scopeHelper;
 
     @Override
-    public void createOrUpdateStructure(String structureKey, String fileUrl, Bundle bundle, Map<Locale, String> nameMap, Map<Locale, String> descriptionMap){
+    public void createOrUpdateStructure(String siteKey,String structureKey, String fileUrl, Bundle bundle, Map<Locale, String> nameMap, Map<Locale, String> descriptionMap){
         long classNameId = classNameLocalService.getClassNameId(JournalArticle.class.getName());
-        long groupId = defaultValue.getGlobalGroupId();
+        long groupId = scopeHelper.getGroupIdByName(siteKey);
         DDMStructure structure = getStructure(structureKey, groupId, classNameId);
         if(Validator.isNull(structure)){
             LOG.info(String.format("Structure %s does not exist, creating structure", structureKey));

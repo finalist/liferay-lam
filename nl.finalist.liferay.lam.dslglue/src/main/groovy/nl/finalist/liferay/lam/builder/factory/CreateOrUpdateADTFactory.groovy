@@ -28,6 +28,6 @@ class CreateOrUpdateADTFactory extends AbstractFactory {
         ADTModel model = (ADTModel) node;
         
       
-        adtService.createOrUpdateADT(model.adtKey, model.file, bundle ,model.type, LocaleMapConverter.convert(model.nameMap), LocaleMapConverter.convert(model.descriptionMap));
+        adtService.createOrUpdateADT(model.siteKey, model.adtKey, model.file, bundle ,model.type, LocaleMapConverter.convert(model.nameMap), LocaleMapConverter.convert(model.descriptionMap));
     }
 }
