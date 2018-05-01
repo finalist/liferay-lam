@@ -37,18 +37,19 @@ public class ADTImpl implements ADT{
     private ClassNameLocalService classNameLocalService;
     @Reference
     private DefaultValue defaultValue;
-
+    @Reference
+     private ScopeHelper scopeHelper;
 
     protected DDMTemplateLocalService ddmTemplateLocalService;
 
     protected DDMTemplateVersionLocalService ddmTemplateVersionLocalService;
 
     @Override
-    public void createOrUpdateADT(String adtKey,String fileUrl, Bundle bundle, String className, Map<Locale, String> nameMap,
+    public void createOrUpdateADT(String siteKey, String adtKey,String fileUrl, Bundle bundle, String className, Map<Locale, String> nameMap,
                     Map<Locale, String> descriptionMap) {
         long resourceClassNameId = classNameLocalService.getClassNameId("com.liferay.portlet.display.template.PortletDisplayTemplate");
         long classNameId = classNameLocalService.getClassNameId(className);
-        long groupId = defaultValue.getGlobalGroupId();
+        long groupId = scopeHelper.getGroupIdByName(siteKey);
         DDMTemplate adt = getADT(adtKey, groupId, classNameId);
         if (Validator.isNull(adt)) {
             LOG.info(String.format("ADT %s does not exist, creating ADT",adtKey));
