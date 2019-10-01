@@ -13,15 +13,15 @@ class DeleteVocabularyFactory extends AbstractFactory{
 
     @Override
     Object newInstance(FactoryBuilderSupport builder, Object name, Object value, Map attributes)
-                    throws InstantiationException, IllegalAccessException {
-       new VocabularyModel(attributes);
+    throws InstantiationException, IllegalAccessException {
+        new VocabularyModel(attributes);
     }
 
     @Override
     void onNodeCompleted(FactoryBuilderSupport builder, Object parent, Object node) {
         super.onNodeCompleted(builder, parent, node);
         VocabularyModel vocabulary = (VocabularyModel) node;
-        
-        vocabularyService.deleteVocabulary(vocabulary.existingName);
+        // Method call updated to use webIds available in groovy model
+        vocabularyService.deleteVocabulary(vocabulary.webIds, vocabulary.existingName);
     }
 }

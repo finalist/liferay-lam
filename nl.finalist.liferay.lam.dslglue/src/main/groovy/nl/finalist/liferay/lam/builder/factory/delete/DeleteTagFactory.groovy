@@ -12,7 +12,7 @@ class DeleteTagFactory extends AbstractFactory{
 
     @Override
     Object newInstance(FactoryBuilderSupport builder, Object name, Object value, Map attributes)
-                    throws InstantiationException, IllegalAccessException {
+    throws InstantiationException, IllegalAccessException {
         new TagModel(attributes);
     }
 
@@ -20,6 +20,7 @@ class DeleteTagFactory extends AbstractFactory{
     void onNodeCompleted(FactoryBuilderSupport builder, Object parent, Object node) {
         super.onNodeCompleted(builder, parent, node);
         TagModel model = (TagModel) node;
-        tagService.deleteTag(model.name, model.forSite);
+        // Method call updated to use webIds available in groovy model
+        tagService.deleteTag(model.webIds, model.name, model.forSite);
     }
 }

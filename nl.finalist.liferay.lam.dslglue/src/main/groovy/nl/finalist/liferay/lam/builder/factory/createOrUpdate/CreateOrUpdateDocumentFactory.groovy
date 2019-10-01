@@ -1,9 +1,8 @@
 package nl.finalist.liferay.lam.builder.factory.createOrUpdate
-import nl.finalist.liferay.lam.api.Document;
-import nl.finalist.liferay.lam.util.LocaleMapConverter;
-import nl.finalist.liferay.lam.dslglue.model.DocumentModel;
-
 import org.osgi.framework.Bundle;
+
+import nl.finalist.liferay.lam.api.Document;
+import nl.finalist.liferay.lam.dslglue.model.DocumentModel;
 
 
 class CreateOrUpdateDocumentFactory extends AbstractFactory {
@@ -18,7 +17,7 @@ class CreateOrUpdateDocumentFactory extends AbstractFactory {
 
     @Override
     Object newInstance(FactoryBuilderSupport builder, Object objectName, Object value, Map attributes)
-                    throws InstantiationException, IllegalAccessException {
+    throws InstantiationException, IllegalAccessException {
         new DocumentModel(attributes);
     }
 
@@ -26,6 +25,7 @@ class CreateOrUpdateDocumentFactory extends AbstractFactory {
     void onNodeCompleted(FactoryBuilderSupport builder, Object parent, Object node) {
         super.onNodeCompleted(builder, parent, node);
         DocumentModel model = (DocumentModel) node;
-        DocumentService.createOrUpdateDocument(model.forSite, model.title, model.file, bundle);
+        // Method call updated to use webIds available in groovy model
+        DocumentService.createOrUpdateDocument(model.webIds, model.forSite, model.title, model.file, bundle);
     }
 }

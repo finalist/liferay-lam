@@ -1,5 +1,3 @@
-apply plugin: "com.liferay.plugin"
-
 dependencies {
 	// Gradle's take on the Maven 'provided' type is that compileOnly does not make the dep available
     // on the test classpath, so you have to declare it twice :-(

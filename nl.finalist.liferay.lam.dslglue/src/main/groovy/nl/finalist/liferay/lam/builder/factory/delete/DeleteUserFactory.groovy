@@ -12,7 +12,7 @@ class DeleteUserFactory extends AbstractFactory{
 
     @Override
     Object newInstance(FactoryBuilderSupport builder, Object name, Object value, Map attributes)
-                    throws InstantiationException, IllegalAccessException {
+    throws InstantiationException, IllegalAccessException {
         new UserModel(attributes);
     }
 
@@ -20,6 +20,7 @@ class DeleteUserFactory extends AbstractFactory{
     void onNodeCompleted(FactoryBuilderSupport builder, Object parent, Object node) {
         super.onNodeCompleted(builder, parent, node);
         UserModel model = (UserModel) node;
-        userService.deleteUser(model.screenName);
+        // Method call updated to use webIds available in groovy model
+        userService.deleteUser(model.webIds, model.screenName);
     }
 }

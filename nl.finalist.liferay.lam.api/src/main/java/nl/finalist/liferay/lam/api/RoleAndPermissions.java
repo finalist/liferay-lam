@@ -10,7 +10,8 @@ import java.util.Map;
  *
  */
 public interface RoleAndPermissions {
-	boolean addCustomRoleAndPermission(String role, TypeOfRole typeOfRole, Map<Locale, String> title,
-			Map<Locale, String> description, Map<String, List<String>> permissions);
+
+    boolean addCustomRoleAndPermission(String[] webIds, String role, TypeOfRole typeOfRole, Map<Locale, String> title,
+                                       Map<Locale, String> description, Map<String, List<String>> permissions);
 
 }

@@ -12,7 +12,7 @@ class CreateUserGroupFactory extends AbstractFactory  {
 
     @Override
     Object newInstance(FactoryBuilderSupport builder, Object name, Object value, Map attributes)
-                    throws InstantiationException, IllegalAccessException {
+    throws InstantiationException, IllegalAccessException {
         new UserGroupModel(attributes);
     }
 
@@ -20,6 +20,7 @@ class CreateUserGroupFactory extends AbstractFactory  {
     void onNodeCompleted(FactoryBuilderSupport builder, Object parent, Object node) {
         super.onNodeCompleted(builder, parent, node);
         UserGroupModel model = (UserGroupModel) node;
-        userGroupsService.addUserGroup(model.name, model.description, model.customFields);
+        // Method call updated to use webIds available in groovy model
+        userGroupsService.addUserGroup(model.webIds, model.name, model.description, model.customFields);
     }
 }

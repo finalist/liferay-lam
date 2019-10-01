@@ -5,22 +5,23 @@ import nl.finalist.liferay.lam.dslglue.model.CategoryModel;
 import nl.finalist.liferay.lam.util.LocaleMapConverter;
 
 class CreateCategoryFactory extends AbstractFactory {
-	Category categoryService;
-	
-	CreateCategoryFactory(Category categoryService) {
-		this.categoryService = categoryService;
-	}
-	
-	 @Override
+    Category categoryService;
+
+    CreateCategoryFactory(Category categoryService) {
+        this.categoryService = categoryService;
+    }
+
+    @Override
     Object newInstance(FactoryBuilderSupport builder, Object name, Object value, Map attributes)
-                    throws InstantiationException, IllegalAccessException {
+    throws InstantiationException, IllegalAccessException {
         new CategoryModel(attributes);
     }
-    
-     @Override
+
+    @Override
     void onNodeCompleted(FactoryBuilderSupport builder, Object parent, Object node) {
         super.onNodeCompleted(builder, parent, node);
         CategoryModel category = (CategoryModel) node;
-        categoryService.addCategory(LocaleMapConverter.convert(category.name), category.vocabularyName, category.title, category.parentCategoryName);
+        // Method call updated to use webIds available in groovy model
+        categoryService.addCategory(category.webIds, LocaleMapConverter.convert(category.name), category.vocabularyName, category.title, category.parentCategoryName);
     }
 }

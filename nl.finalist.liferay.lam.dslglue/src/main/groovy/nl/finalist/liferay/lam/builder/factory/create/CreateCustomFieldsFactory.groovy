@@ -14,7 +14,7 @@ class CreateCustomFieldsFactory extends AbstractFactory {
 
     @Override
     Object newInstance(FactoryBuilderSupport builder, Object objectName, Object value, Map attributes)
-                    throws InstantiationException, IllegalAccessException {
+    throws InstantiationException, IllegalAccessException {
         new CustomFieldModel(attributes);
     }
 
@@ -22,15 +22,17 @@ class CreateCustomFieldsFactory extends AbstractFactory {
     void onNodeCompleted(FactoryBuilderSupport builder, Object parent, Object node) {
         super.onNodeCompleted(builder, parent, node);
         CustomFieldModel cf = (CustomFieldModel) node;
+
+        // Method calls updated to use webIds available in groovy model
         switch (CustomFieldType.valueOf(cf.type)) {
             case(CustomFieldType.INTEGER_32):
-                customFieldsService.addCustomIntegerField(cf.getEntityName(), cf.getName(), (int) cf.getDefaultValue(), cf.getRoles());
+                customFieldsService.addCustomIntegerField(cf.getWebIds(), cf.getEntityName(), cf.getName(), (int) cf.getDefaultValue(), cf.getRoles());
                 break;
             case(CustomFieldType.TEXT):
-                customFieldsService.addCustomTextField(cf.getEntityName(), cf.getName(), (String) cf.getDefaultValue(), cf.getRoles());
+                customFieldsService.addCustomTextField(cf.getWebIds(),cf.getEntityName(), cf.getName(), (String) cf.getDefaultValue(), cf.getRoles());
                 break;
             case(CustomFieldType.TEXT_GROUP):
-                customFieldsService.addCustomTextArrayField(cf.getEntityName(), cf.getName(), (String) cf.getDefaultValue(), cf.getRoles(), cf.getDisplayType());
+                customFieldsService.addCustomTextArrayField(cf.getWebIds(),cf.getEntityName(), cf.getName(), (String) cf.getDefaultValue(), cf.getRoles(), cf.getDisplayType());
                 break;
         }
     }

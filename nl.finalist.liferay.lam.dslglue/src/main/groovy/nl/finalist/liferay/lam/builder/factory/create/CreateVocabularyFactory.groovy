@@ -7,13 +7,13 @@ import nl.finalist.liferay.lam.util.LocaleMapConverter;
 class CreateVocabularyFactory extends AbstractFactory  {
     Vocabulary vocabularyService;
 
-     CreateVocabularyFactory(Vocabulary vocabularyService) {
+    CreateVocabularyFactory(Vocabulary vocabularyService) {
         this.vocabularyService = vocabularyService;
     }
 
     @Override
     Object newInstance(FactoryBuilderSupport builder, Object name, Object value, Map attributes)
-                    throws InstantiationException, IllegalAccessException {
+    throws InstantiationException, IllegalAccessException {
         new VocabularyModel(attributes);
     }
 
@@ -21,6 +21,7 @@ class CreateVocabularyFactory extends AbstractFactory  {
     void onNodeCompleted(FactoryBuilderSupport builder, Object parent, Object node) {
         super.onNodeCompleted(builder, parent, node);
         VocabularyModel vocabulary = (VocabularyModel) node;
-        vocabularyService.addVocabulary(LocaleMapConverter.convert(vocabulary.name));
+        // Method call updated to use webIds available in groovy model
+        vocabularyService.addVocabulary(vocabulary.webIds, LocaleMapConverter.convert(vocabulary.name));
     }
 }

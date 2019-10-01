@@ -12,10 +12,13 @@ import com.liferay.journal.model.JournalArticle;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
+import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.MathUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
@@ -40,55 +43,96 @@ import nl.finalist.liferay.lam.util.Constants;
 
 @Component(immediate = true, service = Structure.class)
 public class StructureImpl implements Structure {
+
     private static final Log LOG = LogFactoryUtil.getLog(StructureImpl.class);
+
     @Reference
     private DDMStructureLocalService ddmStructureLocalService;
+
     @Reference
     private ClassNameLocalService classNameLocalService;
+
     @Reference
     private DDMStructureVersionLocalService ddmStructureVersionLocalService;
+
     @Reference
     private DefaultValue defaultValue;
+
     @Reference
     private GroupLocalService groupService;
+
+    @Reference
+    private CompanyLocalService companyService;
+
     @Reference
     private DDM ddm;
-    
+
     @Override
-    public void createOrUpdateStructure(String structureKey, String fileUrl, Bundle bundle, Map<Locale, String> nameMap, Map<Locale, String> descriptionMap, String siteKey){
-        long classNameId = classNameLocalService.getClassNameId(JournalArticle.class.getName());
-        long groupId = defaultValue.getGlobalGroupId();
-        if (siteKey != null) {
-        	Group site = groupService.fetchGroup(defaultValue.getDefaultCompany().getCompanyId(), siteKey);
-	    	if (site != null) {
-	    		groupId = site.getGroupId();
-	    	}
+    public void createOrUpdateStructure(String[] webIds, String structureKey, String fileUrl, Bundle bundle, Map<Locale, String> nameMap,
+                                        Map<Locale, String> descriptionMap, String siteKey) {
+        if (ArrayUtil.isNotEmpty(webIds)) {
+            for (String webId : webIds) {
+                createOrUpdateStructureInCompany(webId, structureKey, fileUrl, bundle, nameMap, descriptionMap, siteKey);
+            }
+        } else {
+            String webId = defaultValue.getDefaultCompany().getWebId();
+            createOrUpdateStructureInCompany(webId, structureKey, fileUrl, bundle, nameMap, descriptionMap, siteKey);
         }
-        DDMStructure structure = getStructure(structureKey, groupId, classNameId);
-        if (Validator.isNull(structure)) {
-            LOG.info(String.format("Structure %s does not exist, creating structure", structureKey));
-            createStructure(structureKey, fileUrl, bundle, nameMap, descriptionMap, groupId, classNameId);
-        } else{
-            LOG.info(String.format("Structure %s already exist, updating structure", structureKey));
-            updateStructure(fileUrl, bundle, nameMap, descriptionMap, structure, structureKey);
-        }
+
     }
 
-    private void createStructure(String structureKey, String fileUrl, Bundle bundle, Map<Locale, String> nameMap,
-                    Map<Locale, String> descriptionMap, long groupId, long classNameId) {
+    /**
+     * New method to create or update structure in company with given webId
+     */
+    private void createOrUpdateStructureInCompany(String webId, String structureKey, String fileUrl, Bundle bundle, Map<Locale, String> nameMap,
+                                                  Map<Locale, String> descriptionMap, String siteKey) {
+
+        Company company = null;
+        long groupId = 0;
+        long userId = 0;
+        try {
+            company = companyService.getCompanyByWebId(webId);
+            groupId = company.getGroupId();
+            userId = company.getDefaultUser().getUserId();
+        } catch (PortalException e) {
+            LOG.error(String.format("Company not found with webId %s, skipping Create/Updated Structure for this company", webId));
+            LOG.error(e);
+        }
+        if (Validator.isNotNull(company) && groupId > 0 && userId > 0) {
+            long classNameId = classNameLocalService.getClassNameId(JournalArticle.class.getName());
+
+            if (siteKey != null) {
+                Group site = groupService.fetchGroup(company.getCompanyId(), siteKey);
+                if (site != null) {
+                    groupId = site.getGroupId();
+                }
+            }
+            DDMStructure structure = getStructure(structureKey, groupId, classNameId);
+            if (Validator.isNull(structure)) {
+                LOG.info(String.format("Structure %s does not exist, creating structure in company with webId %s", structureKey, webId));
+                createStructure(structureKey, fileUrl, bundle, nameMap, descriptionMap, groupId, userId, classNameId);
+            } else {
+                LOG.info(String.format("Structure %s already exist, updating structure in company with webId %s", structureKey, webId));
+                updateStructure(fileUrl, bundle, nameMap, descriptionMap, structure, structureKey);
+            }
+        }
+
+    }
+
+    private void createStructure(String structureKey, String fileUrl, Bundle bundle, Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
+                                 long groupId, long userId, long classNameId) {
         DDMForm ddmForm = createDDMForm(fileUrl, bundle);
         try {
-            ddmStructureLocalService.addStructure(defaultValue.getDefaultUserId(), groupId ,
-                            null, classNameId, structureKey, nameMap, descriptionMap, ddmForm,
-                            createDDMFormLayout(ddmForm), "json", 0, new ServiceContext());
+            ddmStructureLocalService.addStructure(userId, groupId, null, classNameId, structureKey, nameMap, descriptionMap, ddmForm,
+                    createDDMFormLayout(ddmForm), "json", 0, new ServiceContext());
             LOG.info(String.format("Structure %s was added", structureKey));
         } catch (PortalException e) {
             LOG.error(String.format("PortalException while saving ddmStructure %s ", structureKey) + e);
         }
     }
 
-    private void updateStructure(String fileUrl, Bundle bundle, Map<Locale, String> nameMap,
-                    Map<Locale, String> descriptionMap, DDMStructure ddmStructure, String structureKey){
+    private void updateStructure(String fileUrl, Bundle bundle, Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
+                                 DDMStructure ddmStructure, String structureKey) {
         DDMForm ddmForm = createDDMForm(fileUrl, bundle);
         ddmStructure.setNameMap(nameMap);
         ddmStructure.setDescriptionMap(descriptionMap);
@@ -97,14 +141,13 @@ public class StructureImpl implements Structure {
         String newVersion = String.valueOf(MathUtil.format(Double.valueOf(ddmStructure.getVersion()) + 0.1, 1, 1));
         try {
             ddmStructureVersion = ddmStructure.getLatestStructureVersion();
-            if(Validator.isNotNull(ddmStructureVersion)){
+            if (Validator.isNotNull(ddmStructureVersion)) {
                 ddmStructureVersion.setVersion(newVersion);
                 ddmStructure.setVersion(newVersion);
                 ddmStructureLocalService.updateDDMStructure(ddmStructure);
                 ddmStructureVersionLocalService.updateDDMStructureVersion(ddmStructureVersion);
                 LOG.info(String.format("Structure %s was successfully updated", structureKey));
-            }
-            else{
+            } else {
                 LOG.error("DDMStructureversion for structure is null, structure is not updated");
             }
         } catch (PortalException e) {
@@ -117,7 +160,7 @@ public class StructureImpl implements Structure {
         return ddm.getDefaultDDMFormLayout(ddmForm);
     }
 
-    private DDMStructure getStructure(String structureKey, long groupId,long classNameId){
+    private DDMStructure getStructure(String structureKey, long groupId, long classNameId) {
         DDMStructure ddmStructure = null;
         try {
             ddmStructure = ddmStructureLocalService.getStructure(groupId, classNameId, structureKey);
@@ -139,7 +182,7 @@ public class StructureImpl implements Structure {
         }
     }
 
-    private String getContentFromBundle(String fileUrl, Bundle bundle){
+    private String getContentFromBundle(String fileUrl, Bundle bundle) {
         URL url = bundle.getResource(fileUrl);
         String structure = "";
         InputStream input;
@@ -156,9 +199,8 @@ public class StructureImpl implements Structure {
             } finally {
                 input.close();
             }
-        }
-        catch (IOException e) {
-            LOG.error("IOException while reading input for structure "+ fileUrl + " " +e);
+        } catch (IOException e) {
+            LOG.error("IOException while reading input for structure " + fileUrl + " " + e);
         }
         return structure;
     }

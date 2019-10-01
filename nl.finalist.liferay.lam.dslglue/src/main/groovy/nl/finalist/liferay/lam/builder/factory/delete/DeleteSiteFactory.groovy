@@ -12,7 +12,7 @@ class DeleteSiteFactory extends AbstractFactory{
 
     @Override
     Object newInstance(FactoryBuilderSupport builder, Object name, Object value, Map attributes)
-                    throws InstantiationException, IllegalAccessException {
+    throws InstantiationException, IllegalAccessException {
         new SiteModel(attributes);
     }
 
@@ -20,6 +20,7 @@ class DeleteSiteFactory extends AbstractFactory{
     void onNodeCompleted(FactoryBuilderSupport builder, Object parent, Object node) {
         super.onNodeCompleted(builder, parent, node);
         SiteModel model = (SiteModel) node;
-        siteService.deleteSite(model.siteKey);
+        // Method call updated to use webIds available in groovy model
+        siteService.deleteSite(model.webIds, model.siteKey);
     }
 }

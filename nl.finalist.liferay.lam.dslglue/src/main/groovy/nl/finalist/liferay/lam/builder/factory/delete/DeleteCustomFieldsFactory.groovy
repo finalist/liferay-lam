@@ -12,7 +12,7 @@ class DeleteCustomFieldsFactory extends AbstractFactory{
 
     @Override
     Object newInstance(FactoryBuilderSupport builder, Object name, Object value, Map attributes)
-                    throws InstantiationException, IllegalAccessException {
+    throws InstantiationException, IllegalAccessException {
         new CustomFieldModel(attributes);
     }
 
@@ -20,6 +20,7 @@ class DeleteCustomFieldsFactory extends AbstractFactory{
     void onNodeCompleted(FactoryBuilderSupport builder, Object parent, Object node) {
         super.onNodeCompleted(builder, parent, node);
         CustomFieldModel cf = (CustomFieldModel) node;
-        customFieldsService.deleteCustomField(cf.getEntityName(), cf.getName());
+        // Method call updated to use webIds available in groovy model
+        customFieldsService.deleteCustomField(cf.webIds, cf.getEntityName(), cf.getName());
     }
 }
