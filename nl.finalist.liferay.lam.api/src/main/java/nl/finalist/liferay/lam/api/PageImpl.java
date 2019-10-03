@@ -15,7 +15,9 @@ import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.StringUtil;
 
@@ -24,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import javax.portlet.PortletPreferences;
 import javax.portlet.ReadOnlyException;
@@ -76,6 +79,9 @@ public class PageImpl implements Page {
 
     private void addPageInCompany(String webId, String siteKey, PageModel page) {
 
+        Locale localeThreadSiteDefaultLocale = LocaleThreadLocal.getDefaultLocale();
+        Locale localeThreadDefaultLocale = LocaleThreadLocal.getSiteDefaultLocale();
+
         long companyId = 0;
         long userId = 0;
         try {
@@ -88,40 +94,56 @@ public class PageImpl implements Page {
         }
         if (companyId > 0 && userId > 0) {
             Group site = groupService.fetchGroup(companyId, siteKey);
-            Layout layout = null;
 
-            convertContentToPortlets(companyId, page);
+            if (site != null) {
+                Layout layout = null;
 
-            try {
-                Layout oldLayout = layoutService.fetchLayoutByFriendlyURL(site.getGroupId(), page.isPrivatePage(),
-                        page.getFriendlyUrlMap().get(LocaleUtil.getDefault().toString()));
-                if (oldLayout == null) {
-                    layout = layoutService.addLayout(userId, site.getGroupId(), page.isPrivatePage(),
-                            determineParentLayoutId(site.getGroupId(), page), LocaleMapConverter.convert(page.getNameMap()), page.getTitleMap(),
-                            page.getDescriptionMap(), null, null, determinePageType(page), determineTypeSettings(page, site), page.isHiddenPage(),
-                            LocaleMapConverter.convert(page.getFriendlyUrlMap()), new ServiceContext());
+                convertContentToPortlets(companyId, page);
 
-                    updatePortletPreferences(page, layout);
+                if (MapUtil.isNotEmpty(page.getNameMap())) {
+                    Set<String> nameMapSet = page.getNameMap().keySet();
+                    String[] locales = nameMapSet.toArray(new String[nameMapSet.size()]);
+                    if (ArrayUtil.isNotEmpty(locales)) {
+                        LocaleThreadLocal.setDefaultLocale(LocaleUtil.fromLanguageId(locales[0]));
+                        LocaleThreadLocal.setSiteDefaultLocale(LocaleUtil.fromLanguageId(locales[0]));
+                    }
 
-                    LOG.debug(String.format("Page '%s' with url '%s' added", layout.getName(LocaleUtil.getDefault()), layout.getFriendlyURL()));
-                } else {
-                    updatePage(oldLayout, site.getGroupId(), page);
                 }
-            } catch (PortalException e) {
-                LOG.error("While adding page: " + page, e);
+
+                try {
+                    Layout oldLayout = layoutService.fetchLayoutByFriendlyURL(site.getGroupId(), page.isPrivatePage(),
+                            page.getFriendlyUrlMap().get(LocaleUtil.getDefault().toString()));
+                    if (oldLayout == null) {
+                        layout = layoutService.addLayout(userId, site.getGroupId(), page.isPrivatePage(),
+                                determineParentLayoutId(site.getGroupId(), page), LocaleMapConverter.convert(page.getNameMap()), page.getTitleMap(),
+                                page.getDescriptionMap(), null, null, determinePageType(page), determineTypeSettings(page, site), page.isHiddenPage(),
+                                LocaleMapConverter.convert(page.getFriendlyUrlMap()), new ServiceContext());
+
+                        updatePortletPreferences(page, layout);
+
+                        LOG.debug(String.format("Page '%s' with url '%s' added", layout.getName(LocaleUtil.getDefault()), layout.getFriendlyURL()));
+                    } else {
+                        updatePage(oldLayout, site.getGroupId(), page);
+                    }
+                } catch (PortalException e) {
+                    LOG.error("While adding page: " + page, e);
+                }
+
+                Map<String, String> customFields = page.getCustomFields();
+                if (layout != null && customFields != null) {
+                    for (Map.Entry<String, String> field : customFields.entrySet()) {
+                        String fieldKey = field.getKey();
+                        String value = field.getValue();
+                        LOG.debug(String.format("Page Custom field %s now has value %s", fieldKey, value));
+                        customFieldsService.addCustomFieldValue(new String[] {webId}, Layout.class.getName(), fieldKey, layout.getPrimaryKey(),
+                                value);
+                    }
+                }
             }
 
-            Map<String, String> customFields = page.getCustomFields();
-            if (layout != null && customFields != null) {
-                for (Map.Entry<String, String> field : customFields.entrySet()) {
-                    String fieldKey = field.getKey();
-                    String value = field.getValue();
-                    LOG.debug(String.format("Page Custom field %s now has value %s", fieldKey, value));
-                    customFieldsService.addCustomFieldValue(new String[] {webId}, Layout.class.getName(), fieldKey, layout.getPrimaryKey(), value);
-                }
-            }
         }
-
+        LocaleThreadLocal.setDefaultLocale(localeThreadDefaultLocale);
+        LocaleThreadLocal.setSiteDefaultLocale(localeThreadSiteDefaultLocale);
     }
 
     private void convertContentToPortlets(long companyId, PageModel page) {

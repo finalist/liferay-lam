@@ -6,7 +6,6 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Role;
-import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserGroup;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ContactLocalService;
@@ -83,15 +82,15 @@ public class UserImpl implements nl.finalist.liferay.lam.api.User {
         long[] userGroupIds = getIdsFromNames(userGroups, "USERGROUP", webId);
         boolean sendEmail = true;
         try {
-            User user = userLocalService.addUser(company.getDefaultUser().getUserId(), company.getCompanyId(), autoPassword, password1, password2,
-                    false, screenName, emailAddress, 0, null, locale, firstName, null, lastName, 0L, 0L, true, 1, 1, 1970, null, groupIds,
-                    organizationIds, roleIds, userGroupIds, sendEmail, new ServiceContext());
+            com.liferay.portal.kernel.model.User user = userLocalService.addUser(company.getDefaultUser().getUserId(), company.getCompanyId(),
+                    autoPassword, password1, password2, false, screenName, emailAddress, 0, null, locale, firstName, null, lastName, 0L, 0L, true, 1,
+                    1, 1970, null, groupIds, organizationIds, roleIds, userGroupIds, sendEmail, new ServiceContext());
             LOG.info(String.format("User %s successfully added in company with webId %s.", screenName, webId));
 
             if (customFields != null) {
                 for (String fieldName : customFields.keySet()) {
-                    customFieldsService.addCustomFieldValue(new String[] {webId}, User.class.getName(), fieldName, user.getPrimaryKey(),
-                            customFields.get(fieldName));
+                    customFieldsService.addCustomFieldValue(new String[] {webId}, com.liferay.portal.kernel.model.User.class.getName(), fieldName,
+                            user.getPrimaryKey(), customFields.get(fieldName));
                     LOG.info(String.format("Adding value %s to custom field %s of user %s was successful", customFields.get(fieldName), fieldName,
                             screenName));
                 }
@@ -119,7 +118,7 @@ public class UserImpl implements nl.finalist.liferay.lam.api.User {
                                      String[] roles, String[] groups, String[] userGroups, Map<String, String> customFields) {
 
         LOG.info(String.format("Started updating user %s in company with webId %s.", screenName, webId));
-        User user = getUserIfExists(webId, screenName);
+        com.liferay.portal.kernel.model.User user = getUserIfExists(webId, screenName);
         if (Validator.isNotNull(user)) {
             long[] roleIds = user.getRoleIds();
             long[] userGroupIds = user.getUserGroupIds();
@@ -141,8 +140,8 @@ public class UserImpl implements nl.finalist.liferay.lam.api.User {
             }
             if (customFields != null) {
                 for (String fieldName : customFields.keySet()) {
-                    customFieldsService.updateCustomFieldValue(new String[] {webId}, User.class.getName(), fieldName, user.getPrimaryKey(),
-                            customFields.get(fieldName));
+                    customFieldsService.updateCustomFieldValue(new String[] {webId}, com.liferay.portal.kernel.model.User.class.getName(), fieldName,
+                            user.getPrimaryKey(), customFields.get(fieldName));
                     LOG.debug(String.format("Custom field %s now has value %s", fieldName, customFields.get(fieldName)));
                 }
             }
@@ -182,7 +181,7 @@ public class UserImpl implements nl.finalist.liferay.lam.api.User {
     }
 
     private void deleteUserInCompany(String webId, String screenName) {
-        User user = getUserIfExists(webId, screenName);
+        com.liferay.portal.kernel.model.User user = getUserIfExists(webId, screenName);
         if (Validator.isNotNull(user)) {
             try {
                 userLocalService.deleteUser(user);
@@ -197,7 +196,7 @@ public class UserImpl implements nl.finalist.liferay.lam.api.User {
         }
     }
 
-    private User getUserIfExists(String webId, String screenName) {
+    private com.liferay.portal.kernel.model.User getUserIfExists(String webId, String screenName) {
         Company company = getCompany(webId);
         long companyId = company.getCompanyId();
         return userLocalService.fetchUserByScreenName(companyId, screenName);

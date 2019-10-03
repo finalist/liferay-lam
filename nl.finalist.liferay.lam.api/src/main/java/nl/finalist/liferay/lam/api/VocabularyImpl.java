@@ -10,11 +10,14 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.LocaleThreadLocal;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -50,7 +53,8 @@ public class VocabularyImpl implements Vocabulary {
     }
 
     private void addVocabulary(String webId, Map<Locale, String> vocabularyName) {
-
+        Locale localeThreadSiteDefaultLocale = LocaleThreadLocal.getDefaultLocale();
+        Locale localeThreadDefaultLocale = LocaleThreadLocal.getSiteDefaultLocale();
         long userId = 0;
         long groupId = 0;
         try {
@@ -62,6 +66,17 @@ public class VocabularyImpl implements Vocabulary {
             LOG.error(e);
         }
         if (groupId > 0 && userId > 0) {
+
+            if (MapUtil.isNotEmpty(vocabularyName)) {
+                Set<Locale> nameMapSet = vocabularyName.keySet();
+                Locale[] locales = nameMapSet.toArray(new Locale[nameMapSet.size()]);
+                if (ArrayUtil.isNotEmpty(locales)) {
+                    LocaleThreadLocal.setDefaultLocale(locales[0]);
+                    LocaleThreadLocal.setSiteDefaultLocale(locales[0]);
+                }
+
+            }
+
             try {
                 LOG.debug(String.format("Vocabulary Name to be addded is %s", vocabularyName));
 
@@ -73,6 +88,8 @@ public class VocabularyImpl implements Vocabulary {
                 LOG.error(String.format("Error while adding vocabulary %s in group %d", vocabularyName, groupId), e);
             }
         }
+        LocaleThreadLocal.setDefaultLocale(localeThreadDefaultLocale);
+        LocaleThreadLocal.setSiteDefaultLocale(localeThreadSiteDefaultLocale);
     }
 
     @Override
@@ -86,8 +103,6 @@ public class VocabularyImpl implements Vocabulary {
             String webId = defaultValue.getDefaultCompany().getWebId();
             deleteVocabulary(webId, vocabularyName);
         }
-
-        LOG.info(String.format("Deleted vocabulary %s", vocabularyName));
     }
 
     private void deleteVocabulary(String webId, String vocabularyName) {

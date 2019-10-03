@@ -12,12 +12,15 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.LocaleThreadLocal;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -58,6 +61,7 @@ public class CategoryImpl implements Category {
 
     private void createCategoryInCompany(String webId, String vocabularyName, String title, String parentCategoryName,
                                          Map<Locale, String> categoryName) {
+
         long groupId = 0;
         long defaultUserId = 0;
         try {
@@ -95,6 +99,8 @@ public class CategoryImpl implements Category {
                                 Map<Locale, String> categoryName, AssetVocabulary vocabulary)
             throws PortalException {
         long parentCategoryId = 0;
+        Locale localeThreadSiteDefaultLocale = LocaleThreadLocal.getDefaultLocale();
+        Locale localeThreadDefaultLocale = LocaleThreadLocal.getSiteDefaultLocale();
         if (!Validator.isBlank(parentCategoryName)) {
             List<AssetCategory> existingCategories = vocabulary.getCategories();
             LOG.info(String.format("Category %s has a parent category %s, adding it as a nested category", title, parentCategoryName));
@@ -104,9 +110,20 @@ public class CategoryImpl implements Category {
                                                  .findFirst()
                                                  .orElse(0L);
         }
+
+        if (MapUtil.isNotEmpty(categoryName)) {
+            Set<Locale> nameMapSet = categoryName.keySet();
+            Locale[] locales = nameMapSet.toArray(new Locale[nameMapSet.size()]);
+            if (ArrayUtil.isNotEmpty(locales)) {
+                LocaleThreadLocal.setDefaultLocale(locales[0]);
+                LocaleThreadLocal.setSiteDefaultLocale(locales[0]);
+            }
+
+        }
         assetCategoryService.addCategory(defaultUserId, groupId, parentCategoryId, categoryName, new HashMap<>(), vocabulary.getVocabularyId(),
                 new String[0], new ServiceContext());
-
+        LocaleThreadLocal.setDefaultLocale(localeThreadDefaultLocale);
+        LocaleThreadLocal.setSiteDefaultLocale(localeThreadSiteDefaultLocale);
         LOG.info(String.format("Added category %s to vocabulary %s", categoryName, vocabularyName));
     }
 
@@ -126,7 +143,6 @@ public class CategoryImpl implements Category {
     }
 
     private void updateCategoryInCompany(String webId, String categoryName, String vocabularyName, Map<Locale, String> updateName) {
-
         long groupId = 0;
         try {
             Company company = companyService.getCompanyByWebId(webId);
@@ -141,24 +157,26 @@ public class CategoryImpl implements Category {
             try {
                 AssetVocabulary vocabulary = assetVocabularyLocalService.getGroupVocabulary(groupId, vocabularyName);
                 List<AssetCategory> existingCategories = vocabulary.getCategories();
+                boolean categoryUpdated = false;
                 for (AssetCategory existingCategory : existingCategories) {
                     if (existingCategory.getName().equals(categoryName)) {
 
+                        categoryUpdated = true;
                         existingCategory.setTitleMap(updateName);
 
                         assetCategoryService.updateAssetCategory(existingCategory);
                         LOG.debug(String.format("Updated category %s in vocabulary %s in company with webId %s, the new name is now %s", categoryName,
                                 vocabularyName, webId, updateName));
-                        return;
                     }
                 }
-                LOG.info(String.format("Category %s doesn't exist in company with webId %s", categoryName, webId));
+                if (!categoryUpdated) {
+                    LOG.info(String.format("Category %s doesn't exist in company with webId %s", categoryName, webId));
+                }
 
             } catch (Exception e) {
                 LOG.error(String.format("Update of category %s failed in company with webId %s", categoryName, webId), e);
             }
         }
-
     }
 
     @Override
@@ -192,16 +210,19 @@ public class CategoryImpl implements Category {
                 AssetVocabulary vocabulary = assetVocabularyLocalService.getGroupVocabulary(groupId, vocabularyName);
                 List<AssetCategory> existingCategories = vocabulary.getCategories();
                 LOG.debug(String.format("number of categories is %d ", existingCategories.size()));
+                boolean categoryDeleted = false;
                 for (AssetCategory existingCategory : existingCategories) {
                     if (existingCategory.getName().equals(categoryName)) {
                         assetCategoryService.deleteCategory(existingCategory);
+                        categoryDeleted = true;
                         LOG.info(String.format("Deleted category %s from vocabulary %s from company with webId %s", categoryName, vocabularyName,
                                 webId));
                         return;
                     }
-
                 }
-                LOG.info(String.format("Category %s doesn't exist in company with webId %s ", categoryName, webId));
+                if (!categoryDeleted) {
+                    LOG.info(String.format("Category %s doesn't exist in company with webId %s ", categoryName, webId));
+                }
             } catch (PortalException e) {
                 LOG.error(String.format("Deleting category %s failed in company with webId %s ", categoryName, webId), e);
             }

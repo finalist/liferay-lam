@@ -37,12 +37,12 @@ public class PageModel {
     private List<ColumnModel> columns = new ArrayList<>();
 
     public PageModel(LinkedHashMap<String, Object> map) {
-        this((String[]) map.get("webIds"), (String) map.get("siteKey"), (Boolean) map.get("privatePage"), (Map) map.get("nameMap"),
+        this((List<String>) map.get("webIds"), (String) map.get("siteKey"), (Boolean) map.get("privatePage"), (Map) map.get("nameMap"),
              (Map) map.get("titleMap"), (Map) map.get("descriptionMap"), (Map) map.get("friendlyUrlMap"), (String) map.get("typeSettings"),
              (Map) map.get("customFields"), (String) map.get("parentUrl"), (String) map.get("linkedPageUrl"), (String) map.get("externalUrl"));
     }
 
-    public PageModel(String[] webIds,
+    public PageModel(List<String> webIds,
                      String siteKey,
                      boolean privatePage,
                      Map<String, String> nameMap,
@@ -54,7 +54,7 @@ public class PageModel {
                      String parentUrl,
                      String linkedPageUrl,
                      String externalUrl) {
-        this.setWebIds(webIds);
+        this.setWebIds(webIds.toArray(new String[webIds.size()]));
         this.privatePage = privatePage;
         this.nameMap = nameMap;
         this.titleMap = titleMap;

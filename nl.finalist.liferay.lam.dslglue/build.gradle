@@ -1,3 +1,4 @@
+apply plugin: "com.liferay.plugin"
 apply plugin: "groovy"
 
 dependencies {
@@ -16,10 +17,7 @@ dependencies {
 
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-all:1.10.8'
-    compile project(":modules:nl.finalist.liferay.lam.api")
-	compile project(":modules:nl.finalist.liferay.lam.statemgnt")
-	
-	
-    
-   // compileInclude fileTree(dir: 'lib', include: '*.jar')
+
+    compile project(":nl.finalist.liferay.lam.api")
+    compile project(":nl.finalist.liferay.lam.statemgnt")
 }
