@@ -313,8 +313,9 @@ public class PageImpl implements Page {
         if (titleMap == null || titleMap.isEmpty()) {
             titleMap = layout.getTitleMap();
         }
-        layoutService.updateLayout(groupId, page.isPrivatePage(), layout.getLayoutId(), parentLayoutId, nameMap, titleMap, descriptionMap, null, null,
-                determinePageType(page), false, friendlyURLMap, false, iconBytes, new ServiceContext());
+        layout = layoutService.updateLayout(groupId, page.isPrivatePage(), layout.getLayoutId(), parentLayoutId, nameMap, titleMap, descriptionMap,
+                null, null, determinePageType(page), page.isHiddenPage(), friendlyURLMap, false, iconBytes, new ServiceContext());
+        updatePortletPreferences(page, layout);
         LOG.info(String.format("Page %s updated in group %s", nameMap.get(LocaleUtil.getSiteDefault()), groupId));
     }
 
