@@ -216,7 +216,7 @@ public class SiteImpl implements Site {
                     for (String locale : locales) {
                         Layout existingPage = pageService.fetchLayout(group.getGroupId(), false, page.getFriendlyUrlMap().get(locale));
                         if (existingPage != null) {
-                            pageService.updatePage(existingPage, group.getGroupId(), page);
+                            pageService.updatePage(existingPage, group.getGroupId(), defaultUserID, page);
                             LOG.info(String.format("page %s is updated ", page.getNameMap().get(locale)));
                             break;
                         } else {

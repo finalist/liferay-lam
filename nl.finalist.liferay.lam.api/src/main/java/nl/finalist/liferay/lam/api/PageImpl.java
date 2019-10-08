@@ -123,7 +123,7 @@ public class PageImpl implements Page {
 
                         LOG.debug(String.format("Page '%s' with url '%s' added", layout.getName(LocaleUtil.getDefault()), layout.getFriendlyURL()));
                     } else {
-                        updatePage(oldLayout, site.getGroupId(), page);
+                        updatePage(oldLayout, site.getGroupId(), userId, page);
                     }
                 } catch (PortalException e) {
                     LOG.error("While adding page: " + page, e);
@@ -293,7 +293,7 @@ public class PageImpl implements Page {
     }
 
     @Override
-    public void updatePage(Layout layout, long groupId, PageModel page) throws PortalException {
+    public void updatePage(Layout layout, long groupId, long userId, PageModel page) throws PortalException {
         byte[] iconBytes = new byte[0];
         Map<Locale, String> nameMap = LocaleMapConverter.convert(page.getNameMap());
         if (nameMap == null || nameMap.isEmpty()) {
@@ -313,8 +313,11 @@ public class PageImpl implements Page {
         if (titleMap == null || titleMap.isEmpty()) {
             titleMap = layout.getTitleMap();
         }
+
+        ServiceContext serviceContext = new ServiceContext();
+        serviceContext.setUserId(userId);
         layout = layoutService.updateLayout(groupId, page.isPrivatePage(), layout.getLayoutId(), parentLayoutId, nameMap, titleMap, descriptionMap,
-                null, null, determinePageType(page), page.isHiddenPage(), friendlyURLMap, false, iconBytes, new ServiceContext());
+                null, null, determinePageType(page), page.isHiddenPage(), friendlyURLMap, false, iconBytes, serviceContext);
         updatePortletPreferences(page, layout);
         LOG.info(String.format("Page %s updated in group %s", nameMap.get(LocaleUtil.getSiteDefault()), groupId));
     }

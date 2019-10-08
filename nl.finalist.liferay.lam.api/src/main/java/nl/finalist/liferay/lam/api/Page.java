@@ -35,7 +35,7 @@ public interface Page {
      *            Contains all the information of the page
      * @throws PortalException
      */
-    void updatePage(Layout layout, long groupId, PageModel page) throws PortalException;
+    void updatePage(Layout layout, long groupId, long userId, PageModel page) throws PortalException;
 
     /**
      * fetch a page (in Liferay called layout) to a site (in Liferay called
