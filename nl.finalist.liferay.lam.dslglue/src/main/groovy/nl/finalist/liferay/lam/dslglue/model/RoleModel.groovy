@@ -3,6 +3,7 @@ package nl.finalist.liferay.lam.dslglue.model
 import nl.finalist.liferay.lam.api.TypeOfRole
 
 class RoleModel {
+    String[] webIds
     String name
     TypeOfRole type
     Map<Locale, String> titles

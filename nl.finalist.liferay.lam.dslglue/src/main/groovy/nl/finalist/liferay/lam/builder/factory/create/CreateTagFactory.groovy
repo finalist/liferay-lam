@@ -13,7 +13,7 @@ class CreateTagFactory extends AbstractFactory {
 
     @Override
     Object newInstance(FactoryBuilderSupport builder, Object objectName, Object value, Map attributes)
-                    throws InstantiationException, IllegalAccessException {
+    throws InstantiationException, IllegalAccessException {
         new TagModel(attributes);
     }
 
@@ -21,6 +21,7 @@ class CreateTagFactory extends AbstractFactory {
     void onNodeCompleted(FactoryBuilderSupport builder, Object parent, Object node) {
         super.onNodeCompleted(builder, parent, node);
         TagModel model = (TagModel) node;
-        tagService.createTag(model.name, model.forSite);
+        // Method call updated to use webIds available in groovy model
+        tagService.createTag(model.webIds, model.name, model.forSite);
     }
 }

@@ -14,18 +14,20 @@ class CreateOrUpdatePageFactory extends AbstractFactory {
 
     @Override
     Object newInstance(FactoryBuilderSupport builder, Object objectName, Object value, Map attributes)
-                    throws InstantiationException, IllegalAccessException {
-                    new PageModel(attributes)
+    throws InstantiationException, IllegalAccessException {
+        new PageModel(attributes)
     }
 
     @Override
     void onNodeCompleted(FactoryBuilderSupport builder, Object parent, Object node) {
         super.onNodeCompleted(builder, parent, node);
+
         if( parent instanceof  SiteModel) {
             SiteModel site = (SiteModel)parent;
             site.addPage((PageModel)node);
         } else {
-            pageService.addPage(((PageModel)node).getSiteKey(), (PageModel) node)
+            // Method call updated to use webIds available in groovy model
+            pageService.addPage(((PageModel)node).getWebIds(),((PageModel)node).getSiteKey(), (PageModel) node)
         }
     }
 }

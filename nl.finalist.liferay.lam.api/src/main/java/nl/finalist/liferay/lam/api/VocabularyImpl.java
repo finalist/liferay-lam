@@ -6,15 +6,22 @@ import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.LocaleThreadLocal;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+
 /**
  * Implementation for {@link nl.finalist.liferay.lam.api.Vocabulary}
  */
@@ -27,81 +34,155 @@ public class VocabularyImpl implements Vocabulary {
     @Reference
     private DefaultValue defaultValue;
 
+    @Reference
+    private CompanyLocalService companyService;
+
     private static final Log LOG = LogFactoryUtil.getLog(VocabularyImpl.class);
 
     @Override
-    public void addVocabulary(Map<Locale, String> vocabularyName) {
-        long groupId = defaultValue.getGlobalGroupId();
-        addVocabulary(vocabularyName, groupId);
-    }
-    
-    private void addVocabulary(Map<Locale, String>  vocabularyName, long groupId) {
-        long userId = defaultValue.getDefaultUserId();
-       
-        try {
-            LOG.debug(String.format("Vocabulary Name to be addded is %s", vocabularyName));
-           
-            vocabularyService.addVocabulary(userId, groupId, null, vocabularyName,
-                new HashMap<>(), "", new ServiceContext());
-            LOG.info(String.format("Added vocabulary %s to group %d", vocabularyName, groupId));
-        } catch (DuplicateVocabularyException e) {
-        	LOG.info(String.format("Vocabulary %s already exists in group %d", vocabularyName, groupId));
-        } catch (PortalException e) {
-            LOG.error(String.format("Error while adding vocabulary %s", vocabularyName), e);
-        }
-    }
+    public void addVocabulary(String[] webIds, Map<Locale, String> vocabularyName) {
 
-    @Override
-    public void deleteVocabulary(String vocabularyName) {
-        long groupId = defaultValue.getGlobalGroupId();
-        deleteVocabulary(vocabularyName, groupId);
-        LOG.info(String.format("Deleted vocabulary %s", vocabularyName));
-    }
-
-    private void deleteVocabulary(String vocabularyName, long groupId) {
-        AssetVocabulary vocabulary = getAssetVocabulary(vocabularyName, groupId);
-        if (Validator.isNotNull(vocabulary)) {
-            try {
-                vocabularyService.deleteAssetVocabulary(vocabulary.getVocabularyId());
-                LOG.info(String.format("Deleted vocabulary %s from group %d", vocabularyName, groupId));
-            } catch (PortalException e) {
-                LOG.error(String.format("Error while deleting vocabulary %s", vocabularyName), e);
+        if (ArrayUtil.isNotEmpty(webIds)) {
+            for (String webId : webIds) {
+                addVocabulary(webId, vocabularyName);
             }
         } else {
-            LOG.info(String.format("Vocabulary %s with groupId %d does not exist or is not retrievable",
-                            vocabularyName, groupId));
+            String webId = defaultValue.getDefaultCompany().getWebId();
+            addVocabulary(webId, vocabularyName);
+        }
+    }
+
+    private void addVocabulary(String webId, Map<Locale, String> vocabularyName) {
+        Locale localeThreadSiteDefaultLocale = LocaleThreadLocal.getDefaultLocale();
+        Locale localeThreadDefaultLocale = LocaleThreadLocal.getSiteDefaultLocale();
+        long userId = 0;
+        long groupId = 0;
+        try {
+            Company company = companyService.getCompanyByWebId(webId);
+            userId = company.getDefaultUser().getUserId();
+            groupId = company.getGroupId();
+        } catch (PortalException e) {
+            LOG.error(String.format("Company not found with webId %s, skipping Add Vocabulary for this company", webId));
+            LOG.error(e);
+        }
+        if (groupId > 0 && userId > 0) {
+
+            if (MapUtil.isNotEmpty(vocabularyName)) {
+                Set<Locale> nameMapSet = vocabularyName.keySet();
+                Locale[] locales = nameMapSet.toArray(new Locale[nameMapSet.size()]);
+                if (ArrayUtil.isNotEmpty(locales)) {
+                    LocaleThreadLocal.setDefaultLocale(locales[0]);
+                    LocaleThreadLocal.setSiteDefaultLocale(locales[0]);
+                }
+
+            }
+
+            try {
+                LOG.debug(String.format("Vocabulary Name to be addded is %s", vocabularyName));
+
+                vocabularyService.addVocabulary(userId, groupId, null, vocabularyName, new HashMap<>(), "", new ServiceContext());
+                LOG.info(String.format("Added vocabulary %s to group %d", vocabularyName, groupId));
+            } catch (DuplicateVocabularyException e) {
+                LOG.info(String.format("Vocabulary %s already exists in group %d", vocabularyName, groupId));
+            } catch (PortalException e) {
+                LOG.error(String.format("Error while adding vocabulary %s in group %d", vocabularyName, groupId), e);
+            }
+        }
+        LocaleThreadLocal.setDefaultLocale(localeThreadDefaultLocale);
+        LocaleThreadLocal.setSiteDefaultLocale(localeThreadSiteDefaultLocale);
+    }
+
+    @Override
+    public void deleteVocabulary(String[] webIds, String vocabularyName) {
+
+        if (ArrayUtil.isNotEmpty(webIds)) {
+            for (String webId : webIds) {
+                deleteVocabulary(webId, vocabularyName);
+            }
+        } else {
+            String webId = defaultValue.getDefaultCompany().getWebId();
+            deleteVocabulary(webId, vocabularyName);
+        }
+    }
+
+    private void deleteVocabulary(String webId, String vocabularyName) {
+
+        Company company = null;
+        long groupId = 0;
+        try {
+            company = companyService.getCompanyByWebId(webId);
+            groupId = company.getGroupId();
+
+        } catch (PortalException e) {
+            LOG.error(String.format("Company not found with webId %s, skipping Delete Vocabulary for this company", webId));
+            LOG.error(e);
+        }
+        if (company != null && groupId > 0) {
+            AssetVocabulary vocabulary = getAssetVocabulary(vocabularyName, groupId);
+            if (Validator.isNotNull(vocabulary)) {
+                try {
+                    vocabularyService.deleteAssetVocabulary(vocabulary.getVocabularyId());
+                    LOG.info(String.format("Deleted vocabulary %s from group %d", vocabularyName, groupId));
+                } catch (PortalException e) {
+                    LOG.error(String.format("Error while deleting vocabulary %s from group %d", vocabularyName, groupId), e);
+                }
+            } else {
+                LOG.info(String.format("Vocabulary %s with groupId %d does not exist or is not retrievable", vocabularyName, groupId));
+            }
         }
     }
 
     @Override
-    public void updateVocabularyTranslation(String existingName, Map<Locale, String> vocabularyName) {
-        long groupId = defaultValue.getGlobalGroupId();
-        updateVocabularyTranslation(vocabularyName, groupId, existingName);
+    public void updateVocabularyTranslation(String[] webIds, String existingName, Map<Locale, String> vocabularyName) {
+
+        if (ArrayUtil.isNotEmpty(webIds)) {
+            for (String webId : webIds) {
+                updateVocabularyTranslation(webId, existingName, vocabularyName);
+            }
+        } else {
+            String webId = defaultValue.getDefaultCompany().getWebId();
+            updateVocabularyTranslation(webId, existingName, vocabularyName);
+        }
         LOG.info(String.format("Updated vocabulary %s to add translation", vocabularyName));
     }
 
-    
-    private void updateVocabularyTranslation(Map<Locale, String> vocabularyName,
-                    long groupId, String existingName) {
-        AssetVocabulary vocabulary = getAssetVocabulary(existingName, groupId);
-        if (Validator.isNotNull(vocabulary)) {
-           
-            vocabulary.setTitleMap(vocabularyName);
-            vocabularyService.updateAssetVocabulary(vocabulary);
-            LOG.info(String.format("Updated vocabulary %s from group %d", vocabularyName, groupId));
-        } else {
-            LOG.debug(String.format("Vocabulary %s with groupId %d does not exist or is not retrievable",
-                            vocabularyName, groupId));
+    private void updateVocabularyTranslation(String webId, String existingName, Map<Locale, String> vocabularyName) {
+
+        Company company = null;
+        long groupId = 0;
+        try {
+            company = companyService.getCompanyByWebId(webId);
+            groupId = company.getGroupId();
+
+        } catch (PortalException e) {
+            LOG.error(String.format("Company not found with webId %s, skipping Update Vocabulary for this company", webId));
+            LOG.error(e);
         }
+        if (company != null && groupId > 0) {
+            AssetVocabulary vocabulary = getAssetVocabulary(existingName, groupId);
+            if (vocabulary != null) {
+                vocabulary.setTitleMap(vocabularyName);
+                vocabularyService.updateAssetVocabulary(vocabulary);
+                LOG.info(String.format("Updated vocabulary %s from group %d", vocabularyName, groupId));
+            } else {
+                LOG.debug(String.format("Vocabulary %s with groupId %d does not exist or is not retrievable", vocabularyName, groupId));
+            }
+        }
+
     }
 
     private AssetVocabulary getAssetVocabulary(String vocabularyName, long groupId) {
         AssetVocabulary vocabulary = null;
         try {
-          vocabulary = vocabularyService.getGroupVocabulary(groupId, vocabularyName);
+            vocabulary = vocabularyService.getGroupVocabulary(groupId, vocabularyName);
         } catch (PortalException e) {
             LOG.error(String.format("Error while retrieving vocabulary %s", vocabularyName), e);
         }
         return vocabulary;
+    }
+
+    @Reference
+    public void setCompanyLocalService(CompanyLocalService companyLocalService) {
+        this.companyService = companyLocalService;
     }
 }

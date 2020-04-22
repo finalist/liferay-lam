@@ -46,50 +46,66 @@ import org.powermock.modules.junit4.PowerMockRunner;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({AssetEntryLocalServiceUtil.class, RoleLocalServiceUtil.class, ResourceLocalServiceUtil.class, DocumentImpl.class})
 public class DocumentImplTest {
+
     private static final long USER_ID = 10L;
+
     private static final long GLOBAL_GROUP_ID = 10L;
 
     @Mock
     private DefaultValue defaultValue;
+
     @Mock
     private Company company;
+
     @Mock
     private User user;
+
     @Mock
     private Role role;
+
     @Mock
     private Group group;
+
     @Mock
     private Resource resource;
+
     @Mock
     private FileEntry fileEntry;
+
     @Mock
     private AssetEntry assetEntry;
+
     @Mock
     private DLAppLocalService dlAppLocalService;
+
     @Mock
     private GroupLocalService groupLocalService;
+
     @Mock
     private ResourcePermissionLocalService resourcePermissionLocalService;
+
     @Mock
     private ServiceContext serviceContext;
+
     @Mock
-    private Bundle bundle ;
+    private Bundle bundle;
 
     @InjectMocks
     private DocumentImpl documentImpl;
 
     String title;
+
     String fileUrl;
+
     String siteFriendlyURL;
-    
+
     @Before
     public void setUp() {
         documentImpl = new DocumentImpl();
         PowerMockito.mockStatic(AssetEntryLocalServiceUtil.class);
         PowerMockito.mockStatic(RoleLocalServiceUtil.class);
         PowerMockito.mockStatic(ResourceLocalServiceUtil.class);
-        
+
         initMocks(this);
 
         title = "Unibank";
@@ -113,17 +129,8 @@ public class DocumentImplTest {
         when(group.getGroupId()).thenReturn(GLOBAL_GROUP_ID);
 
         when(dlAppLocalService.getFileEntry(GLOBAL_GROUP_ID, DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, title)).thenReturn(null);
-        when(dlAppLocalService.addFileEntry(
-                USER_ID,
-                GLOBAL_GROUP_ID,
-                DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, 
-                title, 
-                "image/png", 
-                title, 
-                title, 
-                "",
-                bytes,
-                serviceContext)).thenReturn(fileEntry);
+        when(dlAppLocalService.addFileEntry(USER_ID, GLOBAL_GROUP_ID, DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, title, "image/png", title, title,
+                "", bytes, serviceContext)).thenReturn(fileEntry);
 
         when(fileEntry.getFileEntryId()).thenReturn(1L);
         when(fileEntry.getCompanyId()).thenReturn(1L);
@@ -133,24 +140,15 @@ public class DocumentImplTest {
         when(resource.getPrimKey()).thenReturn("primkey");
         PowerMockito.when(RoleLocalServiceUtil.getRole(company.getCompanyId(), RoleConstants.GUEST)).thenReturn(role);
         when(role.getRoleId()).thenReturn(1L);
-        
-        PowerMockito.when(AssetEntryLocalServiceUtil.updateEntry(USER_ID, GLOBAL_GROUP_ID, FileEntry.class.getName(),
-                1L, new long[0], new String[0])).thenReturn(assetEntry);
+
+        PowerMockito.when(AssetEntryLocalServiceUtil.updateEntry(USER_ID, GLOBAL_GROUP_ID, FileEntry.class.getName(), 1L, new long[0], new String[0]))
+                    .thenReturn(assetEntry);
         PowerMockito.when(AssetEntryLocalServiceUtil.updateAssetEntry(assetEntry)).thenReturn(assetEntry);
-        
-        documentImpl.createOrUpdateDocument(siteFriendlyURL, title, fileUrl, bundle);        
-        
-        verify(dlAppLocalService).addFileEntry(
-                defaultValue.getDefaultUserId(),
-                group.getGroupId(),
-                DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, 
-                title, 
-                "image/png", 
-                title, 
-                title, 
-                "",
-                bytes,
-                serviceContext);
+
+        documentImpl.createOrUpdateDocument(null, siteFriendlyURL, title, fileUrl, bundle);
+
+        verify(dlAppLocalService).addFileEntry(defaultValue.getDefaultUserId(), group.getGroupId(), DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, title,
+                "image/png", title, title, "", bytes, serviceContext);
     }
 
     @Test
@@ -163,8 +161,8 @@ public class DocumentImplTest {
         when(dlAppLocalService.getFileEntry(GLOBAL_GROUP_ID, DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, title)).thenReturn(fileEntry);
         when(fileEntry.getFileEntryId()).thenReturn(1L);
 
-        documentImpl.deleteDocument(title);
-        
+        documentImpl.deleteDocument(null, title);
+
         verify(dlAppLocalService).deleteFileEntry(1L);
     }
 

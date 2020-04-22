@@ -2,7 +2,7 @@ package nl.finalist.liferay.lam.dslglue.model;
 
 class WebContentModel {
 
-  
+    String[] webIds;
     Map<String, String> titleMap;
     String file;
     String urlTitle;

@@ -1,8 +1,9 @@
 package nl.finalist.liferay.lam.builder.factory.createOrUpdate
-import nl.finalist.liferay.lam.api.Template;
-import nl.finalist.liferay.lam.util.LocaleMapConverter;
-import nl.finalist.liferay.lam.dslglue.model.TemplateModel;
 import org.osgi.framework.Bundle;
+
+import nl.finalist.liferay.lam.api.Template;
+import nl.finalist.liferay.lam.dslglue.model.TemplateModel;
+import nl.finalist.liferay.lam.util.LocaleMapConverter;
 
 
 class CreateOrUpdateTemplateFactory extends AbstractFactory {
@@ -17,7 +18,7 @@ class CreateOrUpdateTemplateFactory extends AbstractFactory {
 
     @Override
     Object newInstance(FactoryBuilderSupport builder, Object objectName, Object value, Map attributes)
-                    throws InstantiationException, IllegalAccessException {
+    throws InstantiationException, IllegalAccessException {
         new TemplateModel(attributes);
     }
 
@@ -25,8 +26,8 @@ class CreateOrUpdateTemplateFactory extends AbstractFactory {
     void onNodeCompleted(FactoryBuilderSupport builder, Object parent, Object node) {
         super.onNodeCompleted(builder, parent, node);
         TemplateModel model = (TemplateModel) node;
-        
-      
-        templateService.createOrUpdateTemplate(model.templateKey, model.file, bundle ,model.forStructure, LocaleMapConverter.convert(model.nameMap), LocaleMapConverter.convert(model.descriptionMap), model.siteKey);
+
+        // Method call updated to use webIds available in groovy model
+        templateService.createOrUpdateTemplate(model.webIds, model.templateKey, model.file, bundle ,model.forStructure, LocaleMapConverter.convert(model.nameMap), LocaleMapConverter.convert(model.descriptionMap), model.siteKey);
     }
 }

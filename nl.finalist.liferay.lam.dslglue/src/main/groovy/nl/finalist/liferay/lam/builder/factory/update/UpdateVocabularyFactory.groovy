@@ -13,7 +13,7 @@ class UpdateVocabularyFactory extends AbstractFactory {
 
     @Override
     Object newInstance(FactoryBuilderSupport builder, Object name, Object value, Map attributes)
-                    throws InstantiationException, IllegalAccessException {
+    throws InstantiationException, IllegalAccessException {
         new VocabularyModel(attributes);
     }
 
@@ -21,7 +21,7 @@ class UpdateVocabularyFactory extends AbstractFactory {
     void onNodeCompleted(FactoryBuilderSupport builder, Object parent, Object node) {
         super.onNodeCompleted(builder, parent, node);
         VocabularyModel vocabulary = (VocabularyModel) node;
-        
-        vocabularyService.updateVocabularyTranslation(vocabulary.existingName,LocaleMapConverter.convert(vocabulary.name));
+        // Method call updated to use webIds available in groovy model
+        vocabularyService.updateVocabularyTranslation(vocabulary.webIds, vocabulary.existingName,LocaleMapConverter.convert(vocabulary.name));
     }
 }

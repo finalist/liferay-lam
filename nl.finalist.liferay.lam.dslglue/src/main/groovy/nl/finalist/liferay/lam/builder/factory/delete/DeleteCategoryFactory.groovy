@@ -5,22 +5,23 @@ import nl.finalist.liferay.lam.dslglue.model.CategoryModel;
 
 
 class DeleteCategoryFactory extends AbstractFactory {
-	Category categoryService;
-	
-	DeleteCategoryFactory(Category categoryService) {
-		this.categoryService = categoryService;
-	}
-	
-	 @Override
+    Category categoryService;
+
+    DeleteCategoryFactory(Category categoryService) {
+        this.categoryService = categoryService;
+    }
+
+    @Override
     Object newInstance(FactoryBuilderSupport builder, Object name, Object value, Map attributes)
-                    throws InstantiationException, IllegalAccessException {
+    throws InstantiationException, IllegalAccessException {
         new CategoryModel(attributes);
     }
-    
-     @Override
+
+    @Override
     void onNodeCompleted(FactoryBuilderSupport builder, Object parent, Object node) {
         super.onNodeCompleted(builder, parent, node);
         CategoryModel category = (CategoryModel) node;
-        categoryService.deleteCategory(category.title, category.vocabularyName);
+        // Method call updated to use webIds available in groovy model
+        categoryService.deleteCategory(category.webIds, category.title, category.vocabularyName);
     }
 }

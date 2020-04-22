@@ -1,9 +1,9 @@
 package nl.finalist.liferay.lam.builder.factory.createOrUpdate
-import nl.finalist.liferay.lam.api.WebContent;
-import nl.finalist.liferay.lam.util.LocaleMapConverter;
-import nl.finalist.liferay.lam.dslglue.model.WebContentModel;
-
 import org.osgi.framework.Bundle;
+
+import nl.finalist.liferay.lam.api.WebContent;
+import nl.finalist.liferay.lam.dslglue.model.WebContentModel;
+import nl.finalist.liferay.lam.util.LocaleMapConverter;
 
 
 class CreateOrUpdateWebcontentFactory extends AbstractFactory {
@@ -18,7 +18,7 @@ class CreateOrUpdateWebcontentFactory extends AbstractFactory {
 
     @Override
     Object newInstance(FactoryBuilderSupport builder, Object objectName, Object value, Map attributes)
-                    throws InstantiationException, IllegalAccessException {
+    throws InstantiationException, IllegalAccessException {
         new WebContentModel(attributes);
     }
 
@@ -26,7 +26,8 @@ class CreateOrUpdateWebcontentFactory extends AbstractFactory {
     void onNodeCompleted(FactoryBuilderSupport builder, Object parent, Object node) {
         super.onNodeCompleted(builder, parent, node);
         WebContentModel model = (WebContentModel) node;
-        webContentService.createOrUpdateWebcontent(model.id, model.forSite, LocaleMapConverter.convert(model
+        // Method call updated to use webIds available in groovy model
+        webContentService.createOrUpdateWebcontent(model.webIds, model.id, model.forSite, LocaleMapConverter.convert(model
                 .titleMap), model.file, bundle , model.urlTitle, model.structure, model.template);
     }
 }

@@ -13,15 +13,15 @@ class DeleteWebContentFactory extends AbstractFactory{
 
     @Override
     Object newInstance(FactoryBuilderSupport builder, Object name, Object value, Map attributes)
-                    throws InstantiationException, IllegalAccessException {
-       new WebContentModel(attributes);
+    throws InstantiationException, IllegalAccessException {
+        new WebContentModel(attributes);
     }
 
     @Override
     void onNodeCompleted(FactoryBuilderSupport builder, Object parent, Object node) {
         super.onNodeCompleted(builder, parent, node);
         WebContentModel model = (WebContentModel) node;
-        
-        webContentService.deleteWebContent(model.urlTitle);
+        // Method call updated to use webIds available in groovy model
+        webContentService.deleteWebContent(model.webIds, model.urlTitle);
     }
 }

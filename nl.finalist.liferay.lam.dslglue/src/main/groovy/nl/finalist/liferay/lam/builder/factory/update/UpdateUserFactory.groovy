@@ -13,7 +13,7 @@ class UpdateUserFactory extends AbstractFactory {
 
     @Override
     Object newInstance(FactoryBuilderSupport builder, Object objectName, Object value, Map attributes)
-                    throws InstantiationException, IllegalAccessException {
+    throws InstantiationException, IllegalAccessException {
         new UserModel(attributes);
     }
 
@@ -21,6 +21,7 @@ class UpdateUserFactory extends AbstractFactory {
     void onNodeCompleted(FactoryBuilderSupport builder, Object parent, Object node) {
         super.onNodeCompleted(builder, parent, node);
         UserModel model = (UserModel) node;
-        userService.updateUser(model.screenName, model.newScreenName, model.emailAddress, model.firstName, model.lastName, model.roles, model.sites, model.userGroups, model.customFields);
+        // Method call updated to use webIds available in groovy model
+        userService.updateUser(model.webIds, model.screenName, model.newScreenName, model.emailAddress, model.firstName, model.lastName, model.roles, model.sites, model.userGroups, model.customFields);
     }
 }

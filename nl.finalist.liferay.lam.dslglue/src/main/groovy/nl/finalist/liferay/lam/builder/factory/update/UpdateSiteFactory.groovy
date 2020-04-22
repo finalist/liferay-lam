@@ -1,11 +1,8 @@
 package nl.finalist.liferay.lam.builder.factory.update
 
 import nl.finalist.liferay.lam.api.Site
-import nl.finalist.liferay.lam.util.LocaleMapConverter
-
-//import nl.finalist.liferay.lam.dslglue.LocaleMapConverter
 import nl.finalist.liferay.lam.dslglue.model.SiteModel
-import nl.finalist.liferay.lam.api.model.PageModel
+import nl.finalist.liferay.lam.util.LocaleMapConverter
 
 class UpdateSiteFactory extends AbstractFactory {
 
@@ -17,7 +14,7 @@ class UpdateSiteFactory extends AbstractFactory {
 
     @Override
     Object newInstance(FactoryBuilderSupport builder, Object name, Object value, Map attributes)
-                    throws InstantiationException, IllegalAccessException {
+    throws InstantiationException, IllegalAccessException {
         new SiteModel(attributes);
     }
 
@@ -25,6 +22,7 @@ class UpdateSiteFactory extends AbstractFactory {
     void onNodeCompleted(FactoryBuilderSupport builder, Object parent, Object node) {
         super.onNodeCompleted(builder, parent, node);
         SiteModel model = (SiteModel) node;
-        siteService.updateSite(model.siteKey, LocaleMapConverter.convert(model.nameMap), LocaleMapConverter.convert(model.descriptionMap), model.friendlyURL, model.customFields, model.pages, model.stagingEnabled);
+        // Method call updated to use webIds available in groovy model
+        siteService.updateSite(model.webIds, model.siteKey, LocaleMapConverter.convert(model.nameMap), LocaleMapConverter.convert(model.descriptionMap), model.friendlyURL, model.customFields, model.pages, model.stagingEnabled);
     }
 }
